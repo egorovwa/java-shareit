@@ -5,15 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
-import ru.practicum.shareit.exceptions.UserCrudException;
-import ru.practicum.shareit.exceptions.UserNotExitsException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserServise;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoMaper;
 
-import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -39,9 +37,9 @@ public class UserServiseImpl implements UserServise {
     }
 
     @Override
-    public UserDto updateUser(long useeId, UserDto userDto) throws UserNotExitsException, UserAlreadyExistsException {
+    public UserDto updateUser(long useeId, UserDto userDto) throws ModelNotExitsException, UserAlreadyExistsException {
         User updatedUser = userRepository.findById(useeId)
-                .orElseThrow(() -> new UserNotExitsException("Ползователь с таким id не существует",
+                .orElseThrow(() -> new ModelNotExitsException("Ползователь с таким id не существует",
                         "id", String.valueOf(userDto.getId())));
         if (userRepository.findByEmail(userDto.getEmail()).isEmpty()
                 || userRepository.findByEmail(userDto.getEmail()).get().getEmail().equals(updatedUser.getEmail())) {
@@ -53,20 +51,25 @@ public class UserServiseImpl implements UserServise {
     }
 
     @Override
-    public void deleteUser(long userId) throws UserNotExitsException {
+    public void deleteUser(long userId) throws ModelNotExitsException {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
             log.info("Удален  пользователь  id: {}", userId);
 
         } else {
-            throw new UserNotExitsException("Ползователь с таким id не существует", "id", String.valueOf(userId));
+            throw new ModelNotExitsException("Ползователь с таким id не существует", "id", String.valueOf(userId));
         }
     }
 
     @Override
-    public UserDto findById(long userId) throws UserNotExitsException {
+    public UserDto findByIdDto(long userId) throws ModelNotExitsException {
         return userDtoMaper.toDto(userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotExitsException("Пользователь не найден", "id", String.valueOf(userId))));
+                .orElseThrow(() -> new ModelNotExitsException("Пользователь не найден", "id", String.valueOf(userId))));
+    }
+    @Override
+    public User findById(long userId) throws ModelNotExitsException {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ModelNotExitsException("Пользователь не найден", "id", String.valueOf(userId)));
     }
 
     @Override

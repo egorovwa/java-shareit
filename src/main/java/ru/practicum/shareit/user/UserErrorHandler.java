@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.exceptions.UserCrudException;
-import ru.practicum.shareit.exceptions.UserNotExitsException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
 
 import javax.validation.ValidationException;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class UserErrorHandler {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
     }
 
-    @ExceptionHandler(UserNotExitsException.class)
+    @ExceptionHandler(ModelNotExitsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> checkCurdException(UserCrudException e) {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
