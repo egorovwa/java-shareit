@@ -1,17 +1,20 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.exceptions.UserCrudException;
+import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
+import ru.practicum.shareit.exceptions.UserBadEmailException;
+import ru.practicum.shareit.exceptions.UserNotExitsException;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.Collection;
 
 public interface UserServise {
-    User addUser(User user) throws UserCrudException;
+    UserDto addUser(UserDto user) throws UserAlreadyExistsException, UserBadEmailException;
 
-    User updateUser(long useeId, User user) throws UserCrudException;
+    UserDto updateUser(long useeId, UserDto user) throws UserNotExitsException, UserAlreadyExistsException;
 
-    void deleteUser(long userId) throws UserCrudException;
+    void deleteUser(long userId) throws UserNotExitsException;
 
-    User findById(long userId) throws UserCrudException;
+    UserDto findById(long userId) throws UserNotExitsException;
 
-    Collection<User> findAll();
+    Collection<UserDto> findAll();
 }

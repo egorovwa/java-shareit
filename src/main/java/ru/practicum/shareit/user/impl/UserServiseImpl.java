@@ -2,53 +2,58 @@ package ru.practicum.shareit.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
+import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.exceptions.UserCrudException;
 import ru.practicum.shareit.exceptions.UserNotExitsException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDtoMaper;
 
+import javax.validation.ValidationException;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiseImpl implements UserServise {
     private final UserRepository userRepository;
+    private final UserDtoMaper userDtoMaper;
 
     @Override
-    public User addUser(User user) throws UserCrudException {
-
-        if (userRepository.findByEmail(user.getEmail()).isEmpty() && Strings.isNotBlank(user.getEmail())) {
-            log.info("Добавлен новый пользователь Email: {}", user.getEmail());
-            return userRepository.save(user);
+    public UserDto addUser(UserDto user) throws UserAlreadyExistsException, UserBadEmailException {
+        if (user.getEmail() != null) {
+            if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
+                log.info("Добавлен новый пользователь Email: {}", user.getEmail());
+                return userDtoMaper.toDto(userRepository.save(userDtoMaper.fromDto(user)));
+            } else {
+                throw new UserAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
+            }
         } else {
-            throw new UserCrudException("Ползователь с таким Email уже существует", "email", user.getEmail());
+            throw new UserBadEmailException("Email Не может быть пустым"); // TODO: 19.07.2022 иключение сделать
         }
     }
 
     @Override
-    public User updateUser(long useeId, User user) throws UserCrudException {
+    public UserDto updateUser(long useeId, UserDto userDto) throws UserNotExitsException, UserAlreadyExistsException {
         User updatedUser = userRepository.findById(useeId)
                 .orElseThrow(() -> new UserNotExitsException("Ползователь с таким id не существует",
-                        "id", String.valueOf(user.getId())));
-        if (user.getName() != null) {
-            updatedUser.setName(user.getName());
-        }
-        if (userRepository.findByEmail(user.getEmail()).isEmpty()
-                || userRepository.findByEmail(user.getEmail()).get().getEmail().equals(updatedUser.getEmail())) {
-            updatedUser.setEmail(user.getEmail());
+                        "id", String.valueOf(userDto.getId())));
+        if (userRepository.findByEmail(userDto.getEmail()).isEmpty()
+                || userRepository.findByEmail(userDto.getEmail()).get().getEmail().equals(updatedUser.getEmail())) {
+            return userDtoMaper.toDto(userDtoMaper.update(updatedUser, userDto));
         } else {
-            throw new UserAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
+            throw new UserAlreadyExistsException("Ползователь с таким Email уже существует", "email", userDto.getEmail());
         }
-        return userRepository.save(updatedUser);
+
     }
 
     @Override
-    public void deleteUser(long userId) throws UserCrudException {
+    public void deleteUser(long userId) throws UserNotExitsException {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
             log.info("Удален  пользователь  id: {}", userId);
@@ -59,13 +64,13 @@ public class UserServiseImpl implements UserServise {
     }
 
     @Override
-    public User findById(long userId) throws UserCrudException {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotExitsException("Пользователь не найден", "id", String.valueOf(userId)));
+    public UserDto findById(long userId) throws UserNotExitsException {
+        return userDtoMaper.toDto(userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotExitsException("Пользователь не найден", "id", String.valueOf(userId))));
     }
 
     @Override
-    public Collection<User> findAll() {
-        return userRepository.findAll();
+    public Collection<UserDto> findAll() {
+        return userRepository.findAll().stream().map(userDtoMaper::toDto).collect(Collectors.toList());
     }
 }
