@@ -27,9 +27,11 @@ public class UserServiseImpl implements UserServise {
                 log.info("Добавлен новый пользователь Email: {}", user.getEmail());
                 return userRepository.save(user);
             } else {
+                log.warn("Попытка добавить пользователя с существуещем  email {}",user.getEmail());
                 throw new ModelAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
             }
         } else {
+            log.warn("Попытка добавить пользователя без email");
             throw new UserBadEmailException("Email Не может быть пустым");
         }
     }
@@ -42,9 +44,11 @@ public class UserServiseImpl implements UserServise {
         if (userRepository.findByEmail(user.getEmail()).isEmpty()
                 || userRepository.findByEmail(user.getEmail()).get().getEmail().equals(updatedUser.getEmail())) {
             if (Strings.isNotBlank(user.getName())) {
+                log.info("изменение имени пользователя id = {} newName = {}",updatedUser.getId(), user.getName());
                 updatedUser.setName(user.getName());
             }
             if (Strings.isNotBlank(user.getEmail())) {
+                log.info("изменение email пользователя id = {} newemail = {}",updatedUser.getId(), user.getEmail());
                 updatedUser.setEmail(user.getEmail());
             }
             return userRepository.save(updatedUser);
@@ -67,12 +71,14 @@ public class UserServiseImpl implements UserServise {
 
     @Override
     public User findById(long userId) throws ModelNotExitsException {
+        log.info("Поиск User id {}", userId);
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ModelNotExitsException("Пользователь не найден", "id", String.valueOf(userId)));
     }
 
     @Override
     public Collection<User> findAll() {
+        log.info("Передача всех Users");
         return Collections.unmodifiableCollection(userRepository.findAll());
     }
 }
