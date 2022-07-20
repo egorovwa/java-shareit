@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.UserServise;
 @RequiredArgsConstructor
 class ShareItTests {
 	private final UserServise userServise;
-	User user1 = new User(null,"user1@nfff.com","user1");
+	final User user1 = new User(null,"user1@nfff.com","user1");
 	User user2 = new User(null,"user2@nfff.com","user2");
 	@Test
 	void contextLoads() {

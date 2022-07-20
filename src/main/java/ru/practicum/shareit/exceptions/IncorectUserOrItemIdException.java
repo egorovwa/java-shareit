@@ -1,8 +1,8 @@
 package ru.practicum.shareit.exceptions;
 
 public class IncorectUserOrItemIdException extends Exception{
-    Long userId;
-    Long itemId;
+    final Long userId;
+    final Long itemId;
 
     public IncorectUserOrItemIdException(String message, Long userId, Long itemId) {
         super(message);

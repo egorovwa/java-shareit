@@ -25,7 +25,7 @@ public class ItemServiseImpl implements ItemServise {
     private final ItemRepository itemRepository;
 
     @Override
-    public Item createItem(long userId, Item item) throws ModelNotExitsException, IncorrectUserIdException {
+    public Item createItem(long userId, Item item) throws IncorrectUserIdException {
         try {
             User user = userServise.findById(userId);
             item.setOwner(user);
