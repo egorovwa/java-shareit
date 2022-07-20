@@ -29,10 +29,10 @@ public class ItemServiseImpl implements ItemServise {
         try {
             User user = userServise.findById(userId);
             item.setOwner(user);
-            log.info("Добавленна item ({}), пользователем id {}",item.getName(),userId);
+            log.info("Добавленна item ({}), пользователем id {}", item.getName(), userId);
             return itemRepository.save(item);
         } catch (ModelNotExitsException e) {
-            log.warn("Попытка добавление item ({}), несуществующим пользователем id {}",item.getName(),userId);
+            log.warn("Попытка добавление item ({}), несуществующим пользователем id {}", item.getName(), userId);
             throw new IncorrectUserIdException("Пользователь не найден", String.valueOf(userId));
         }
     }
@@ -44,15 +44,15 @@ public class ItemServiseImpl implements ItemServise {
                 .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId)));
         if (updatedItem.getOwner().equals(userServise.findById(userId))) {
             if (item.getName() != null) {
-                log.info("Обновление имени вещи id {} newName = {}",updatedItem.getId(),item.getName());
+                log.info("Обновление имени вещи id {} newName = {}", updatedItem.getId(), item.getName());
                 updatedItem.setName(item.getName());
             }
             if (item.getDescription() != null) {
-                log.info("Обновление описания вещи id {} newDescription = {}",updatedItem.getId(),item.getDescription());
+                log.info("Обновление описания вещи id {} newDescription = {}", updatedItem.getId(), item.getDescription());
                 updatedItem.setDescription(item.getDescription());
             }
             if (item.getAvailable() != null) {
-                log.info("Обновление Available вещи id {} newAvailable = {}",updatedItem.getId(),item.getAvailable());
+                log.info("Обновление Available вещи id {} newAvailable = {}", updatedItem.getId(), item.getAvailable());
                 updatedItem.setAvailable(item.getAvailable());
             }
             return itemRepository.save(updatedItem);

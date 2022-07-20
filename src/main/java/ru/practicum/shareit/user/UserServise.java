@@ -1,8 +1,8 @@
 package ru.practicum.shareit.user;
 
 import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
-import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.UserBadEmailException;
 
 import java.util.Collection;
 

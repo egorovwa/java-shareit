@@ -12,8 +12,8 @@ import ru.practicum.shareit.user.User;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemRequest {
-   private Long id;
-   private String description;
-   private User requestor;
-   private Long created;
+    private Long id;
+    private String description;
+    private User requestor;
+    private Long created;
 }

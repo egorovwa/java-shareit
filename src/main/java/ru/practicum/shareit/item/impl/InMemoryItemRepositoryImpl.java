@@ -43,7 +43,7 @@ public class InMemoryItemRepositoryImpl implements ItemRepository {
     @Override
     public Collection<Item> findByText(String text) {
         return itemMap.values().stream().filter(it -> it.getName().toLowerCase().contains(text.toLowerCase())
-                || it.getDescription().toLowerCase().contains(text.toLowerCase()))
+                        || it.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
     }

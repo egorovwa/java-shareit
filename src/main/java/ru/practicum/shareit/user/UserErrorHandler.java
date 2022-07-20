@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
-import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.exceptions.ModelCrudException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.UserBadEmailException;
 
 import javax.validation.ValidationException;
 import java.util.Map;

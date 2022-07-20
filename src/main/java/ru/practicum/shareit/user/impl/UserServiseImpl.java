@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
@@ -27,7 +27,7 @@ public class UserServiseImpl implements UserServise {
                 log.info("Добавлен новый пользователь Email: {}", user.getEmail());
                 return userRepository.save(user);
             } else {
-                log.warn("Попытка добавить пользователя с существуещем  email {}",user.getEmail());
+                log.warn("Попытка добавить пользователя с существуещем  email {}", user.getEmail());
                 throw new ModelAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
             }
         } else {
@@ -44,11 +44,11 @@ public class UserServiseImpl implements UserServise {
         if (userRepository.findByEmail(user.getEmail()).isEmpty()
                 || userRepository.findByEmail(user.getEmail()).get().getEmail().equals(updatedUser.getEmail())) {
             if (Strings.isNotBlank(user.getName())) {
-                log.info("изменение имени пользователя id = {} newName = {}",updatedUser.getId(), user.getName());
+                log.info("изменение имени пользователя id = {} newName = {}", updatedUser.getId(), user.getName());
                 updatedUser.setName(user.getName());
             }
             if (Strings.isNotBlank(user.getEmail())) {
-                log.info("изменение email пользователя id = {} newemail = {}",updatedUser.getId(), user.getEmail());
+                log.info("изменение email пользователя id = {} newemail = {}", updatedUser.getId(), user.getEmail());
                 updatedUser.setEmail(user.getEmail());
             }
             return userRepository.save(updatedUser);

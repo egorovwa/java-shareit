@@ -21,13 +21,14 @@ public class ItemErrorHandler {
     @ExceptionHandler(IncorectUserOrItemIdException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Map<String, String> incorrectUserOrItemIdCheck(IncorectUserOrItemIdException e) {
-        return Map.of("error", e.getMessage(), "user",String.valueOf(e.getUserId()),
-                "Item",String.valueOf(e.getItemId()));
+        return Map.of("error", e.getMessage(), "user", String.valueOf(e.getUserId()),
+                "Item", String.valueOf(e.getItemId()));
     }
+
     @ExceptionHandler(IncorrectUserIdException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> incorrectUserIdCheck(IncorrectUserIdException e) {
-        return Map.of("error", e.getMessage(), "usser",e.getUserId());
+        return Map.of("error", e.getMessage(), "usser", e.getUserId());
     }
 
 }

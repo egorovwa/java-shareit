@@ -8,12 +8,13 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 public class ItemRequestDtoMaper {
-    public ItemRequestDto toDto(ItemRequest itemRequest){
-        return new ItemRequestDto(itemRequest.getId(),itemRequest.getDescription(),
+    public ItemRequestDto toDto(ItemRequest itemRequest) {
+        return new ItemRequestDto(itemRequest.getId(), itemRequest.getDescription(),
                 itemRequest.getRequestor(),
-                LocalDateTime.ofInstant(Instant.ofEpochSecond(itemRequest.getCreated()),ZoneOffset.systemDefault()));
+                LocalDateTime.ofInstant(Instant.ofEpochSecond(itemRequest.getCreated()), ZoneOffset.systemDefault()));
     }
-    public ItemRequest fromDto(ItemRequestDto dto){
+
+    public ItemRequest fromDto(ItemRequestDto dto) {
         return new ItemRequest(dto.getId(), dto.getDescription(), dto.getRequestor(),
                 dto.getCreated().atZone(ZoneId.systemDefault()).toEpochSecond());
     }

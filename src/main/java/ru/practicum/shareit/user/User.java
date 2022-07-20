@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * // TODO .
@@ -16,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    @Min(value = 1,message = "ID меньше 1")
+    @Min(value = 1, message = "ID меньше 1")
     private Long id;
     @Email(message = "Не верный формат Email")
     private String email;

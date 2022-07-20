@@ -1,6 +1,6 @@
 package ru.practicum.shareit.exceptions;
 
-public class IncorrectUserIdException extends Exception{
+public class IncorrectUserIdException extends Exception {
     final String userId;
 
     public IncorrectUserIdException(String message, String userId) {
