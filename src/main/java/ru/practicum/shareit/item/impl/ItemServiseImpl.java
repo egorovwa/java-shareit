@@ -25,39 +25,39 @@ import java.util.stream.Collectors;
 public class ItemServiseImpl implements ItemServise {
     private final UserServise userServise;
     private final ItemRepository itemRepository;
-    private final ItemDtoMaper itemDtoMaper;
 
     @Override
-    public ItemDto createItem(long userId, ItemDto itemDto) throws ModelNotExitsException, IncorrectUserIdException {
+    public Item createItem(long userId, Item item) throws ModelNotExitsException, IncorrectUserIdException {
         try {
             User user = userServise.findById(userId);
-            Item item = itemDtoMaper.fromDto(itemDto);
             item.setOwner(user);
-            return itemDtoMaper.toDto(itemRepository.save(item));
+            return itemRepository.save(item);
         } catch (ModelNotExitsException e) {
             throw new IncorrectUserIdException("Пользователь не найден", String.valueOf(userId));
         }
     }
 
     @Override
-    public ItemDto patchItem(long userId, long itemId, ItemDto itemDto) throws ModelNotExitsException,
+    public Item patchItem(long userId, long itemId, Item item) throws ModelNotExitsException,
             IncorectUserOrItemIdException {
-        Item item = itemRepository.findById(itemId)
+        Item updatedItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId)));
-        if (item.getOwner().equals(userServise.findById(userId))) {
-            itemDtoMaper.update(item, itemDto);
-            return itemDtoMaper.toDto(item);
+        if (updatedItem.getOwner().equals(userServise.findById(userId))) {
+            if (item.getName() != null) {
+                updatedItem.setName(item.getName());
+            }
+            if (item.getDescription() != null) {
+                updatedItem.setDescription(item.getDescription());
+            }
+            if (item.getAvailable() != null) {
+                updatedItem.setAvailable(item.getAvailable());
+            }
+            return itemRepository.save(updatedItem);
         } else {
             log.warn("Пользователь id {} пытается изменить вещь id {}", userId, itemId);
             throw new IncorectUserOrItemIdException("Вещь не принадлежит пользователю", userId, itemId);
         }
 
-    }
-
-    @Override
-    public ItemDto findByIdDto(long itemId) throws ModelNotExitsException {
-        return itemDtoMaper.toDto(itemRepository.findById(itemId)
-                .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId))));
     }
 
     @Override
@@ -67,17 +67,14 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Collection<ItemDto> findAllByOwnerId(long userId) {
-        return itemRepository.findByOwnerId(userId).stream().map(itemDtoMaper::toDto)
-                .collect(Collectors.toList());
+    public Collection<Item> findAllByOwnerId(long userId) {
+        return new ArrayList<>(itemRepository.findByOwnerId(userId)); // TODO: 20.07.2022 imunable
     }
 
     @Override
-    public Collection<ItemDto> findByText(String text) {
+    public Collection<Item> findByText(String text) {
         if (Strings.isNotBlank(text)) {
-            return itemRepository.findByText(text).stream()
-                    .map(itemDtoMaper::toDto)
-                    .collect(Collectors.toList());
+            return new ArrayList<>(itemRepository.findByText(text)); // TODO: 20.07.2022 imunable
         }else return new ArrayList<>();
     }
 }

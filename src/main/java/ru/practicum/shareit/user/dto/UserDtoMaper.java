@@ -15,13 +15,4 @@ public class UserDtoMaper {
         return new User(dto.getId(), dto.getEmail(), dto.getName());
     }
 
-    public User update(User updatedUser, UserDto dto) {
-        if (Strings.isNotBlank(dto.getEmail())) {
-            updatedUser.setEmail(dto.getEmail());
-        }
-        if (Strings.isNotBlank(dto.getName())) {
-            updatedUser.setName(dto.getName());
-        }
-        return updatedUser;
-    }
 }

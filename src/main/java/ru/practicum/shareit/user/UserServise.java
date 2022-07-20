@@ -8,15 +8,14 @@ import ru.practicum.shareit.user.dto.UserDto;
 import java.util.Collection;
 
 public interface UserServise {
-    UserDto addUser(UserDto user) throws UserAlreadyExistsException, UserBadEmailException;
+    User addUser(User user) throws UserAlreadyExistsException, UserBadEmailException;
 
-    UserDto updateUser(long useeId, UserDto user) throws ModelNotExitsException, UserAlreadyExistsException;
+    User updateUser(long useeId, User user) throws ModelNotExitsException, UserAlreadyExistsException;
 
     void deleteUser(long userId) throws ModelNotExitsException;
 
-    UserDto findByIdDto(long userId) throws ModelNotExitsException;
     User findById(long userId) throws ModelNotExitsException;
 
 
-    Collection<UserDto> findAll();
+    Collection<User> findAll();
 }
