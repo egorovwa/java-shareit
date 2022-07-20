@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
+import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
-import ru.practicum.shareit.exceptions.UserCrudException;
+import ru.practicum.shareit.exceptions.ModelCrudException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 
 import javax.validation.ValidationException;
@@ -21,15 +21,15 @@ public class UserErrorHandler {
         return new Response();
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ExceptionHandler(ModelAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> checkEmailAlreadyExistsException(UserAlreadyExistsException e) {
+    public Map<String, String> checkEmailAlreadyExistsException(ModelAlreadyExistsException e) {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
     }
 
     @ExceptionHandler(ModelNotExitsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> checkCurdException(UserCrudException e) {
+    public Map<String, String> checkCurdException(ModelCrudException e) {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
     }
 

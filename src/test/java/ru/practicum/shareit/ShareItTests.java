@@ -3,7 +3,7 @@ package ru.practicum.shareit;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
+import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
@@ -17,7 +17,7 @@ class ShareItTests {
 	void contextLoads() {
 	}
 	@Test
-	void test1_adduser_findById_Normal() throws UserAlreadyExistsException {
+	void test1_adduser_findById_Normal() throws ModelAlreadyExistsException {
 		userServise.addUser(user1);
 	}
 

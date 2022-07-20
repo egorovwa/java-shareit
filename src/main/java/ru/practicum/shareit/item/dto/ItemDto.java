@@ -22,5 +22,5 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
-    private User owner; // TODO: 19.07.2022 может убрать ?
+    private User owner;
 }

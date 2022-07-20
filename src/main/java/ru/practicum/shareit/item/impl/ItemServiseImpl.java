@@ -9,15 +9,13 @@ import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemServise;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -68,13 +66,13 @@ public class ItemServiseImpl implements ItemServise {
 
     @Override
     public Collection<Item> findAllByOwnerId(long userId) {
-        return new ArrayList<>(itemRepository.findByOwnerId(userId)); // TODO: 20.07.2022 imunable
+        return Collections.unmodifiableCollection(itemRepository.findByOwnerId(userId));
     }
 
     @Override
     public Collection<Item> findByText(String text) {
         if (Strings.isNotBlank(text)) {
-            return new ArrayList<>(itemRepository.findByText(text)); // TODO: 20.07.2022 imunable
-        }else return new ArrayList<>();
+            return Collections.unmodifiableCollection(itemRepository.findByText(text));
+        } else return new ArrayList<>();
     }
 }

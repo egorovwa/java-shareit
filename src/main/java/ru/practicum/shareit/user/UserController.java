@@ -2,7 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
+import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -23,11 +23,11 @@ private final UserServise userServise;
 private final UserDtoMaper userDtoMaper;
 
 @PostMapping
-    public UserDto addUser(@Valid @RequestBody UserDto user) throws UserBadEmailException, UserAlreadyExistsException {
+    public UserDto addUser(@Valid @RequestBody UserDto user) throws UserBadEmailException, ModelAlreadyExistsException {
    return userDtoMaper.toDto(userServise.addUser(userDtoMaper.fromDto(user)));
 }
 @PatchMapping("/{userId}")
-    public UserDto patchUser(@PathVariable long userId, @Valid @RequestBody UserDto user) throws ModelNotExitsException, UserAlreadyExistsException {
+    public UserDto patchUser(@PathVariable long userId, @Valid @RequestBody UserDto user) throws ModelNotExitsException, ModelAlreadyExistsException {
     return userDtoMaper.toDto(userServise.updateUser(userId,userDtoMaper.fromDto(user)));
 }
 @DeleteMapping("/{userId}")

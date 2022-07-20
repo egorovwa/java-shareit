@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
+import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserServise;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -21,35 +21,35 @@ public class UserServiseImpl implements UserServise {
     private final UserRepository userRepository;
 
     @Override
-    public User addUser(User user) throws UserAlreadyExistsException, UserBadEmailException {
+    public User addUser(User user) throws ModelAlreadyExistsException, UserBadEmailException {
         if (user.getEmail() != null) {
             if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
                 log.info("Добавлен новый пользователь Email: {}", user.getEmail());
                 return userRepository.save(user);
             } else {
-                throw new UserAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
+                throw new ModelAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
             }
         } else {
-            throw new UserBadEmailException("Email Не может быть пустым"); // TODO: 19.07.2022 иключение сделать
+            throw new UserBadEmailException("Email Не может быть пустым");
         }
     }
 
     @Override
-    public User updateUser(long useeId, User user) throws ModelNotExitsException, UserAlreadyExistsException {
+    public User updateUser(long useeId, User user) throws ModelNotExitsException, ModelAlreadyExistsException {
         User updatedUser = userRepository.findById(useeId)
                 .orElseThrow(() -> new ModelNotExitsException("Ползователь с таким id не существует",
                         "id", String.valueOf(user.getId())));
         if (userRepository.findByEmail(user.getEmail()).isEmpty()
                 || userRepository.findByEmail(user.getEmail()).get().getEmail().equals(updatedUser.getEmail())) {
-            if (Strings.isNotBlank(user.getName())){
+            if (Strings.isNotBlank(user.getName())) {
                 updatedUser.setName(user.getName());
             }
-            if (Strings.isNotBlank(user.getEmail())){
+            if (Strings.isNotBlank(user.getEmail())) {
                 updatedUser.setEmail(user.getEmail());
             }
-            return userRepository.save(updatedUser); // TODO: 20.07.2022 где сохраняю?
+            return userRepository.save(updatedUser);
         } else {
-            throw new UserAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
+            throw new ModelAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
         }
 
     }
@@ -73,6 +73,6 @@ public class UserServiseImpl implements UserServise {
 
     @Override
     public Collection<User> findAll() {
-        return new ArrayList<>(userRepository.findAll()); // TODO: 20.07.2022 imunable лучше
+        return Collections.unmodifiableCollection(userRepository.findAll());
     }
 }

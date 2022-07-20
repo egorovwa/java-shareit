@@ -1,16 +1,15 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.exceptions.UserAlreadyExistsException;
+import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.Collection;
 
 public interface UserServise {
-    User addUser(User user) throws UserAlreadyExistsException, UserBadEmailException;
+    User addUser(User user) throws ModelAlreadyExistsException, UserBadEmailException;
 
-    User updateUser(long useeId, User user) throws ModelNotExitsException, UserAlreadyExistsException;
+    User updateUser(long useeId, User user) throws ModelNotExitsException, ModelAlreadyExistsException;
 
     void deleteUser(long userId) throws ModelNotExitsException;
 
