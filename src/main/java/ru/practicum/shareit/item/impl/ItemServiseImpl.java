@@ -44,15 +44,15 @@ public class ItemServiseImpl implements ItemServise {
         Item updatedItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId)));
         if (updatedItem.getOwner().equals(userServise.findById(userId))) {
-            Optional.ofNullable(item.getName()).ifPresent((name)->{
+            Optional.ofNullable(item.getName()).ifPresent((name) -> {
                 log.info("Обновление имени вещи id {} newName = {}", updatedItem.getId(), item.getName());
                 updatedItem.setName(item.getName());
             });
-            Optional.ofNullable(item.getDescription()).ifPresent((description)-> {
+            Optional.ofNullable(item.getDescription()).ifPresent((description) -> {
                 log.info("Обновление описания вещи id {} newDescription = {}", updatedItem.getId(), item.getDescription());
                 updatedItem.setDescription(item.getDescription());
             });
-            Optional.ofNullable(item.getAvailable()).ifPresent((available)->{
+            Optional.ofNullable(item.getAvailable()).ifPresent((available) -> {
                 log.info("Обновление Available вещи id {} newAvailable = {}", updatedItem.getId(), item.getAvailable());
                 updatedItem.setAvailable(item.getAvailable());
             });

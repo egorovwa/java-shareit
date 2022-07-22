@@ -22,8 +22,8 @@ class ShareItTests {
     private final UserServise userServise;
     private final ItemServise itemServise;
     private User user1 = new User(null, "user1@nfff.com", "user1");
-    private User user2 = new User(null, "user2@nfff.com", "user2");
     Item item = new Item(null, "name rrrr", "word finded word", true, user1);
+    private final User user2 = new User(null, "user2@nfff.com", "user2");
 
     @Test
     void contextLoads() {

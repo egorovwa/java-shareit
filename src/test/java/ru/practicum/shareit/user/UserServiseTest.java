@@ -10,22 +10,24 @@ import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiseTest {
     private final UserServise userServise;
-    private User user = new User(null,"email@mail.ru","user");
-    User user2 = new User(null,"email2@mail.ru","user");
-    User user3 = new User(null,"email3@mail.ru","user");
+    User user2 = new User(null, "email2@mail.ru", "user");
+    User user3 = new User(null, "email3@mail.ru", "user");
+    private final User user = new User(null, "email@mail.ru", "user");
 
     @Test
     @DirtiesContext
     void test1_addUser() throws ModelAlreadyExistsException, ModelNotExitsException {
         userServise.addUser(user);
         User findedUser = userServise.findById(1);
-        assertEquals(user.getName(),findedUser.getName(),"имя не совпадает");
-        assertEquals(user.getEmail(),findedUser.getEmail(),"email не совпадает");
+        assertEquals(user.getName(), findedUser.getName(), "имя не совпадает");
+        assertEquals(user.getEmail(), findedUser.getEmail(), "email не совпадает");
     }
+
     @Test
     @DirtiesContext
     void test2_addWithError() throws ModelAlreadyExistsException {
@@ -33,8 +35,8 @@ class UserServiseTest {
         assertThrows(ModelAlreadyExistsException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                 User userWithDoubleEmail = new User(null,"email@mail.ru","user1");
-                 userServise.addUser(userWithDoubleEmail);
+                User userWithDoubleEmail = new User(null, "email@mail.ru", "user1");
+                userServise.addUser(userWithDoubleEmail);
             }
         });
     }
@@ -42,20 +44,21 @@ class UserServiseTest {
     @Test
     @DirtiesContext
     void test3_updateUser() throws ModelAlreadyExistsException, ModelNotExitsException {
-        User userUpdate = new User(null,"updated@mail.ru","updatedName");
+        User userUpdate = new User(null, "updated@mail.ru", "updatedName");
         userServise.addUser(user);
-        userServise.updateUser(1,userUpdate);
+        userServise.updateUser(1, userUpdate);
 
-        assertEquals(userUpdate.getEmail(),userServise.findById(1).getEmail(),"email не совпадает");
-        assertEquals(userUpdate.getName(),userServise.findById(1).getName(),"name не совпадает");
+        assertEquals(userUpdate.getEmail(), userServise.findById(1).getEmail(), "email не совпадает");
+        assertEquals(userUpdate.getName(), userServise.findById(1).getName(), "name не совпадает");
     }
+
     @Test
     @DirtiesContext
-    void test4_updateNoExistUser(){
+    void test4_updateNoExistUser() {
         assertThrows(ModelNotExitsException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                userServise.updateUser(2,user2);
+                userServise.updateUser(2, user2);
             }
         });
     }
@@ -66,16 +69,17 @@ class UserServiseTest {
         userServise.addUser(user);
 
         userServise.deleteUser(1);
-        assertEquals(0,userServise.findAll().size());
+        assertEquals(0, userServise.findAll().size());
 
         userServise.addUser(user);
         userServise.addUser(user2);
         userServise.addUser(user3);
         userServise.deleteUser(2);
-        assertEquals(2,userServise.findAll().size());
+        assertEquals(2, userServise.findAll().size());
         assertTrue(userServise.findAll().contains(user));
 
     }
+
     @Test
     @DirtiesContext
     void test6_deleteNotExitsUser() throws ModelAlreadyExistsException {
@@ -98,8 +102,9 @@ class UserServiseTest {
         userServise.addUser(user2);
         userServise.addUser(user3);
 
-        assertEquals(user.getName(),userServise.findById(1).getName());
+        assertEquals(user.getName(), userServise.findById(1).getName());
     }
+
     @Test
     @DirtiesContext
     void test8_findNotExistUser() throws ModelAlreadyExistsException {
@@ -120,6 +125,6 @@ class UserServiseTest {
         userServise.addUser(user);
         userServise.addUser(user2);
         userServise.addUser(user3);
-        assertEquals(3,userServise.findAll().size());
+        assertEquals(3, userServise.findAll().size());
     }
 }
