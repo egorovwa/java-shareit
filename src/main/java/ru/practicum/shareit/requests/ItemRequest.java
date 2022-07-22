@@ -1,7 +1,19 @@
 package ru.practicum.shareit.requests;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.User;
+
 /**
  * // TODO .
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemRequest {
+    private Long id;
+    private String description;
+    private User requestor;
+    private Long created;
 }
