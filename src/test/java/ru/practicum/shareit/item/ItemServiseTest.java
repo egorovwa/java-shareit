@@ -35,7 +35,7 @@ class ItemServiseTest {
         itemServise.createItem(1, item);
 
         assertEquals("item1", itemServise.findById(1).getName());
-        assertEquals("item1dis", itemServise.findById(1).getDescription());
+        assertEquals("item1dis, finded", itemServise.findById(1).getDescription());
         assertTrue(itemServise.findById(1).getAvailable());
     }
 
@@ -119,6 +119,7 @@ class ItemServiseTest {
     }
 
     @Test
+    @DirtiesContext
     void test7_findAllByOwnerId() throws ModelAlreadyExistsException, IncorrectUserIdException {
         setUser();
         Item item1 = getItem();
@@ -137,6 +138,7 @@ class ItemServiseTest {
     }
 
     @Test
+    @DirtiesContext
     void test1_findItemByText() throws ModelAlreadyExistsException, IncorrectUserIdException {
         setUser();
         Item item = getItem();
