@@ -1,12 +1,13 @@
 package ru.practicum.shareit.requests.dto;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.requests.ItemRequest;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-
+@Component
 public class ItemRequestDtoMaper {
     public ItemRequestDto toDto(ItemRequest itemRequest) {
         return new ItemRequestDto(itemRequest.getId(), itemRequest.getDescription(),

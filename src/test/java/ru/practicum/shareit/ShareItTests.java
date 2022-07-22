@@ -36,7 +36,7 @@ class ShareItTests {
 
         Collection<Item> itemList = itemServise.findByText("finded");
         assertEquals(1, itemList.size());
-        assertEquals(itemList.stream().findFirst().get().getName(), item.getName());
+        assertEquals(itemList.stream().map(Item::getName).findFirst().orElse(null), item.getName());
     }
 }
 

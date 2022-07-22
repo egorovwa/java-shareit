@@ -16,6 +16,7 @@ import ru.practicum.shareit.user.UserServise;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,18 +44,18 @@ public class ItemServiseImpl implements ItemServise {
         Item updatedItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId)));
         if (updatedItem.getOwner().equals(userServise.findById(userId))) {
-            if (item.getName() != null) {
+            Optional.ofNullable(item.getName()).ifPresent((name)->{
                 log.info("Обновление имени вещи id {} newName = {}", updatedItem.getId(), item.getName());
                 updatedItem.setName(item.getName());
-            }
-            if (item.getDescription() != null) {
+            });
+            Optional.ofNullable(item.getDescription()).ifPresent((description)-> {
                 log.info("Обновление описания вещи id {} newDescription = {}", updatedItem.getId(), item.getDescription());
                 updatedItem.setDescription(item.getDescription());
-            }
-            if (item.getAvailable() != null) {
+            });
+            Optional.ofNullable(item.getAvailable()).ifPresent((available)->{
                 log.info("Обновление Available вещи id {} newAvailable = {}", updatedItem.getId(), item.getAvailable());
                 updatedItem.setAvailable(item.getAvailable());
-            }
+            });
             return itemRepository.save(updatedItem);
         } else {
             log.warn("Пользователь id {} пытается изменить вещь id {}", userId, itemId);
