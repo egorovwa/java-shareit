@@ -6,18 +6,28 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.requests.ItemRequest;
 import ru.practicum.shareit.user.User;
 
+import javax.persistence.*;
+
 /**
  * // TODO .
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "items")
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
     private Boolean available;
+    @ManyToOne
+    @JoinColumn(name = "owner")
     private User owner;
+    @OneToOne
+    @JoinColumn(name = "request")
     private ItemRequest request;
 
     public Item(Long id, String name, String description, Boolean available, User owner) {
