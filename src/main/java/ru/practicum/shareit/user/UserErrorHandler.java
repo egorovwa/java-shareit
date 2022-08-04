@@ -28,7 +28,7 @@ public class UserErrorHandler {
     }
 
     @ExceptionHandler(ModelNotExitsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> checkCurdException(ModelCrudException e) {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
     }

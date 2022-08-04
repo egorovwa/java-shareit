@@ -4,14 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 
+import java.util.Collection;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiseTest {
     private final UserServise userServise;
@@ -70,14 +75,19 @@ class UserServiseTest {
 
         userServise.deleteUser(1);
         assertEquals(0, userServise.findAll().size());
+    }
 
+    @Test
+    @DirtiesContext
+    void test5_1_deleteUserwith3() throws ModelAlreadyExistsException, ModelNotExitsException {
         userServise.addUser(user);
         userServise.addUser(user2);
         userServise.addUser(user3);
+        Collection<User> all = userServise.findAll();
         userServise.deleteUser(2);
+        Collection<User> del = userServise.findAll();
         assertEquals(2, userServise.findAll().size());
         assertTrue(userServise.findAll().contains(user));
-
     }
 
     @Test

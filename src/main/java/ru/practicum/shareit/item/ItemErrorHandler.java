@@ -13,7 +13,7 @@ import java.util.Map;
 @RestControllerAdvice("ru.practicum.shareit.item")
 public class ItemErrorHandler {
     @ExceptionHandler(ModelNotExitsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> notExitsCheck(ModelNotExitsException e) {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
     }

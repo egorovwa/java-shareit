@@ -21,6 +21,7 @@ public class ItemRequest {
     private Long id;
     private String description;
     @ManyToOne
+    @JoinColumn(name = "requestor")
     private User requestor;
     private Long created;
 }
