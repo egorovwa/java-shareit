@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
@@ -9,7 +10,7 @@ import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import java.util.Collection;
 
 public interface BookingServise {
-    Booking createBooking(Booking booking, long useId) throws IncorrectUserIdException, ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption;
+    Booking createBooking(BookingDtoToCreate bookingDtoToCreate,long userId) throws IncorrectUserIdException, ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption;
     Booking setStatus(long useId, Long bookingId, Boolean approved) throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException;
 
     Booking findById(long bookingId, long useId) throws ModelNotExitsException, IncorrectUserIdException;
@@ -20,4 +21,8 @@ public interface BookingServise {
     Collection<Booking> getAllOwner(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException;
 
     Collection<Booking> getAllOwner(long useId) throws UserNotFoundExteption;
+
+    Booking findLastBookingToItem(long itemId);
+
+    Booking findNextBookingToItem(long itemId);
 }

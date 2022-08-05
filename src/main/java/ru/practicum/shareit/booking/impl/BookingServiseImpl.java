@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.*;
+import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.item.ItemServise;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
@@ -25,21 +27,24 @@ public class BookingServiseImpl implements BookingServise {
     private final ItemServise itemServise;
 
     @Override
-    public Booking createBooking(Booking booking, long userId) throws IncorrectUserIdException, ModelNotExitsException,
+    public Booking createBooking(BookingDtoToCreate dto, long userId) throws IncorrectUserIdException, ModelNotExitsException,
             TimeIntersectionException, ItemNotAvalibleExxeption {
-        if (timeValidation(booking.getStart(), booking.getEnd())) {
-            if (!booking.getItem().getAvailable()) {
-                throw new ItemNotAvalibleExxeption("Вещь занята", String.valueOf(booking.getItem().getId()));
-            }
-            User createrBoooking = userServise.findById(userId);
-            booking.setBooker(createrBoooking);
-            booking.setStatus(BookingStatus.WAITING);
-            return bookingRepository.save(booking);
-        } else {
-            throw new TimeIntersectionException("Время начала окончания невены",
-                    LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
-                    LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC));
+        Item item = itemServise.findById(dto.getItemId());
+        User owner = item.getOwner();
+        User user = userServise.findById(userId);
+        if (user.equals(owner)) {
+            throw new ModelNotExitsException("Вещь принадлежит пользователю", "item owner id",
+                    String.valueOf(item.getOwner().getId()));
         }
+        if (!item.getAvailable()) {
+            throw new ItemNotAvalibleExxeption("Вещь занята", String.valueOf(item.getId()));
+        }
+        Booking booking = new Booking(null, dto.getStart().toEpochSecond(ZoneOffset.UTC),
+                dto.getEnd().toEpochSecond(ZoneOffset.UTC), item, user, BookingStatus.WAITING);
+        if (!timeValidation(booking.getStart(), booking.getEnd())) {
+            throw new TimeIntersectionException("Время начала окончания невены", dto.getStart(), dto.getEnd());
+        }
+        return bookingRepository.save(booking);
 
     }
 
@@ -155,5 +160,13 @@ public class BookingServiseImpl implements BookingServise {
                 && end > LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     }
 
+    @Override
+    public Booking findLastBookingToItem(long itemId) {
+        return bookingRepository.findLastBookingToItem(itemId,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
+    }
 
+    @Override
+    public Booking findNextBookingToItem(long itemId) {
+        return bookingRepository.findNextBookingToItem(itemId,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
+    }
 }

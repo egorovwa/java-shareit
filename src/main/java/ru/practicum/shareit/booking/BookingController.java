@@ -28,10 +28,10 @@ public class BookingController {
     private final BookingDtoMaper dtoMaper;
 
     @PostMapping
-    public BookingDtoToCreate createBooking(@RequestHeader("X-Sharer-User-Id") long useId,
+    public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") long useId,
                                             @RequestBody @Valid BookingDtoToCreate bookingDtoToCreate)
             throws IncorrectUserIdException, ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption {
-        return dtoMaper.toDtoCreated(bookingServise.createBooking(dtoMaper.fromDtoCreate(bookingDtoToCreate), useId));
+        return dtoMaper.toDtoCreated(bookingServise.createBooking(bookingDtoToCreate, useId));
     }
 
     @PatchMapping("/{bookingId}")

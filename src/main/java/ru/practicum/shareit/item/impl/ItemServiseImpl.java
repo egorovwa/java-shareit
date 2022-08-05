@@ -4,15 +4,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingServise;
 import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemServise;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoMaper;
+import ru.practicum.shareit.item.dto.ItemDtoWithBoking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +32,7 @@ import java.util.Optional;
 public class ItemServiseImpl implements ItemServise {
     private final UserServise userServise;
     private final ItemRepository itemRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     public Item createItem(long userId, Item item) throws IncorrectUserIdException {
@@ -65,8 +74,23 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Item findById(long itemId) throws ModelNotExitsException {
+    public ItemDtoWithBoking findById(long itemId, long userId) throws ModelNotExitsException {
         log.info("поиск вещи id ={}", itemId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId)));
+        if (item.getOwner().getId() == userId) {
+            Booking lastBooking = bookingRepository.findLastBookingToItem(itemId,
+                    LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).orElse(null);
+            Booking nextBooking = bookingRepository.findNextBookingToItem(itemId,
+                    LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).orElse(null);
+            return ItemDtoMaper.toDtoWithBooking(item, lastBooking, nextBooking);
+        } else {
+            return ItemDtoMaper.toDtoWithBooking(item);
+        }
+    }
+
+    @Override
+    public Item findById(long itemId) throws ModelNotExitsException {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId)));
     }

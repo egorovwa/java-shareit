@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingServise;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.exceptions.ItemNotAvalibleExxeption;
 import ru.practicum.shareit.booking.exceptions.TimeIntersectionException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
@@ -20,6 +21,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -41,9 +44,8 @@ class BookingServiseImplTest {
     void test1_createBooking_normal() throws ModelAlreadyExistsException, IncorrectUserIdException,
             ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
         data2User2Item();
-        Booking bookingToCreate = new Booking(null, timeNow + HOUR, (timeNow + DAY),
-                itemServise.findById(1),
-                null, null);
+        BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
+                LocalDateTime.now().plus(Duration.ofHours(1)), 1);
         Booking booking = bookingServise.createBooking(bookingToCreate, 2);
 
         assertEquals(1, booking.getId());
@@ -58,10 +60,9 @@ class BookingServiseImplTest {
         assertThrows(TimeIntersectionException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                Booking bookingToCreate = new Booking(null, timeNow + HOUR, timeNow,
-                        itemServise.findById(1),
-                        null, null);
-                bookingServise.createBooking(bookingToCreate,2);
+                BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofHours(1)),
+                        LocalDateTime.now(), 1);
+                bookingServise.createBooking(bookingToCreate, 2);
             }
         });
 
@@ -74,10 +75,9 @@ class BookingServiseImplTest {
         assertThrows(ModelNotExitsException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                Booking bookingToCreate = new Booking(null, timeNow + HOUR, (timeNow + DAY),
-                        itemServise.findById(1),
-                        null, null);
-                bookingServise.createBooking(bookingToCreate,3);
+                BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
+                        LocalDateTime.now().plus(Duration.ofHours(1)), 1);
+                bookingServise.createBooking(bookingToCreate, 3);
             }
         });
 
@@ -90,10 +90,9 @@ class BookingServiseImplTest {
         assertThrows(ModelNotExitsException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
-                Booking bookingToCreate = new Booking(null, timeNow + HOUR, (timeNow + DAY),
-                        itemServise.findById(3),
-                        null, null);
-                bookingServise.createBooking(bookingToCreate,3);
+                BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
+                        LocalDateTime.now().plus(Duration.ofHours(1)), 3);
+                bookingServise.createBooking(bookingToCreate, 3);
             }
         });
     }

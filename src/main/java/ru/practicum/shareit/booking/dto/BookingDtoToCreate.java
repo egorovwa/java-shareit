@@ -15,13 +15,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingDtoToCreate {
-    private Long id;
     @NotNull
     private LocalDateTime start;
     @NotNull
     private LocalDateTime end;
     @NotNull
     private long itemId;
-    private long bookerId;
-    private BookingStatus status;
 }
