@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Collection<Item> findByOwnerId(long userId);
+    Collection<Item> findByOwnerIdOrderByIdAsc(long userId);
 
     @Query("SELECT i FROM Item i WHERE (upper(i.name) LIKE upper(concat('%',:text,'%')) OR " +
             "upper(i.description) LIKE upper(concat('%',:text,'%')) AND i.available = true )")

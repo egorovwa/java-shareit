@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.NotUsedCommentException;
 
 import java.util.Map;
 
@@ -29,6 +30,13 @@ public class ItemErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> incorrectUserIdCheck(IncorrectUserIdException e) {
         return Map.of("error", e.getMessage(), "usser", e.getUserId());
+    }
+    @ExceptionHandler(NotUsedCommentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String,String> notUsedComentHendle(NotUsedCommentException e){
+        return Map.of("error",String.valueOf(e.getMessage()),
+                "userId",String.valueOf(e.getUserId()),
+                "ietemId",String.valueOf(e.getItemId()));
     }
 
 }

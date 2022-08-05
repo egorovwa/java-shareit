@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDtoWithBoking;
+import ru.practicum.shareit.exceptions.NotUsedCommentException;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -42,10 +42,8 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> findAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemServise.findAllByOwnerId(userId).stream()
-                .map(ItemDtoMaper::toDto)
-                .collect(Collectors.toList());
+    public Collection<ItemDtoWithBoking> findAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemServise.findAllByOwnerId(userId);
     }
 
     @GetMapping("/search")
@@ -53,5 +51,12 @@ public class ItemController {
         return itemServise.findByText(text).stream()
                 .map(ItemDtoMaper::toDto)
                 .collect(Collectors.toList());
+    }
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@PathVariable("itemId") Long itemId,
+                                 @RequestHeader("X-Sharer-User-Id") long userId,
+                                 @RequestBody @Valid CommentDto text) throws ModelNotExitsException, NotUsedCommentException {
+        Comment comment = itemServise.addComment(itemId, userId, text.getText());
+        return CommentDtoMaper.toDto(comment) ;
     }
 }
