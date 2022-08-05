@@ -2,7 +2,10 @@ package ru.practicum.shareit.item.dto;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.item.model.Item;
+
+import java.util.Optional;
 
 @Component
 public class ItemDtoMaper {
@@ -15,9 +18,10 @@ public class ItemDtoMaper {
         return new ItemDto(item.getId(), item.getName(),
                 item.getDescription(), item.getAvailable(), item.getOwner());
     }
-    public static ItemDtoWithBoking toDtoWithBooking(Item item, Booking last, Booking next){
+    public static ItemDtoWithBoking toDtoWithBooking(Item item, Optional<Booking> last, Optional<Booking> next){
         return new ItemDtoWithBoking(item.getId(),item.getName(), item.getDescription(), item.getAvailable(),
-                item.getOwner(),last,next);
+                item.getOwner(), BookingDtoMaper.toItemDto(last),
+                BookingDtoMaper.toItemDto(next));
     }
     public static ItemDtoWithBoking toDtoWithBooking(Item item){
         return new ItemDtoWithBoking(item.getId(),item.getName(), item.getDescription(), item.getAvailable(),

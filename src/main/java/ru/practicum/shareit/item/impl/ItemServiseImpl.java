@@ -79,10 +79,10 @@ public class ItemServiseImpl implements ItemServise {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ModelNotExitsException("Вещь не найденна", "id", String.valueOf(itemId)));
         if (item.getOwner().getId() == userId) {
-            Booking lastBooking = bookingRepository.findLastBookingToItem(itemId,
-                    LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).orElse(null);
-            Booking nextBooking = bookingRepository.findNextBookingToItem(itemId,
-                    LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).orElse(null);
+            Optional<Booking> lastBooking = bookingRepository.findLastBookingToItem(itemId,
+                    LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+            Optional<Booking> nextBooking = bookingRepository.findNextBookingToItem(itemId,
+                    LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
             return ItemDtoMaper.toDtoWithBooking(item, lastBooking, nextBooking);
         } else {
             return ItemDtoMaper.toDtoWithBooking(item);
