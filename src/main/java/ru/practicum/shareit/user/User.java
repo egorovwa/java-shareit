@@ -21,6 +21,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Email(message = "Не верный формат Email")
+    @Column(unique = true)
     private String email;
     @NotBlank(message = "Имя не может быть пустым.")
     private String name;

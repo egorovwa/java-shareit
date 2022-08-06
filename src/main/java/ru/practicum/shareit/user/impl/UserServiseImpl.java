@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
@@ -23,13 +24,14 @@ public class UserServiseImpl implements UserServise {
     @Override
     public User addUser(User user) throws ModelAlreadyExistsException, UserBadEmailException {
         if (user.getEmail() != null) {
-            if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
+            try {
                 log.info("Добавлен новый пользователь Email: {}", user.getEmail());
                 return userRepository.save(user);
-            } else {
+            } catch (DataIntegrityViolationException e) {
                 log.warn("Попытка добавить пользователя с существуещем  email {}", user.getEmail());
                 throw new ModelAlreadyExistsException("Ползователь с таким Email уже существует", "email", user.getEmail());
             }
+
         } else {
             log.warn("Попытка добавить пользователя без email");
             throw new UserBadEmailException("Email Не может быть пустым");
