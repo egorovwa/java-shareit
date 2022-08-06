@@ -3,8 +3,8 @@ package ru.practicum.shareit.booking.exceptions;
 import java.time.LocalDateTime;
 
 public class TimeIntersectionException extends Exception{
-    LocalDateTime startTime;
-    LocalDateTime endTime;
+    final LocalDateTime startTime;
+    final LocalDateTime endTime;
 
     public TimeIntersectionException(String message, LocalDateTime startTime, LocalDateTime endTime) {
         super(message);

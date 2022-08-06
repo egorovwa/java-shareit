@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking.exceptions;
 
 public class UnknownStateException extends Exception{
-    String value;
+    final String value;
 
     public UnknownStateException(String message, String value) {
         super(message);

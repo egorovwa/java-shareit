@@ -1,16 +1,18 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.shareit.booking.dto.BookingDtoToItem;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class ItemDtoWithBoking extends ItemDto {
     BookingDtoToItem lastBooking;

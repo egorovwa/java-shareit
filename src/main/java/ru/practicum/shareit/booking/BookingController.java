@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
@@ -30,8 +29,8 @@ public class BookingController {
     @PostMapping
     public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") long useId,
                                             @RequestBody @Valid BookingDtoToCreate bookingDtoToCreate)
-            throws IncorrectUserIdException, ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption {
-        return dtoMaper.toDtoCreated(bookingServise.createBooking(bookingDtoToCreate, useId));
+            throws ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption {
+        return BookingDtoMaper.toDtoCreated(bookingServise.createBooking(bookingDtoToCreate, useId));
     }
 
     @PatchMapping("/{bookingId}")
@@ -39,12 +38,12 @@ public class BookingController {
     public BookingDto bookingСonfirmation(@RequestHeader("X-Sharer-User-Id") long useId,
                                           @PathVariable Long bookingId,
                                           @PathParam("approved") @NotNull Boolean approved) throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
-        return dtoMaper.toDto(bookingServise.setStatus(useId, bookingId, approved));
+        return BookingDtoMaper.toDto(bookingServise.setStatus(useId, bookingId, approved));
     }
 
     @GetMapping("/{bookingId}")
     public BookingDto getById(@PathVariable long bookingId, @RequestHeader("X-Sharer-User-Id") long useId) throws ModelNotExitsException, IncorrectUserIdException {
-        return dtoMaper.toDto(bookingServise.findById(bookingId, useId));
+        return BookingDtoMaper.toDto(bookingServise.findById(bookingId, useId));
     }
 
     @GetMapping

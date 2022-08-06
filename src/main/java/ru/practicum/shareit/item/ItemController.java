@@ -24,7 +24,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto itemDto)
-            throws ModelNotExitsException, IncorrectUserIdException {
+            throws IncorrectUserIdException {
         return ItemDtoMaper.toDto(itemServise.createItem(userId, ItemDtoMaper.fromDto(itemDto)));
     }
 

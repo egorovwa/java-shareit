@@ -1,8 +1,8 @@
 package ru.practicum.shareit.exceptions;
 
 public class NotUsedCommentException extends Exception{
-    Long userId;
-    Long itemId;
+    final Long userId;
+    final Long itemId;
 
     public NotUsedCommentException(String message, Long userId, Long itemId) {
         super(message);

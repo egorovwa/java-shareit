@@ -11,7 +11,6 @@ import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiseTest {
     private final UserServise userServise;
-    User user2 = new User(null, "email2@mail.ru", "user");
-    User user3 = new User(null, "email3@mail.ru", "user");
+    final User user2 = new User(null, "email2@mail.ru", "user");
+    final User user3 = new User(null, "email3@mail.ru", "user");
     private final User user = new User(null, "email@mail.ru", "user");
 
     @Test
@@ -37,12 +36,9 @@ class UserServiseTest {
     @DirtiesContext
     void test2_addWithError() throws ModelAlreadyExistsException {
         userServise.addUser(user);
-        assertThrows(ModelAlreadyExistsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                User userWithDoubleEmail = new User(null, "email@mail.ru", "user1");
-                userServise.addUser(userWithDoubleEmail);
-            }
+        assertThrows(ModelAlreadyExistsException.class, () -> {
+            User userWithDoubleEmail = new User(null, "email@mail.ru", "user1");
+            userServise.addUser(userWithDoubleEmail);
         });
     }
 
@@ -60,12 +56,7 @@ class UserServiseTest {
     @Test
     @DirtiesContext
     void test4_updateNoExistUser() {
-        assertThrows(ModelNotExitsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userServise.updateUser(2, user2);
-            }
-        });
+        assertThrows(ModelNotExitsException.class, () -> userServise.updateUser(2, user2));
     }
 
     @Test
@@ -97,12 +88,7 @@ class UserServiseTest {
         userServise.addUser(user2);
         userServise.addUser(user3);
 
-        assertThrows(ModelNotExitsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userServise.deleteUser(5);
-            }
-        });
+        assertThrows(ModelNotExitsException.class, () -> userServise.deleteUser(5));
     }
 
     @Test
@@ -121,12 +107,7 @@ class UserServiseTest {
         userServise.addUser(user);
         userServise.addUser(user2);
         userServise.addUser(user3);
-        assertThrows(ModelNotExitsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userServise.findById(7);
-            }
-        });
+        assertThrows(ModelNotExitsException.class, () -> userServise.findById(7));
     }
 
     @Test

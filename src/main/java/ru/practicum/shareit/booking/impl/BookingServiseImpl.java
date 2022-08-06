@@ -17,6 +17,8 @@ import ru.practicum.shareit.user.UserServise;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class BookingServiseImpl implements BookingServise {
     private final ItemServise itemServise;
 
     @Override
-    public Booking createBooking(BookingDtoToCreate dto, long userId) throws IncorrectUserIdException, ModelNotExitsException,
+    public Booking createBooking(BookingDtoToCreate dto, long userId) throws ModelNotExitsException,
             TimeIntersectionException, ItemNotAvalibleExxeption {
         Item item = itemServise.findById(dto.getItemId());
         User owner = item.getOwner();
@@ -71,7 +73,7 @@ public class BookingServiseImpl implements BookingServise {
 
     @Override
     public Booking findById(long bookingId, long useId) throws ModelNotExitsException, IncorrectUserIdException {
-        User finder = userServise.findById(useId);
+        userServise.findById(useId);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ModelNotExitsException("Бронирование не найдено", "bookingId",
                         String.valueOf(bookingId)));
@@ -160,12 +162,18 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public Booking findLastBookingToItem(long itemId) {
-        return bookingRepository.findLastBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
+    public Optional<Booking> findLastBookingToItem(long itemId) {
+        return bookingRepository.findLastBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+                .stream()
+                .max(Comparator.comparing(Booking::getEnd));
     }
 
     @Override
-    public Booking findNextBookingToItem(long itemId) {
-        return bookingRepository.findNextBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
+    public Optional<Booking> findNextBookingToItem(long itemId) {
+        return bookingRepository.findNextBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+                .stream()
+                .min(Comparator.comparingLong(Booking::getStart));
     }
+
+
 }

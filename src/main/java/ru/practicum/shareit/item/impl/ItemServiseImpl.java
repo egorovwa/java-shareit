@@ -24,10 +24,7 @@ import ru.practicum.shareit.user.UserServise;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,13 +96,13 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     private Optional<Booking> getNextBooking(long itemId) {
-        return bookingRepository.findNextBookingToItem(itemId,
-                LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        return bookingRepository.findNextBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+                .stream().min(Comparator.comparing(Booking::getStart));
     }
 
     private Optional<Booking> getLastBooking(long itemId) {
-        return bookingRepository.findLastBookingToItem(itemId,
-                LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        return bookingRepository.findLastBookingToItem(itemId,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+                .stream().max(Comparator.comparing(Booking::getEnd));
     }
 
     @Override

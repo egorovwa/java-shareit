@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
@@ -33,7 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findOwnerFuture(@Param("userId") long userId, @Param("timeNow") long timeNow);
 
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :userId " +
-            "AND b.start <= :timeNow AND b.end > :timeNow ORDER BY b.start DESC ")
+            "AND b.start <= :timeNow AND b.end >= :timeNow ORDER BY b.start DESC ")
     Collection<Booking> findOwnerCurrent(@Param("userId") long userId, @Param("timeNow") long timeNow);
 
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :userId AND b.status = :status")
@@ -43,10 +42,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findOwnerPast(@Param("userId") long userId, @Param("timeNow") long timeNow);
 
     @Query("SELECT  b FROM Booking b WHERE b.item.id= :itemId AND b.start<:timeNow AND b.end < :timeNow")
-    Optional<Booking> findLastBookingToItem(@Param("itemId") long itemId, @Param("timeNow") long timeNow);
+    Collection<Booking> findLastBookingToItem(@Param("itemId") long itemId, @Param("timeNow") long timeNow);
 
-    @Query("SELECT  b FROM Booking b WHERE b.item.id= :itemId AND  (b.start > :timeNow)")
-    Optional<Booking> findNextBookingToItem(@Param("itemId") long itemId, @Param("timeNow") long timeNow);
+    @Query("SELECT  b FROM Booking b WHERE b.item.id= :itemId AND  b.start > :timeNow ")
+    Collection<Booking> findNextBookingToItem(@Param("itemId") long itemId, @Param("timeNow") long timeNow);
 
     @Query(value = "SELECT COUNT(DISTINCT b.user_id) FROM bookings  b " +
             "WHERE b.user_id = :userId AND b.item_id= :itemId " +
