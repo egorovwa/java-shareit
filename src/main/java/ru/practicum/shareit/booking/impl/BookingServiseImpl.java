@@ -109,8 +109,7 @@ public class BookingServiseImpl implements BookingServise {
             case WAITING:
                 return bookingRepository.findByBooker_IdAndStatus(useId, BookingStatus.WAITING);
             case CURRENT:
-                return bookingRepository.findByBookerIdStateCurrent(useId, BookingStatus.APPROVED,
-                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+                return bookingRepository.findByBookerIdStateCurrent(useId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
             case REJECTED:
                 return bookingRepository.findByBooker_IdAndStatus(useId, BookingStatus.REJECTED);
             case FUTURE:
@@ -133,7 +132,7 @@ public class BookingServiseImpl implements BookingServise {
             case FUTURE:
                 return bookingRepository.findOwnerFuture(useId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
             case CURRENT:
-                return bookingRepository.findOwnerFuture(useId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+                return bookingRepository.findOwnerCurrent(useId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
             case WAITING:
                 return bookingRepository.findByOwnerIdAndStatus(useId, BookingStatus.WAITING);
             case PAST:
@@ -162,11 +161,11 @@ public class BookingServiseImpl implements BookingServise {
 
     @Override
     public Booking findLastBookingToItem(long itemId) {
-        return bookingRepository.findLastBookingToItem(itemId,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
+        return bookingRepository.findLastBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
     }
 
     @Override
     public Booking findNextBookingToItem(long itemId) {
-        return bookingRepository.findNextBookingToItem(itemId,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
+        return bookingRepository.findNextBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)).get();
     }
 }

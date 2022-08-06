@@ -18,10 +18,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Collection<Booking> findByBooker_IdAndStatus(long id, BookingStatus status);
 
-    @Query("SELECT b FROM Booking b WHERE b.booker.id=:useId AND b.end >= :nowTime AND :nowTime >= b.start" +
-            " AND b.status = :status ORDER BY b.start DESC")
-    Collection<Booking> findByBookerIdStateCurrent(@Param("useId") long useId, @Param("status") BookingStatus status,
-                                                   @Param("nowTime") long nowTime);
+    @Query("SELECT b FROM Booking b WHERE b.booker.id=:useId AND b.end >= :nowTime AND :nowTime >= b.start " +
+            "ORDER BY b.start DESC")
+    Collection<Booking> findByBookerIdStateCurrent(@Param("useId") long useId, @Param("nowTime") long nowTime);
 
     @Query(value = "SELECT b FROM Booking b WHERE b.booker.id = :userId AND b.start > :dateNow ORDER BY b.start DESC")
     Collection<Booking> findFuture(@Param("userId") long useId, @Param("dateNow") long dateNow);
@@ -34,7 +33,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Collection<Booking> findOwnerFuture(@Param("userId") long userId, @Param("timeNow") long timeNow);
 
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :userId " +
-            "AND b.start <= :timeNow AND b.end < :timeNow ORDER BY b.start DESC ")
+            "AND b.start <= :timeNow AND b.end > :timeNow ORDER BY b.start DESC ")
     Collection<Booking> findOwnerCurrent(@Param("userId") long userId, @Param("timeNow") long timeNow);
 
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :userId AND b.status = :status")
@@ -51,6 +50,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query(value = "SELECT COUNT(DISTINCT b.user_id) FROM bookings  b " +
             "WHERE b.user_id = :userId AND b.item_id= :itemId " +
-            "AND b.status = 'APPROVED' AND b.start_time<= :timeNow",nativeQuery = true)
+            "AND b.status = 'APPROVED' AND b.start_time<= :timeNow", nativeQuery = true)
     int usedCount(@Param("userId") long userId, @Param("itemId") long itemId, @Param("timeNow") long timeNow);
 }
