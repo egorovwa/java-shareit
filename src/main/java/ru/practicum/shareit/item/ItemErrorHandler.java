@@ -31,12 +31,13 @@ public class ItemErrorHandler {
     public Map<String, String> incorrectUserIdCheck(IncorrectUserIdException e) {
         return Map.of("error", e.getMessage(), "usser", e.getUserId());
     }
+
     @ExceptionHandler(NotUsedCommentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String,String> notUsedComentHendle(NotUsedCommentException e){
-        return Map.of("error",String.valueOf(e.getMessage()),
-                "userId",String.valueOf(e.getUserId()),
-                "ietemId",String.valueOf(e.getItemId()));
+    public Map<String, String> notUsedComentHendle(NotUsedCommentException e) {
+        return Map.of("error", String.valueOf(e.getMessage()),
+                "userId", String.valueOf(e.getUserId()),
+                "ietemId", String.valueOf(e.getItemId()));
     }
 
 }

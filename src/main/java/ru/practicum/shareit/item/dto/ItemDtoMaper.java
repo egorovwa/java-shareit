@@ -19,15 +19,17 @@ public class ItemDtoMaper {
         return new ItemDto(item.getId(), item.getName(),
                 item.getDescription(), item.getAvailable(), item.getOwner());
     }
+
     public static ItemDtoWithBoking toDtoWithBooking(Item item, Optional<Booking> last, Optional<Booking> next,
-                                                     Collection<CommentDto> comments){
-        return new ItemDtoWithBoking(item.getId(),item.getName(), item.getDescription(), item.getAvailable(),
+                                                     Collection<CommentDto> comments) {
+        return new ItemDtoWithBoking(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
                 item.getOwner(), BookingDtoMaper.toItemDto(last),
-                BookingDtoMaper.toItemDto(next),comments);
+                BookingDtoMaper.toItemDto(next), comments);
     }
-    public static ItemDtoWithBoking toDtoWithBooking(Item item,Collection<CommentDto> comments){
-        return new ItemDtoWithBoking(item.getId(),item.getName(), item.getDescription(), item.getAvailable(),
-                item.getOwner(),comments);
+
+    public static ItemDtoWithBoking toDtoWithBooking(Item item, Collection<CommentDto> comments) {
+        return new ItemDtoWithBoking(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+                item.getOwner(), comments);
     }
 
 }

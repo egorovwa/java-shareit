@@ -25,7 +25,7 @@ public class BookingErrorHendler {
                 "End Time", e.getEndTime().toString());
     }
 
-    @ExceptionHandler({ItemNotAvalibleExxeption.class,StatusAlredyException.class})
+    @ExceptionHandler({ItemNotAvalibleExxeption.class, StatusAlredyException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> itemNotAvalible(ItemNotAvalibleExxeption e) {
         return Map.of("Error", e.getMessage(), "itemId", e.getId());
@@ -49,10 +49,10 @@ public class BookingErrorHendler {
         return Map.of("Error", e.getMessage(), "user id", e.getUserId());
     }
 
-@ExceptionHandler(ParametrNotFoundException.class)
+    @ExceptionHandler(ParametrNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String,String> parametrNotFoudHendle(ParametrNotFoundException e){
+    public Map<String, String> parametrNotFoudHendle(ParametrNotFoundException e) {
         return Map.of(e.getMessage(), e.getParam());
-}
+    }
 
 }

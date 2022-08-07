@@ -38,7 +38,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDtoWithBoking findById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId)
             throws ModelNotExitsException {
-        return itemServise.findById(itemId,userId);
+        return itemServise.findById(itemId, userId);
     }
 
     @GetMapping
@@ -52,11 +52,12 @@ public class ItemController {
                 .map(ItemDtoMaper::toDto)
                 .collect(Collectors.toList());
     }
+
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable("itemId") Long itemId,
                                  @RequestHeader("X-Sharer-User-Id") long userId,
                                  @RequestBody @Valid CommentDto text) throws ModelNotExitsException, NotUsedCommentException {
         Comment comment = itemServise.addComment(itemId, userId, text.getText());
-        return CommentDtoMaper.toDto(comment) ;
+        return CommentDtoMaper.toDto(comment);
     }
 }

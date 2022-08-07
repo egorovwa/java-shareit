@@ -1,6 +1,6 @@
 package ru.practicum.shareit.exceptions;
 
-public class NotUsedCommentException extends Exception{
+public class NotUsedCommentException extends Exception {
     final Long userId;
     final Long itemId;
 

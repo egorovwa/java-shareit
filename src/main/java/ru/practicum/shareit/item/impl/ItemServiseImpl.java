@@ -86,7 +86,7 @@ public class ItemServiseImpl implements ItemServise {
             Collection<CommentDto> comments = getItemComments(itemId);
             return ItemDtoMaper.toDtoWithBooking(item, lastBooking, nextBooking, comments);
         } else {
-            return ItemDtoMaper.toDtoWithBooking(item,getItemComments(itemId));
+            return ItemDtoMaper.toDtoWithBooking(item, getItemComments(itemId));
         }
     }
 
@@ -101,7 +101,7 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     private Optional<Booking> getLastBooking(long itemId) {
-        return bookingRepository.findLastBookingToItem(itemId,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+        return bookingRepository.findLastBookingToItem(itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
                 .stream().max(Comparator.comparing(Booking::getEnd));
     }
 

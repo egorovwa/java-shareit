@@ -16,6 +16,7 @@ public interface ItemServise {
     Item patchItem(long userId, long itemId, Item item) throws ModelNotExitsException, IncorectUserOrItemIdException;
 
     ItemDtoWithBoking findById(long itemId, long userId) throws ModelNotExitsException;
+
     Item findById(long itemId) throws ModelNotExitsException;
 
     Collection<ItemDtoWithBoking> findAllByOwnerId(long userId);

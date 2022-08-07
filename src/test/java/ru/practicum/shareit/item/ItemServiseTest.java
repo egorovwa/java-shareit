@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -164,7 +163,7 @@ class ItemServiseTest {
     void test9_1createComent() throws InterruptedException, ModelNotExitsException, NotUsedCommentException {
         data2Users1Item3BookingOwnerUser1();
         sleep(4000);
-        itemServise.addComment(1l,2,"Comment");
+        itemServise.addComment(1L,2,"Comment");
         ItemDtoWithBoking item = itemServise.findById(1,1);
         assertTrue(item.getComments().stream().anyMatch(r->r.getText().equals("Comment")));
 

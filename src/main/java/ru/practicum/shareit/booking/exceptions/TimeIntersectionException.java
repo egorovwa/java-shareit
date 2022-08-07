@@ -2,7 +2,7 @@ package ru.practicum.shareit.booking.exceptions;
 
 import java.time.LocalDateTime;
 
-public class TimeIntersectionException extends Exception{
+public class TimeIntersectionException extends Exception {
     final LocalDateTime startTime;
     final LocalDateTime endTime;
 

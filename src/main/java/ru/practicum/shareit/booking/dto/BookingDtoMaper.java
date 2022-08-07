@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking.dto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.item.ItemServise;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -35,7 +34,7 @@ public class BookingDtoMaper {
                     booking.getItem().getId(),
                     booking.getBooker().getId(),
                     booking.getStatus());
-        }else {
+        } else {
             return null;
         }
     }

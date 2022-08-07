@@ -10,12 +10,14 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface BookingServise {
-    Booking createBooking(BookingDtoToCreate bookingDtoToCreate,long userId) throws ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption;
+    Booking createBooking(BookingDtoToCreate bookingDtoToCreate, long userId) throws ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption;
+
     Booking setStatus(long useId, Long bookingId, Boolean approved) throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException;
 
     Booking findById(long bookingId, long useId) throws ModelNotExitsException, IncorrectUserIdException;
 
     Collection<Booking> getAllUser(long useId) throws UserNotFoundExteption;
+
     Collection<Booking> getAllUser(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException;
 
     Collection<Booking> getAllOwner(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException;

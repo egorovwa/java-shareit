@@ -3,8 +3,8 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
+import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.StateDtoMaper;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
@@ -28,7 +28,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") long useId,
-                                            @RequestBody @Valid BookingDtoToCreate bookingDtoToCreate)
+                                    @RequestBody @Valid BookingDtoToCreate bookingDtoToCreate)
             throws ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption {
         return BookingDtoMaper.toDtoCreated(bookingServise.createBooking(bookingDtoToCreate, useId));
     }
@@ -55,13 +55,14 @@ public class BookingController {
             return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state)).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
         }
     }
+
     @GetMapping("/owner")
     public Collection<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") long useId,
                                               @PathParam("state") String state) throws UnknownStateException, UserNotFoundExteption {
-        if (state==null){
+        if (state == null) {
             return bookingServise.getAllOwner(useId).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
-        }else {
-            return bookingServise.getAllOwner(useId,StateDtoMaper.fromDto(state)).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
+        } else {
+            return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
         }
     }
 }

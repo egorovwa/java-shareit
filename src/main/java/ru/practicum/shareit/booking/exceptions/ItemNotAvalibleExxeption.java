@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.exceptions;
 
-public class ItemNotAvalibleExxeption extends Exception{
+public class ItemNotAvalibleExxeption extends Exception {
     final String id;
 
     public ItemNotAvalibleExxeption(String message, String id) {
