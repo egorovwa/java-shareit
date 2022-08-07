@@ -24,7 +24,7 @@ public class Item {
     private String description;
     private Boolean available;
     @ManyToOne
-    @JoinColumn(name = "owner")
+    @JoinColumn(name = "owner",nullable = false)
     private User owner;
     @OneToOne
     @JoinColumn(name = "request")
