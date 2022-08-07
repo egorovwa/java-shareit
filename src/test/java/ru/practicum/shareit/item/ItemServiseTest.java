@@ -113,14 +113,13 @@ class ItemServiseTest {
     void test5_1_findByIdWithBookingAndComment() throws ModelNotExitsException, InterruptedException, NotUsedCommentException {
         data2Users1Item3BookingOwnerUser1();
         sleep(4000);
-        itemServise.addComment(1L,2,"Comment");
-        ItemDtoWithBoking itemDtoWithBoking = itemServise.findById(1,1);
+        itemServise.addComment(1L, 2, "Comment");
+        ItemDtoWithBoking itemDtoWithBoking = itemServise.findById(1, 1);
         assertEquals(1, itemDtoWithBoking.getLastBooking().getId());
         assertEquals(2, itemDtoWithBoking.getNextBooking().getId());
-        assertTrue( itemDtoWithBoking.getComments().stream().anyMatch(r->r.getText().equals("Comment")));
+        assertTrue(itemDtoWithBoking.getComments().stream().anyMatch(r -> r.getText().equals("Comment")));
 
     }
-
 
     @Test
     @DirtiesContext
@@ -158,22 +157,24 @@ class ItemServiseTest {
         assertEquals(1, itemList.size());
         assertEquals(itemList.stream().map(Item::getName).findFirst().orElse(null), item.getName());
     }
+
     @Test
     @DirtiesContext
     void test9_1createComent() throws InterruptedException, ModelNotExitsException, NotUsedCommentException {
         data2Users1Item3BookingOwnerUser1();
         sleep(4000);
-        itemServise.addComment(1L,2,"Comment");
-        ItemDtoWithBoking item = itemServise.findById(1,1);
-        assertTrue(item.getComments().stream().anyMatch(r->r.getText().equals("Comment")));
+        itemServise.addComment(1L, 2, "Comment");
+        ItemDtoWithBoking item = itemServise.findById(1, 1);
+        assertTrue(item.getComments().stream().anyMatch(r -> r.getText().equals("Comment")));
 
     }
+
     @Test
     @DirtiesContext
     void test9_2createComent() {
         data2Users1Item3BookingOwnerUser1();
 
-        assertThrows(NotUsedCommentException.class, () -> itemServise.addComment(1L,2,"Comment"));
+        assertThrows(NotUsedCommentException.class, () -> itemServise.addComment(1L, 2, "Comment"));
     }
 
     private Item getItem() {

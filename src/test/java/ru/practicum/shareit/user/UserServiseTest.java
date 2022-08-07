@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiseTest {
-    private final UserServise userServise;
     final User user2 = new User(null, "email2@mail.ru", "user");
     final User user3 = new User(null, "email3@mail.ru", "user");
+    private final UserServise userServise;
     private final User user = new User(null, "email@mail.ru", "user");
 
     @Test

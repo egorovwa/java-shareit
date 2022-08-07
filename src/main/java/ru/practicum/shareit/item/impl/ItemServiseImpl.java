@@ -114,8 +114,7 @@ public class ItemServiseImpl implements ItemServise {
     @Override
     public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId) {
         log.info("поиск вещей пользователя id ={}", userId);
-        return itemRepository.findByOwnerIdOrderByIdAsc(userId)
-                .stream().map(i -> ItemDtoMaper.
+        return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream().map(i -> ItemDtoMaper.
                         toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
                                 getItemComments(i.getId())))
                 .collect(Collectors.toUnmodifiableList());

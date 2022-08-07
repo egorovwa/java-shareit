@@ -27,7 +27,6 @@ import ru.practicum.shareit.user.UserServise;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -42,9 +41,6 @@ class BookingServiseImplTest {
     private final BookingServise bookingServise;
     private final ItemServise itemServise;
     private final UserServise userServise;
-    private final Long timeNow = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-    private final long DAY = 60 * 60 * 24;
-    private final long HOUR = 60 * 60;
 
     @Test
     @DirtiesContext
@@ -311,27 +307,27 @@ class BookingServiseImplTest {
         assertEquals(1, findedList.size());
         assertEquals("APPROVED", findedList.stream().findFirst().get().getItem().getName());
     }
+
     @Test
     @DirtiesContext
     @SneakyThrows
     void test6_1findNextBookingToItem() {
         data2Users3Item3BookingOwnerUser1();
         sleep(2000);
-      Optional<Booking> booking = bookingServise.findNextBookingToItem(2);
-      assertEquals(2,booking.get().getId());
+        Optional<Booking> booking = bookingServise.findNextBookingToItem(2);
+        assertEquals(2, booking.get().getId());
     }
+
     @Test
     @DirtiesContext
     @SneakyThrows
     void test7_1findLastBookingToItem() {
-data2Users3Item3BookingOwnerUser1();
+        data2Users3Item3BookingOwnerUser1();
         sleep(5000);
         Optional<Booking> booking = bookingServise.findNextBookingToItem(2);
-        assertEquals(2,booking.get().getId());
+        assertEquals(2, booking.get().getId());
     }
 
-
-    //DATA
     private void data2User2Item() throws ModelAlreadyExistsException, IncorrectUserIdException {
         User user1 = new User(null, "User1@Mail.com", "User1");
         User user2 = new User(null, "User2@Mail.com", "User2");
