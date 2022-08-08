@@ -30,7 +30,7 @@ public class BookingController {
     public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") long useId,
                                     @RequestBody @Valid BookingDtoToCreate bookingDtoToCreate)
             throws ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption {
-        return BookingDtoMaper.toDtoCreated(bookingServise.createBooking(bookingDtoToCreate, useId));
+        return dtoMaper.toDtoCreated(bookingServise.createBooking(bookingDtoToCreate, useId));
     }
 
     @PatchMapping("/{bookingId}")
@@ -38,21 +38,21 @@ public class BookingController {
     public BookingDto bookingСonfirmation(@RequestHeader("X-Sharer-User-Id") long useId,
                                           @PathVariable Long bookingId,
                                           @PathParam("approved") @NotNull Boolean approved) throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
-        return BookingDtoMaper.toDto(bookingServise.setStatus(useId, bookingId, approved));
+        return dtoMaper.toDto(bookingServise.setStatus(useId, bookingId, approved));
     }
 
     @GetMapping("/{bookingId}")
     public BookingDto getById(@PathVariable long bookingId, @RequestHeader("X-Sharer-User-Id") long useId) throws ModelNotExitsException, IncorrectUserIdException {
-        return BookingDtoMaper.toDto(bookingServise.findById(bookingId, useId));
+        return dtoMaper.toDto(bookingServise.findById(bookingId, useId));
     }
 
     @GetMapping
     public Collection<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long useId,
                                          @PathParam("state") String state) throws UnknownStateException, UserNotFoundExteption {
         if (state == null) {
-            return bookingServise.getAllUser(useId).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllUser(useId).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
-            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state)).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }
     }
 
@@ -60,9 +60,9 @@ public class BookingController {
     public Collection<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") long useId,
                                               @PathParam("state") String state) throws UnknownStateException, UserNotFoundExteption {
         if (state == null) {
-            return bookingServise.getAllOwner(useId).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllOwner(useId).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
-            return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(BookingDtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }
     }
 }

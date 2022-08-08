@@ -21,18 +21,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemServise itemServise;
+    private final ItemDtoMaper itemDtoMaper;
+    private final CommentDtoMaper commentDtoMaper;
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto itemDto)
             throws IncorrectUserIdException {
-        return ItemDtoMaper.toDto(itemServise.createItem(userId, ItemDtoMaper.fromDto(itemDto)));
+        return itemDtoMaper.toDto(itemServise.createItem(userId, itemDtoMaper.fromDto(itemDto)));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto patchItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
                              @RequestBody ItemDto itemDto)
             throws ModelNotExitsException, IncorectUserOrItemIdException {
-        return ItemDtoMaper.toDto(itemServise.patchItem(userId, itemId, ItemDtoMaper.fromDto(itemDto)));
+        return itemDtoMaper.toDto(itemServise.patchItem(userId, itemId, itemDtoMaper.fromDto(itemDto)));
     }
 
     @GetMapping("/{itemId}")
@@ -49,7 +51,7 @@ public class ItemController {
     @GetMapping("/search")
     public Collection<ItemDto> findByText(@RequestParam String text) {
         return itemServise.findByText(text).stream()
-                .map(ItemDtoMaper::toDto)
+                .map(itemDtoMaper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -58,6 +60,6 @@ public class ItemController {
                                  @RequestHeader("X-Sharer-User-Id") long userId,
                                  @RequestBody @Valid CommentDto text) throws ModelNotExitsException, NotUsedCommentException {
         Comment comment = itemServise.addComment(itemId, userId, text.getText());
-        return CommentDtoMaper.toDto(comment);
+        return commentDtoMaper.toDto(comment);
     }
 }

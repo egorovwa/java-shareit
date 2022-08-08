@@ -35,6 +35,8 @@ public class ItemServiseImpl implements ItemServise {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemDtoMaper itemDtoMaper;
+    private final CommentDtoMaper commentDtoMaper;
 
     @Override
     public Item createItem(long userId, Item item) throws IncorrectUserIdException {
@@ -84,15 +86,15 @@ public class ItemServiseImpl implements ItemServise {
             Optional<Booking> lastBooking = getLastBooking(itemId);
             Optional<Booking> nextBooking = getNextBooking(itemId);
             Collection<CommentDto> comments = getItemComments(itemId);
-            return ItemDtoMaper.toDtoWithBooking(item, lastBooking, nextBooking, comments);
+            return itemDtoMaper.toDtoWithBooking(item, lastBooking, nextBooking, comments);
         } else {
-            return ItemDtoMaper.toDtoWithBooking(item, getItemComments(itemId));
+            return itemDtoMaper.toDtoWithBooking(item, getItemComments(itemId));
         }
     }
 
     private Collection<CommentDto> getItemComments(long itemId) {
         Collection<Comment> comments = new ArrayList<>(commentRepository.findByItem_IdOrderByCreatedDesc(itemId));
-        return comments.stream().map(CommentDtoMaper::toDto).collect(Collectors.toList());
+        return comments.stream().map(commentDtoMaper::toDto).collect(Collectors.toList());
     }
 
     private Optional<Booking> getNextBooking(long itemId) {
@@ -114,7 +116,7 @@ public class ItemServiseImpl implements ItemServise {
     @Override
     public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId) {
         log.info("поиск вещей пользователя id ={}", userId);
-        return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream().map(i -> ItemDtoMaper
+        return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream().map(i -> itemDtoMaper
                         .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
                                 getItemComments(i.getId())))
                 .collect(Collectors.toUnmodifiableList());

@@ -11,21 +11,21 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class BookingDtoMaper {
-    public static BookingDto toDtoCreated(Booking booking) {
+    public BookingDto toDtoCreated(Booking booking) {
         return new BookingDto(booking.getId(),
                 LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
                 LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
                 booking.getItem(), booking.getBooker(), booking.getStatus());
     }
 
-    public static BookingDto toDto(Booking booking) {
+    public BookingDto toDto(Booking booking) {
         return new BookingDto(booking.getId(),
                 LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
                 LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
                 booking.getItem(), booking.getBooker(), booking.getStatus());
     }
 
-    public static BookingDtoToItem toItemDto(Optional<Booking> mayBebooking) {
+    public BookingDtoToItem toItemDto(Optional<Booking> mayBebooking) {
         if (mayBebooking.isPresent()) {
             Booking booking = mayBebooking.get();
             return new BookingDtoToItem(booking.getId(),
