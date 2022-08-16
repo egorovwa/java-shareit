@@ -1,4 +1,4 @@
-package ru.practicum.shareit.requests;
+package ru.practicum.shareit.requests.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  * // TODO .
@@ -24,4 +26,10 @@ public class ItemRequest {
     @JoinColumn(name = "requestor")
     private User requestor;
     private Long created;
+
+    public ItemRequest(String description, User requestor) {
+        this.description = description;
+        this.requestor = requestor;
+        this.created = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+    }
 }
