@@ -1,27 +1,42 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.Booking;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class BookingDtoMaper {
-    public Booking fromDto(BookingDto dto) {
-        return new Booking(dto.getId(),
-                dto.getStart().toEpochDay(),
-                dto.getEnd().toEpochDay(),
-                dto.getItem(),
-                dto.getBooker(),
-                dto.getStatus());
+    public BookingDto toDtoCreated(Booking booking) {
+        return new BookingDto(booking.getId(),
+                LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
+                LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
+                booking.getItem(), booking.getBooker(), booking.getStatus());
     }
 
     public BookingDto toDto(Booking booking) {
         return new BookingDto(booking.getId(),
-                LocalDate.ofEpochDay(booking.getStart()),
-                LocalDate.ofEpochDay(booking.getEnd()),
-                booking.getItem(),
-                booking.getBooker(),
-                booking.getStatus());
+                LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
+                LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
+                booking.getItem(), booking.getBooker(), booking.getStatus());
     }
+
+    public BookingDtoToItem toItemDto(Optional<Booking> mayBebooking) {
+        if (mayBebooking.isPresent()) {
+            Booking booking = mayBebooking.get();
+            return new BookingDtoToItem(booking.getId(),
+                    LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
+                    LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
+                    booking.getItem().getId(),
+                    booking.getBooker().getId(),
+                    booking.getStatus());
+        } else {
+            return null;
+        }
+    }
+
 }

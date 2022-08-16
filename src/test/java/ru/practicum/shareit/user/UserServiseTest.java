@@ -2,21 +2,24 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserServiseTest {
+    final User user2 = new User(null, "email2@mail.ru", "user");
+    final User user3 = new User(null, "email3@mail.ru", "user");
     private final UserServise userServise;
-    User user2 = new User(null, "email2@mail.ru", "user");
-    User user3 = new User(null, "email3@mail.ru", "user");
     private final User user = new User(null, "email@mail.ru", "user");
 
     @Test
@@ -32,12 +35,9 @@ class UserServiseTest {
     @DirtiesContext
     void test2_addWithError() throws ModelAlreadyExistsException {
         userServise.addUser(user);
-        assertThrows(ModelAlreadyExistsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                User userWithDoubleEmail = new User(null, "email@mail.ru", "user1");
-                userServise.addUser(userWithDoubleEmail);
-            }
+        assertThrows(ModelAlreadyExistsException.class, () -> {
+            User userWithDoubleEmail = new User(null, "email@mail.ru", "user1");
+            userServise.addUser(userWithDoubleEmail);
         });
     }
 
@@ -55,12 +55,7 @@ class UserServiseTest {
     @Test
     @DirtiesContext
     void test4_updateNoExistUser() {
-        assertThrows(ModelNotExitsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userServise.updateUser(2, user2);
-            }
-        });
+        assertThrows(ModelNotExitsException.class, () -> userServise.updateUser(2, user2));
     }
 
     @Test
@@ -70,14 +65,19 @@ class UserServiseTest {
 
         userServise.deleteUser(1);
         assertEquals(0, userServise.findAll().size());
+    }
 
+    @Test
+    @DirtiesContext
+    void test5_1_deleteUserwith3() throws ModelAlreadyExistsException, ModelNotExitsException {
         userServise.addUser(user);
         userServise.addUser(user2);
         userServise.addUser(user3);
+        Collection<User> all = userServise.findAll();
         userServise.deleteUser(2);
+        Collection<User> del = userServise.findAll();
         assertEquals(2, userServise.findAll().size());
         assertTrue(userServise.findAll().contains(user));
-
     }
 
     @Test
@@ -87,12 +87,7 @@ class UserServiseTest {
         userServise.addUser(user2);
         userServise.addUser(user3);
 
-        assertThrows(ModelNotExitsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userServise.deleteUser(5);
-            }
-        });
+        assertThrows(ModelNotExitsException.class, () -> userServise.deleteUser(5));
     }
 
     @Test
@@ -111,12 +106,7 @@ class UserServiseTest {
         userServise.addUser(user);
         userServise.addUser(user2);
         userServise.addUser(user3);
-        assertThrows(ModelNotExitsException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userServise.findById(7);
-            }
-        });
+        assertThrows(ModelNotExitsException.class, () -> userServise.findById(7));
     }
 
     @Test
