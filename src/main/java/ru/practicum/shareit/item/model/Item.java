@@ -26,7 +26,7 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "request")
     private ItemRequest request;
 

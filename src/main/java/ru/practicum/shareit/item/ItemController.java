@@ -29,6 +29,8 @@ public class ItemController {
             throws IncorrectUserIdException {
         return itemDtoMaper.toDto(itemServise.createItem(userId, itemDtoMaper.fromDto(itemDto)));
     }
+    @PostMapping
+
 
     @PatchMapping("/{itemId}")
     public ItemDto patchItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,

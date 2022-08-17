@@ -59,6 +59,6 @@ class RequestServiceImplTest {
     }
 
     private ItemRequest testItemRequest(Long timeCreated) {
-        return new ItemRequest(1L, "Description, ffffff", testUser(), timeCreated);
+        return new ItemRequest(1L, "Description, ffffff", testUser(), timeCreated,null);
     }
 }

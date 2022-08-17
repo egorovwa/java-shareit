@@ -3,11 +3,14 @@ package ru.practicum.shareit.requests.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * // TODO .
@@ -26,6 +29,8 @@ public class ItemRequest {
     @JoinColumn(name = "requestor")
     private User requestor;
     private Long created;
+    @OneToMany
+    private List<Item> itemsResponse = new ArrayList<>();
 
     public ItemRequest(String description, User requestor) {
         this.description = description;

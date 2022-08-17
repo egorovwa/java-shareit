@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
@@ -22,14 +23,19 @@ import java.text.Format;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.Entitys.*;
 
 @WebMvcTest(controllers = RequestController.class)
 @Import(ItemRequestDtoMaper.class)
@@ -55,7 +61,7 @@ class RequestControllerTest {
     @Test
     void test1_createItemRequest() throws Exception {
         ItemRequest itemRequest = new ItemRequest(1L, "description", user,
-                createTime.toEpochSecond(ZoneOffset.UTC));
+                createTime.toEpochSecond(ZoneOffset.UTC),null);
         ItemRequestDto itemRequestDto = new ItemRequestDto();
         itemRequestDto.setDescription("description");
 
@@ -83,6 +89,25 @@ class RequestControllerTest {
                 .andExpect(status().is(400));
     }
 
+@Test
+ void  test2_findAllWithPage() throws Exception {
+        List<ItemRequest> itemRequests = new ArrayList<>();
+    for (long i = 1; i <= 3; i++) {
+        itemRequests.add(new ItemRequest(i,"aaaaaa",
+                USER_ID1,TEST_TIME_LONG,new ArrayList<>()));
+    }
+        when(requestService.findAllWithPage(0,3))
+                .thenReturn(itemRequests);
 
+    mvc.perform(get("/requests/all")
+            .contentType(MediaType.APPLICATION_JSON)
+            .characterEncoding(StandardCharsets.UTF_8)
+            .param("from","0")
+            .param("size","3"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()", is(3)));
+
+
+}
 
 }
