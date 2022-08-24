@@ -26,8 +26,8 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)
     private User owner;
-    @ManyToOne
-    @JoinColumn(name = "request")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
     private ItemRequest request;
 
     public Item(Long id, String name, String description, Boolean available, User owner) {
@@ -37,4 +37,5 @@ public class Item {
         this.available = available;
         this.owner = owner;
     }
+
 }

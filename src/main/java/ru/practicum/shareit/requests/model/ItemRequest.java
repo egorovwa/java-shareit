@@ -7,9 +7,12 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,13 +27,16 @@ public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
+    @NotNull
     private String description;
     @ManyToOne
     @JoinColumn(name = "requestor")
     private User requestor;
     private Long created;
-    @OneToMany
-    private List<Item> itemsResponse = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "request")
+    private Collection<Item> items = new ArrayList<>();
 
     public ItemRequest(String description, User requestor) {
         this.description = description;

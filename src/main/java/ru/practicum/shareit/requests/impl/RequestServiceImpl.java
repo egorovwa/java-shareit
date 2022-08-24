@@ -5,7 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.exceptions.UserNotFoundExteption;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.RequestNotExistException;
 import ru.practicum.shareit.requests.RequestRepository;
 import ru.practicum.shareit.requests.RequestService;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
@@ -29,9 +31,45 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Collection<ItemRequest> findAllWithPage(Integer from, Integer size) { // TODO: 17.08.2022 проверить как отработает from c 0
-        Pageable pageable = PageRequest.of(from, size, Sort.by("created").descending());
-        return requestRepository.findAll(pageable).toList();
+    public Collection<ItemRequest> findAllWithPage(Integer from, Integer size, Long userId) throws ModelNotExitsException {
+        try {
 
+            User user = userServise.findById(userId);
+        }catch (ModelNotExitsException e){
+            throw  new UserNotFoundExteption("пользователь не чсуществует", "id",
+                    userId.toString());
+        }
+        if (from != null && size != null) {
+            Pageable pageable = PageRequest.of(from, size, Sort.by("created").descending());
+            return requestRepository.findAllByRequestorIdIsNot(pageable, userId).toList();
+        } else {
+            return requestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(userId);
+        }
+
+    }
+
+    @Override
+    public ItemRequest findById(Long requestId) throws RequestNotExistException {
+        return requestRepository.findById(requestId)
+                .orElseThrow(() -> new RequestNotExistException("Запрос не найден", "id", requestId.toString()));
+    }
+
+    @Override
+    public void save(ItemRequest itemRequest) {
+        requestRepository.save(itemRequest);
+    }
+
+    @Override
+    public Collection<ItemRequest> findAllForRequestor(Long userId) throws ModelNotExitsException {
+        User user = userServise.findById(userId);
+        return requestRepository.findItemRequestsByRequestorIdOrderByCreatedDesc(userId);
+    }
+
+    @Override
+    public ItemRequest findItemRequest(Long itemId, Long userId) throws ModelNotExitsException {
+        User user = userServise.findById(userId);
+                
+        return requestRepository.findById(itemId)
+                .orElseThrow(() -> new ModelNotExitsException("запрос не существует", "id", itemId.toString()));
     }
 }

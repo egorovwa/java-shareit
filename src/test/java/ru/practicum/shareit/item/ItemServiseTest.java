@@ -33,7 +33,7 @@ class ItemServiseTest {
     private final BookingServise bookingServise;
 
 
-    @Test
+ /*   @Test
     @DirtiesContext
     void test1_createItem() throws ModelAlreadyExistsException, IncorrectUserIdException, ModelNotExitsException {
         setUser();
@@ -223,5 +223,5 @@ class ItemServiseTest {
         bookingServise.setStatus(1, 1L, true);
         bookingServise.setStatus(1, 3L, true);
 
-    }
+    }*/
 }

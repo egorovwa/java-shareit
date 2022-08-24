@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
@@ -19,7 +17,6 @@ import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import java.nio.charset.StandardCharsets;
-import java.text.Format;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -30,16 +27,15 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.Entitys.*;
 
-@WebMvcTest(controllers = RequestController.class)
+@WebMvcTest(controllers = ItemRequesstController.class)
 @Import(ItemRequestDtoMaper.class)
-class RequestControllerTest {
+class ItemRequesstControllerTest {
     @MockBean
     RequestService requestService;
     @Autowired
@@ -96,7 +92,7 @@ class RequestControllerTest {
         itemRequests.add(new ItemRequest(i,"aaaaaa",
                 USER_ID1,TEST_TIME_LONG,new ArrayList<>()));
     }
-        when(requestService.findAllWithPage(0,3))
+        when(requestService.findAllWithPage(0,3, 1L))   // TODO: 20.08.2022 обавил юзер id
                 .thenReturn(itemRequests);
 
     mvc.perform(get("/requests/all")

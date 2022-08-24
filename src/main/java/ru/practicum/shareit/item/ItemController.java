@@ -2,14 +2,12 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
-import ru.practicum.shareit.exceptions.IncorrectUserIdException;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.exceptions.NotUsedCommentException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -26,11 +24,9 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto itemDto)
-            throws IncorrectUserIdException {
-        return itemDtoMaper.toDto(itemServise.createItem(userId, itemDtoMaper.fromDto(itemDto)));
+            throws IncorrectUserIdException, RequestNotExistException {
+        return itemDtoMaper.toDto(itemServise.createItem(userId, itemDto));
     }
-    @PostMapping
-
 
     @PatchMapping("/{itemId}")
     public ItemDto patchItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
@@ -46,7 +42,8 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDtoWithBoking> findAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public Collection<ItemDtoWithBoking> findAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                          @PathParam("from")Integer from){
         return itemServise.findAllByOwnerId(userId);
     }
 

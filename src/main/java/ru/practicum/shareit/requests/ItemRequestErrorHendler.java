@@ -11,7 +11,7 @@ import java.util.Map;
 @RestControllerAdvice("ru.practicum.shareit.requests")
 public class ItemRequestErrorHendler {
     @ExceptionHandler(ModelNotExitsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> userNotFoundExceptionHendler(ModelNotExitsException e) {
         return Map.of("Error", e.getMessage(), e.getParam(), e.getValue());
     }

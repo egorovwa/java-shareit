@@ -6,19 +6,15 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
-import ru.practicum.shareit.exceptions.IncorrectUserIdException;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.exceptions.NotUsedCommentException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemServise;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.CommentDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDtoWithBoking;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.RequestService;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
@@ -37,13 +33,22 @@ public class ItemServiseImpl implements ItemServise {
     private final CommentRepository commentRepository;
     private final ItemDtoMaper itemDtoMaper;
     private final CommentDtoMaper commentDtoMaper;
+    private final RequestService requestService;
 
     @Override
-    public Item createItem(long userId, Item item) throws IncorrectUserIdException {
+    public Item createItem(long userId, ItemDto itemDto) throws IncorrectUserIdException, RequestNotExistException { // TODO: 17.08.2022 Request notFound Exception
+        Item item = itemDtoMaper.fromDto(itemDto);
         try {
             User user = userServise.findById(userId);
             item.setOwner(user);
             log.info("Добавленна item ({}), пользователем id {}", item.getName(), userId);
+            if (itemDto.getRequestId() != null) {
+                ItemRequest itemRequest = requestService.findById(itemDto.getRequestId());
+                item.setRequest(itemRequest);
+                itemRequest.getItems().add(item);
+                   // TODO: 18.08.2022 переделать
+
+            }
             return itemRepository.save(item);
         } catch (ModelNotExitsException e) {
             log.warn("Попытка добавление item ({}), несуществующим пользователем id {}", item.getName(), userId);

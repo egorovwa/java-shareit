@@ -16,11 +16,9 @@ import ru.practicum.shareit.booking.exceptions.ItemNotAvalibleExxeption;
 import ru.practicum.shareit.booking.exceptions.ParametrNotFoundException;
 import ru.practicum.shareit.booking.exceptions.StatusAlredyException;
 import ru.practicum.shareit.booking.exceptions.TimeIntersectionException;
-import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
-import ru.practicum.shareit.exceptions.IncorrectUserIdException;
-import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.ItemServise;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
@@ -58,7 +56,7 @@ class BookingServiseImplTest {
 
     @Test
     @DirtiesContext
-    void test1_2errors_BookingCreateTimeException() throws ModelAlreadyExistsException, IncorrectUserIdException {
+    void test1_2errors_BookingCreateTimeException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
         data2User2Item();
         assertThrows(TimeIntersectionException.class, () -> {
             BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofHours(1)),
@@ -70,7 +68,7 @@ class BookingServiseImplTest {
 
     @Test
     @DirtiesContext
-    void test1_3_errors_BookingCreateUserException() throws ModelAlreadyExistsException, IncorrectUserIdException {
+    void test1_3_errors_BookingCreateUserException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
         data2User2Item();
         assertThrows(ModelNotExitsException.class, () -> {
             BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
@@ -82,7 +80,7 @@ class BookingServiseImplTest {
 
     @Test
     @DirtiesContext
-    void test1_4_errors_BookingCreateOwnerUserException() throws ModelAlreadyExistsException, IncorrectUserIdException {
+    void test1_4_errors_BookingCreateOwnerUserException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
         data2User2Item();
         assertThrows(ModelNotExitsException.class, () -> {
             BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
@@ -95,7 +93,7 @@ class BookingServiseImplTest {
 
     @Test
     @DirtiesContext
-    void test1_5errors_BookingCreateItemException() throws ModelAlreadyExistsException, IncorrectUserIdException {
+    void test1_5errors_BookingCreateItemException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
         data2User2Item();
         assertThrows(ModelNotExitsException.class, () -> {
             BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
@@ -328,11 +326,11 @@ class BookingServiseImplTest {
         assertEquals(2, booking.get().getId());
     }
 
-    private void data2User2Item() throws ModelAlreadyExistsException, IncorrectUserIdException {
+    private void data2User2Item() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
         User user1 = new User(null, "User1@Mail.com", "User1");
         User user2 = new User(null, "User2@Mail.com", "User2");
-        Item item1 = new Item(null, "item1", "user1 Item1", true, null);
-        Item item2 = new Item(null, "item2", "user2 Item2", true, null);
+        ItemDto item1 = new ItemDto(null, "item1", "user1 Item1", true, null,null);
+        ItemDto item2 = new ItemDto(null, "item2", "user2 Item2", true, null,null);
         userServise.addUser(user1);
         userServise.addUser(user2);
         itemServise.createItem(1, item1);
@@ -351,10 +349,10 @@ class BookingServiseImplTest {
         List<User> userList = List.of(
                 new User(null, "User1@Mail.com", "User1"),
                 new User(null, "User2@Mail.com", "User2"));
-        List<Item> itemList = List.of(
-                new Item(null, "APPROVED", "APPROVED", true, null),
-                new Item(null, "WAITING", "WAITING", true, null),
-                new Item(null, "REJECTED", "REJECTED", true, null));
+        List<ItemDto> itemList = List.of(
+                new ItemDto(null, "APPROVED", "APPROVED", true, null, null),
+                new ItemDto(null, "WAITING", "WAITING", true, null, null),
+                new ItemDto(null, "REJECTED", "REJECTED", true, null, null));
         List<BookingDtoToCreate> bList = List.of(
                 new BookingDtoToCreate((LocalDateTime.now().plus(Duration.ofSeconds(2))),
                         LocalDateTime.now().plus(Duration.ofHours(1)), 1),
@@ -372,7 +370,7 @@ class BookingServiseImplTest {
         itemList.forEach(r -> {
             try {
                 itemServise.createItem(1, r);
-            } catch (IncorrectUserIdException e) {
+            } catch (IncorrectUserIdException | RequestNotExistException e) {
                 throw new RuntimeException(e);
             }
         });
