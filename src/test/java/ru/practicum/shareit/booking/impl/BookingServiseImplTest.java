@@ -1,387 +1,323 @@
 package ru.practicum.shareit.booking.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.BookingServise;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.BookingState;
-import ru.practicum.shareit.booking.exceptions.ItemNotAvalibleExxeption;
-import ru.practicum.shareit.booking.exceptions.ParametrNotFoundException;
-import ru.practicum.shareit.booking.exceptions.StatusAlredyException;
-import ru.practicum.shareit.booking.exceptions.TimeIntersectionException;
-import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.booking.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorrectUserIdException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.item.ItemServise;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
-import static java.lang.Thread.sleep;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.practicum.shareit.Entitys.*;
 
-@SpringBootTest
-@AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@ExtendWith(MockitoExtension.class)
 class BookingServiseImplTest {
-    private final BookingServise bookingServise;
-    private final ItemServise itemServise;
-    private final UserServise userServise;
-
-    @Test
-    @DirtiesContext
-    void test1_createBooking_normal() throws ModelAlreadyExistsException, IncorrectUserIdException,
-            ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
-        data2User2Item();
-        BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofMinutes(1)),
-                LocalDateTime.now().plus(Duration.ofHours(1)), 1);
-        Booking booking = bookingServise.createBooking(bookingToCreate, 2);
-
-        assertEquals(1, booking.getId());
-        assertEquals(BookingStatus.WAITING, booking.getStatus());
-        assertEquals(userServise.findById(2), booking.getBooker());
-    }
-
-    @Test
-    @DirtiesContext
-    void test1_2errors_BookingCreateTimeException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
-        data2User2Item();
-        assertThrows(TimeIntersectionException.class, () -> {
-            BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofHours(1)),
-                    LocalDateTime.now(), 1);
-            bookingServise.createBooking(bookingToCreate, 2);
-        });
-
-    }
-
-    @Test
-    @DirtiesContext
-    void test1_3_errors_BookingCreateUserException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
-        data2User2Item();
-        assertThrows(ModelNotExitsException.class, () -> {
-            BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
-                    LocalDateTime.now().plus(Duration.ofHours(1)), 1);
-            bookingServise.createBooking(bookingToCreate, 3);
-        });
-
-    }
-
-    @Test
-    @DirtiesContext
-    void test1_4_errors_BookingCreateOwnerUserException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
-        data2User2Item();
-        assertThrows(ModelNotExitsException.class, () -> {
-            BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
-                    LocalDateTime.now().plus(Duration.ofHours(1)), 1);
-            bookingServise.createBooking(bookingToCreate, 1);
-        });
-
+    @Mock
+    BookingRepository bookingRepository;
+    @Mock
+    UserServise userServise;
+    @Mock
+    ItemServise itemServise;
+    @InjectMocks
+    BookingServiseImpl bookingServise;
+    @BeforeEach
+    void clear(){
+        Mockito.clearAllCaches();
     }
 
 
     @Test
-    @DirtiesContext
-    void test1_5errors_BookingCreateItemException() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
-        data2User2Item();
-        assertThrows(ModelNotExitsException.class, () -> {
-            BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
-                    LocalDateTime.now().plus(Duration.ofHours(1)), 3);
-            bookingServise.createBooking(bookingToCreate, 3);
-        });
+    void test1_1createBooking_itemNotFound() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
+        Mockito
+                .when(itemServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(ModelNotExitsException.class, () ->
+                bookingServise.createBooking(BOOKING_DTO_TO_CREATE_ITEM1, 1L));
     }
 
     @Test
-    @DirtiesContext
-    void test1_6errors_BookingCreateItemNotAvailableException() throws ModelAlreadyExistsException, IncorrectUserIdException, ModelNotExitsException, IncorectUserOrItemIdException {
-        data2User2Item();
-        Item update = new Item(null, null, null, false, null);
-        itemServise.patchItem(1, 1, update);
-        assertThrows(ItemNotAvalibleExxeption.class, () -> {
-            BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now(),
-                    LocalDateTime.now().plus(Duration.ofHours(1)), 1);
-            bookingServise.createBooking(bookingToCreate, 2);
-        });
+    void test1_2createBooking_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(itemServise.findById(1L))
+                .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
+        Mockito
+                .when(userServise.findById(2L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(ModelNotExitsException.class, () ->
+                bookingServise.createBooking(BOOKING_DTO_TO_CREATE_ITEM1, 2L));
     }
 
     @Test
-    @DirtiesContext
-    void test2_1_setStatus() throws ModelAlreadyExistsException, IncorrectUserIdException, ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException, ParametrNotFoundException {
-        data2User2Item();
-        dataUser1CreateBookingItem2();
-        bookingServise.setStatus(2, 1L, true);
-        assertEquals(BookingStatus.APPROVED, bookingServise.findById(1, 2).getStatus());
-    }
-
-    @Test
-    @DirtiesContext
-    void test2_2_setStatusWhenStatusNotWaiting() throws ModelAlreadyExistsException, IncorrectUserIdException, ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException, ParametrNotFoundException {
-        data2User2Item();
-        dataUser1CreateBookingItem2();
-        bookingServise.setStatus(2, 1L, true);
-
-        assertThrows(StatusAlredyException.class, () -> bookingServise.setStatus(2, 1L, true));
+    void test1_3createBooking_userIsOwner() throws ModelNotExitsException {
+        Mockito
+                .when(itemServise.findById(1L))
+                .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        assertThrows(ModelNotExitsException.class, () ->
+                bookingServise.createBooking(BOOKING_DTO_TO_CREATE_ITEM1, 1L));
 
     }
 
     @Test
-    @DirtiesContext
-    void test2_3_setStatusWhenNotOwner() throws ModelAlreadyExistsException, IncorrectUserIdException, ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
-        data2User2Item();
-        dataUser1CreateBookingItem2();
+    void test1_4createBooking_itemAvailableFalse() throws ModelNotExitsException {
+        Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
+        item.setAvailable(false);
+        Mockito
+                .when(itemServise.findById(1L))
+                .thenReturn(item);
+        Mockito
+                .when(userServise.findById(2L))
+                .thenReturn(USER_ID2);
+        assertThrows(ItemNotAvalibleExxeption.class, () ->
+                bookingServise.createBooking(BOOKING_DTO_TO_CREATE_ITEM1, 2L));
+    }
 
-        assertThrows(IncorrectUserIdException.class, () -> bookingServise.setStatus(1, 1L, true));
+    @Test
+    void test1_5createBooking_TimeIntersection() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
+        Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
+        User user = USER_ID2;
+        Booking booking = new Booking(null, BOOKING_DTO_TO_CREATE_ITEM1.getStart().toEpochSecond(ZoneOffset.UTC),
+                BOOKING_DTO_TO_CREATE_ITEM1.getEnd().toEpochSecond(ZoneOffset.UTC),
+                item, user, BookingStatus.WAITING);
+        Mockito
+                .when(itemServise.findById(1L))
+                .thenReturn(item);
+        Mockito
+                .when(userServise.findById(2L))
+                .thenReturn(USER_ID2);
+        assertThrows(TimeIntersectionException.class, () ->
+                bookingServise.createBooking(BOOKING_DTO_TO_CREATE_ITEM1, 2));
+    }
+
+    @Test
+    void test1_6createBooking() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
+        Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
+        User user = USER_ID2;
+        BookingDtoToCreate toCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofMinutes(1)),
+                LocalDateTime.now().plus(Duration.ofHours(1)), 1L);
+        Booking booking = new Booking();
+        booking.setItem(item);
+        booking.setStart(toCreate.getStart().toEpochSecond(ZoneOffset.UTC));
+        booking.setEnd(toCreate.getEnd().toEpochSecond(ZoneOffset.UTC));
+        booking.setBooker(USER_ID2);
+        booking.setStatus(BookingStatus.WAITING);
+        Mockito
+                .when(itemServise.findById(1L))
+                .thenReturn(item);
+        Mockito
+                .when(userServise.findById(2L))
+                .thenReturn(USER_ID2);
+
+        bookingServise.createBooking(toCreate, 2L);
+        Mockito
+                .verify(bookingRepository, Mockito.times(1)).save(booking);
+    }
+
+    @Test
+    void test2_1_setStatus_approvedNull() {
+        assertThrows(ParametrNotFoundException.class, () -> bookingServise.setStatus(1L, 1L, null));
+    }
+
+    @Test
+    void test2_2_setStatus_bookingNotFound() {
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> bookingServise.setStatus(1L, 1L, true));
+    }
+
+    @Test
+    void test2_3_setStatus_statusNotWaiting() {
+
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(BOOKING1_USER2_ITEM1_APPROVED));
+        assertThrows(StatusAlredyException.class, () -> bookingServise.setStatus(1L, 1L, true));
+    }
+
+    @Test
+    void test2_4_setStatus_userNotOwner() {
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(new Booking(1L,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                        LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC),ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                        USER_ID2,BookingStatus.WAITING)));
+        assertThrows(IncorrectUserIdException.class, () -> bookingServise.setStatus(2L, 1L, true));
+    }
+
+    @Test
+    void test2_5_setStatus_APPROVED() throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(BOOKING1_USER2_ITEM1_WAITING));
+        bookingServise.setStatus(1L, 1L, true);
+        Mockito.
+                verify(bookingRepository, Mockito.times(1)).save(BOOKING1_USER2_ITEM1_APPROVED);
 
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test3_1_findById() {
-        data2User2Item();
-        dataUser1CreateBookingItem2();
-        Booking booking = bookingServise.findById(1, 2);
-
-        assertEquals(2, booking.getItem().getId());
+    void test2_6_setStatus_REJECTED() throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
+        Booking result = new Booking(1L,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC),ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                USER_ID2,BookingStatus.REJECTED);
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(new Booking(1L,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                        LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC),ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                        USER_ID2,BookingStatus.WAITING)));
+        bookingServise.setStatus(1L, 1L, false);
+        Mockito.
+                verify(bookingRepository, Mockito.times(1)).save(result);
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test3_2_finndByIdAnotherUser() {
-        data2User2Item();
-        dataUser1CreateBookingItem2();
-        userServise.addUser(new User(null, "aaa@Email.com", "another"));
-        assertThrows(IncorrectUserIdException.class, () -> {
-            Booking booking = bookingServise.findById(1, 3);
-        });
+    void test3_1_findById_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(ModelNotExitsException.class, () -> bookingServise.findById(1L, 1L));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test4_1getAllUserWithOutState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllUser(2);
-
-        assertEquals(3, bookingServise.getAllUser(2).size());
-
+    void test3_3_findById_bookingNotFound() {
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.empty());
+        assertThrows(ModelNotExitsException.class, () -> bookingServise.findById(1L, 1L));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test4_2getAllUserWithAllState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllUser(2, BookingState.ALL);
+    void test3_4_findById_userNotOwnerOrCreater() {
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(BOOKING1_USER2_ITEM1_WAITING));
+        assertThrows(IncorrectUserIdException.class, () -> bookingServise.findById(1L, 3L));
+    }
 
-        assertEquals(3, bookingServise.getAllUser(2).size());
 
+    @Test
+    void test4_1_getAllUser_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test4_3getAllUserWithWaitingState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllUser(2, BookingState.WAITING);
-        assertEquals(1, findedList.size());
-        assertEquals("WAITING", findedList.stream().findFirst().get().getItem().getName());
+    void test5_1_getAllUser_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, BookingState.FUTURE));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test4_4getAllUserWithRejectedState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllUser(2, BookingState.REJECTED);
-        assertEquals(1, findedList.size());
-        assertEquals("REJECTED", findedList.stream().findFirst().get().getItem().getName());
+    void test5_2_testGetAllUser_PAST() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllUser(1L, BookingState.PAST);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByBookerIdStatePast(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test4_5getAllUserWithFutureState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllUser(2, BookingState.FUTURE);
-        assertEquals(3, findedList.size());
-        assertTrue(findedList.stream().anyMatch(r -> r.getItem().getName()
-                .equals("APPROVED")));
-        assertTrue(findedList.stream().anyMatch(r -> r.getItem().getName()
-                .equals("REJECTED")));
-        assertTrue(findedList.stream().anyMatch(r -> r.getItem().getName()
-                .equals("WAITING")));
-
+    void test5_3_testGetAllUser_WAITING() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllUser(1L, BookingState.WAITING);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByBooker_IdAndStatus(1L, BookingStatus.WAITING);
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test4_6getAllUserWithWaitingState() {
-        data2Users3Item3BookingOwnerUser1();
-        sleep(2000);
-        Collection<Booking> findedList = bookingServise.getAllUser(2, BookingState.CURRENT);
-        assertEquals(1, findedList.size());
-        assertEquals("APPROVED", findedList.stream().findFirst().get().getItem().getName());
+    void test5_4_testGetAllUser_CURRENT() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllUser(1L, BookingState.CURRENT);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByBookerIdStateCurrent(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test5_1getAllOwnerWithOutState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllOwner(1);
-
-        assertEquals(3, bookingServise.getAllUser(2).size());
-
+    void test5_5_testGetAllUser_REJECTED() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllUser(1L, BookingState.REJECTED);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByBooker_IdAndStatus(1L, BookingStatus.REJECTED);
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test5_2getAllOwnerWithAllState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllOwner(1, BookingState.ALL);
+    void test5_6_testGetAllUser_FUTURE() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllUser(1L, BookingState.FUTURE);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findFuture(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+    }
 
-        assertEquals(3, bookingServise.getAllUser(2).size());
 
+    @Test
+    void test6_1_getAllOwner_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, BookingState.FUTURE));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test5_3getAllOwnerWithWaitingState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllOwner(1, BookingState.WAITING);
-        assertEquals(1, findedList.size());
-        assertEquals("WAITING", findedList.stream().findFirst().get().getItem().getName());
+    void test6_2_getAllOwner_PAST() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllOwner(1L, BookingState.PAST);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findOwnerPast(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test5_4getAllOwnerWithRejectedState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllOwner(1, BookingState.REJECTED);
-        assertEquals(1, findedList.size());
-        assertEquals("REJECTED", findedList.stream().findFirst().get().getItem().getName());
+    void test6_3_getAllOwner_WAITING() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllOwner(1L, BookingState.WAITING);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByOwnerIdAndStatus(1L, BookingStatus.WAITING);
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test5_5getAllOwnerWithFutureState() {
-        data2Users3Item3BookingOwnerUser1();
-        Collection<Booking> findedList = bookingServise.getAllOwner(1, BookingState.FUTURE);
-        assertEquals(3, findedList.size());
-        assertTrue(findedList.stream().anyMatch(r -> r.getItem().getName()
-                .equals("APPROVED")));
-        assertTrue(findedList.stream().anyMatch(r -> r.getItem().getName()
-                .equals("REJECTED")));
-        assertTrue(findedList.stream().anyMatch(r -> r.getItem().getName()
-                .equals("WAITING")));
-
+    void test6_4_getAllOwner_CURRENT() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllOwner(1L, BookingState.CURRENT);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findOwnerCurrent(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test5_6getAllOwnerWithWaitingState() {
-        data2Users3Item3BookingOwnerUser1();
-        sleep(2000);
-        Collection<Booking> findedList = bookingServise.getAllOwner(1, BookingState.CURRENT);
-        assertEquals(1, findedList.size());
-        assertEquals("APPROVED", findedList.stream().findFirst().get().getItem().getName());
+    void test6_5_getAllOwner_REJECTED() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllOwner(1L, BookingState.REJECTED);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByOwnerIdAndStatus(1L, BookingStatus.REJECTED);
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test6_1findNextBookingToItem() {
-        data2Users3Item3BookingOwnerUser1();
-        sleep(2000);
-        Optional<Booking> booking = bookingServise.findNextBookingToItem(2);
-        assertEquals(2, booking.get().getId());
+    void test6_6_getAllOwner_FUTURE() throws UnknownStateException, UserNotFoundExteption {
+        bookingServise.getAllOwner(1L, BookingState.FUTURE);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findOwnerFuture(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
-    @DirtiesContext
-    @SneakyThrows
-    void test7_1findLastBookingToItem() {
-        data2Users3Item3BookingOwnerUser1();
-        sleep(5000);
-        Optional<Booking> booking = bookingServise.findNextBookingToItem(2);
-        assertEquals(2, booking.get().getId());
+    void test6_7_getAllOwner_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L));
     }
 
-    private void data2User2Item() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
-        User user1 = new User(null, "User1@Mail.com", "User1");
-        User user2 = new User(null, "User2@Mail.com", "User2");
-        ItemDto item1 = new ItemDto(null, "item1", "user1 Item1", true, null,null);
-        ItemDto item2 = new ItemDto(null, "item2", "user2 Item2", true, null,null);
-        userServise.addUser(user1);
-        userServise.addUser(user2);
-        itemServise.createItem(1, item1);
-        itemServise.createItem(2, item2);
-    }
-
-    private void dataUser1CreateBookingItem2() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
-        BookingDtoToCreate bookingToCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofMinutes(1)),
-                LocalDateTime.now().plus(Duration.ofHours(1)), 2);
-        Booking booking = bookingServise.createBooking(bookingToCreate, 1);
-
-    }
-
-    @SneakyThrows
-    private void data2Users3Item3BookingOwnerUser1() {
-        List<User> userList = List.of(
-                new User(null, "User1@Mail.com", "User1"),
-                new User(null, "User2@Mail.com", "User2"));
-        List<ItemDto> itemList = List.of(
-                new ItemDto(null, "APPROVED", "APPROVED", true, null, null),
-                new ItemDto(null, "WAITING", "WAITING", true, null, null),
-                new ItemDto(null, "REJECTED", "REJECTED", true, null, null));
-        List<BookingDtoToCreate> bList = List.of(
-                new BookingDtoToCreate((LocalDateTime.now().plus(Duration.ofSeconds(2))),
-                        LocalDateTime.now().plus(Duration.ofHours(1)), 1),
-                new BookingDtoToCreate((LocalDateTime.now().plus(Duration.ofHours(1))),
-                        LocalDateTime.now().plus(Duration.ofHours(2)), 2),
-                new BookingDtoToCreate((LocalDateTime.now().plus(Duration.ofHours(2))),
-                        LocalDateTime.now().plus(Duration.ofHours(3)), 3));
-        userList.forEach(user -> {
-            try {
-                userServise.addUser(user);
-            } catch (ModelAlreadyExistsException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        itemList.forEach(r -> {
-            try {
-                itemServise.createItem(1, r);
-            } catch (IncorrectUserIdException | RequestNotExistException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        bList.forEach(r -> {
-            try {
-                bookingServise.createBooking(r, 2);
-            } catch (TimeIntersectionException | ItemNotAvalibleExxeption | ModelNotExitsException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        bookingServise.setStatus(1, 1L, true);
-        bookingServise.setStatus(1, 3L, false);
-    }
 }

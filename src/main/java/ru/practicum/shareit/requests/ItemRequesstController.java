@@ -25,9 +25,10 @@ public class ItemRequesstController {
     }
 
     @GetMapping("/all")
-    public Collection<ItemRequestDtoForRequestor> findAllItemRequest(@RequestParam(value = "from", required = false) Integer from,
-                                                         @RequestParam(value = "size", required = false) Integer size,
-                                                         @RequestHeader("X-Sharer-User-Id") Long userId) throws ModelNotExitsException {
+    public Collection<ItemRequestDtoForRequestor> findAllItemRequest(
+            @RequestParam(value = "from", required = false) Integer from,
+            @RequestParam(value = "size", required = false) Integer size,
+            @RequestHeader("X-Sharer-User-Id") Long userId) throws ModelNotExitsException {
         return requestService.findAllWithPage(from, size, userId).stream()
                 .map(maper::toDtoForRequestor).collect(Collectors.toList());
     }

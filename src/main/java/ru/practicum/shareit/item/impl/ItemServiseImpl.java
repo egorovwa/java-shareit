@@ -46,8 +46,6 @@ public class ItemServiseImpl implements ItemServise {
                 ItemRequest itemRequest = requestService.findById(itemDto.getRequestId());
                 item.setRequest(itemRequest);
                 itemRequest.getItems().add(item);
-                   // TODO: 18.08.2022 переделать
-
             }
             return itemRepository.save(item);
         } catch (ModelNotExitsException e) {
@@ -139,7 +137,8 @@ public class ItemServiseImpl implements ItemServise {
     public Comment addComment(Long itemId, long userId, String text) throws ModelNotExitsException, NotUsedCommentException {
         Item item = findById(itemId); // TODO: 05.08.2022 проверить exception
         User user = userServise.findById(userId);
-        if (bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) > 0) {
+        int i = bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        if (bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) >= 1) {   // TODO: 25.08.2022 проверить
             return commentRepository.save(new Comment(null, text, item, user,
                     LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)));
         } else {
