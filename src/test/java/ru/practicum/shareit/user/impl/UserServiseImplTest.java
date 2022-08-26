@@ -135,6 +135,11 @@ class UserServiseImplTest {
                 .thenReturn(Optional.empty());
         assertThrows(ModelNotExitsException.class, () -> userServise.findById(22));
     }
+    @Test
+    void test5_findAll(){
+        userServise.findAll();
+        Mockito.verify(userRepository,Mockito.times(1)).findAll();
+    }
 // TODO: 24.08.2022 проверять вроде нечего
 /*    @Test
     void findById() {

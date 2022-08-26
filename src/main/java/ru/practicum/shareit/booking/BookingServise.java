@@ -16,13 +16,13 @@ public interface BookingServise {
 
     Booking findById(long bookingId, long useId) throws ModelNotExitsException, IncorrectUserIdException;
 
-    Collection<Booking> getAllUser(long useId) throws UserNotFoundExteption;
+    Collection<Booking> getAllUser(long useId, Integer from, Integer size) throws UserNotFoundExteption;
 
-    Collection<Booking> getAllUser(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException;
+    Collection<Booking> getAllUser(long useId, BookingState state, Integer from, Integer size) throws UserNotFoundExteption, UnknownStateException;
 
     Collection<Booking> getAllOwner(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException;
 
-    Collection<Booking> getAllOwner(long useId) throws UserNotFoundExteption;
+    Collection<Booking> getAllOwner(long useId, Integer from, Integer size) throws UserNotFoundExteption;
 
     Optional<Booking> findLastBookingToItem(long itemId);
 

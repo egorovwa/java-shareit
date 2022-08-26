@@ -3,6 +3,8 @@ package ru.practicum.shareit.item.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -117,20 +119,37 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId) {
-        log.info("поиск вещей пользователя id ={}", userId);
-        return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream().map(i -> itemDtoMaper
-                        .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
-                                getItemComments(i.getId())))
-                .collect(Collectors.toUnmodifiableList());
+    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, Integer from, Integer size) {
+        if (from != null && size != null) {
+            Pageable pageable = PageRequest.of(from, size);
+            log.info("поиск вещей пользователя id ={}", userId);
+            return itemRepository.findByOwnerIdOrderByIdAsc(pageable, userId).stream().map(i -> itemDtoMaper
+                            .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
+                                    getItemComments(i.getId())))
+                    .collect(Collectors.toUnmodifiableList());
+        } else {
+            return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream().map(i -> itemDtoMaper
+                            .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
+                                    getItemComments(i.getId())))
+                    .collect(Collectors.toUnmodifiableList());
+        }
     }
 
     @Override
-    public Collection<Item> findByText(String text) {
-        if (Strings.isNotBlank(text)) {
-            log.info("поиск вещей по тексту ({})", text);
-            return Collections.unmodifiableCollection(itemRepository.findByText(text));
-        } else return new ArrayList<>();
+    public Collection<Item> findByText(String text, Integer from, Integer size) {
+        if (from != null && size != null) {
+            Pageable pageable = PageRequest.of(from, size);
+            if (Strings.isNotBlank(text)) {
+                log.info("поиск вещей по тексту ({})", text);
+                return Collections.unmodifiableCollection(itemRepository.findByText(pageable, text).toList());
+            } else return new ArrayList<>();
+        }else {
+            if (Strings.isNotBlank(text)) {
+                log.info("поиск вещей по тексту ({})", text);
+                return Collections.unmodifiableCollection(itemRepository.findByText(text));
+            } else return new ArrayList<>();
+
+        }
     }
 
     @Override

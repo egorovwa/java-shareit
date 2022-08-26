@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -222,7 +221,7 @@ class BookingServiseImplTest {
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L));
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, 0, 5));
     }
 
     @Test
@@ -230,40 +229,40 @@ class BookingServiseImplTest {
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, BookingState.FUTURE));
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, BookingState.FUTURE, 0, 5));
     }
 
     @Test
     void test5_2_testGetAllUser_PAST() throws UnknownStateException, UserNotFoundExteption {
-        bookingServise.getAllUser(1L, BookingState.PAST);
+        bookingServise.getAllUser(1L, BookingState.PAST, 0, 5);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBookerIdStatePast(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
     void test5_3_testGetAllUser_WAITING() throws UnknownStateException, UserNotFoundExteption {
-        bookingServise.getAllUser(1L, BookingState.WAITING);
+        bookingServise.getAllUser(1L, BookingState.WAITING, 0, 5);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBooker_IdAndStatus(1L, BookingStatus.WAITING);
     }
 
     @Test
     void test5_4_testGetAllUser_CURRENT() throws UnknownStateException, UserNotFoundExteption {
-        bookingServise.getAllUser(1L, BookingState.CURRENT);
+        bookingServise.getAllUser(1L, BookingState.CURRENT, 0, 5);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBookerIdStateCurrent(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
     void test5_5_testGetAllUser_REJECTED() throws UnknownStateException, UserNotFoundExteption {
-        bookingServise.getAllUser(1L, BookingState.REJECTED);
+        bookingServise.getAllUser(1L, BookingState.REJECTED, 0, 5);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBooker_IdAndStatus(1L, BookingStatus.REJECTED);
     }
 
     @Test
     void test5_6_testGetAllUser_FUTURE() throws UnknownStateException, UserNotFoundExteption {
-        bookingServise.getAllUser(1L, BookingState.FUTURE);
+        bookingServise.getAllUser(1L, BookingState.FUTURE, 0, 5);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findFuture(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
@@ -317,7 +316,7 @@ class BookingServiseImplTest {
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L));
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, 0, 5));
     }
 
 }

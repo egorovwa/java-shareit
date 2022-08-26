@@ -17,9 +17,9 @@ public interface ItemServise {
 
     Item findById(long itemId) throws ModelNotExitsException;
 
-    Collection<ItemDtoWithBoking> findAllByOwnerId(long userId);
+    Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, Integer from, Integer size);
 
-    Collection<Item> findByText(String text);
+    Collection<Item> findByText(String text, Integer from, Integer size);
 
     Comment addComment(Long itemId, long userId, String text) throws ModelNotExitsException, NotUsedCommentException;
 }

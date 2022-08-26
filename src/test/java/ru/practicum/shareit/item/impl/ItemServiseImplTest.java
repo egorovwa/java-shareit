@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
@@ -200,8 +202,8 @@ class ItemServiseImplTest {
                 USER_ID1, bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
                 .toItemDto(Optional.of(BOOKING_NEXT)), List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
         Mockito
-                .when(itemRepository.findByOwnerIdOrderByIdAsc(1L))
-                .thenReturn(List.of(item));
+                .when(itemRepository.findByOwnerIdOrderByIdAsc(Pageable.ofSize(5),1L))
+                .thenReturn(new PageImpl<>(List.of(item)));
         Mockito
                 .when(bookingRepository.findLastBookingToItem(1, TEST_TIME_LONG))
                 .thenReturn(List.of(BOOKING_FIST));
@@ -211,21 +213,22 @@ class ItemServiseImplTest {
         Mockito
                 .when(commentRepository.findByItem_IdOrderByCreatedDesc(1L))
                 .thenReturn(List.of(COMMENTID1_USER2));
-        assertThat(itemServise.findAllByOwnerId(1L).stream().findFirst().get(), is(withBoking));
+        assertThat(itemServise.findAllByOwnerId(1L, 0, 5).stream().findFirst().get(), is(withBoking));
 
     }
 
     @Test
     void test6_1findByText_notBlankText() {
+
         Mockito
-                .when(itemRepository.findByText("text"))
-                .thenReturn(List.of(testItemId1User1()));
-        assertEquals(1, itemServise.findByText("text").size());
+                .when(itemRepository.findByText(Pageable.ofSize(5),"text"))
+                .thenReturn(new PageImpl(List.of(testItemId1User1())));
+        assertEquals(1, itemServise.findByText("text", 0, 5).size());
     }
 
     @Test
     void test6_2findByText_WithOutText() {
-        assertEquals(0, itemServise.findByText("").size());
+        assertEquals(0, itemServise.findByText("", 0, 5).size());
     }
 
     @Test

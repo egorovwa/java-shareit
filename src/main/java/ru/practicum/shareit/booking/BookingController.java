@@ -48,19 +48,23 @@ public class BookingController {
 
     @GetMapping
     public Collection<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long useId,
-                                         @PathParam("state") String state) throws UnknownStateException, UserNotFoundExteption {
+                                         @PathParam("state") String state,
+                                         @PathParam("from") Integer from,
+                                         @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption {
         if (state == null) {
-            return bookingServise.getAllUser(useId).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllUser(useId, from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
-            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state), from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }
     }
 
     @GetMapping("/owner")
     public Collection<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") long useId,
-                                              @PathParam("state") String state) throws UnknownStateException, UserNotFoundExteption {
+                                              @PathParam("state") String state,
+                                              @PathParam("from") Integer from,
+                                              @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption {
         if (state == null) {
-            return bookingServise.getAllOwner(useId).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllOwner(useId,from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
             return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }

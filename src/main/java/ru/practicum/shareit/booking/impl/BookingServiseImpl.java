@@ -2,6 +2,8 @@ package ru.practicum.shareit.booking.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -89,17 +91,28 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public Collection<Booking> getAllUser(long useId) throws UserNotFoundExteption {
-        try {
-            userServise.findById(useId);
-        } catch (ModelNotExitsException e) {
-            throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
+    public Collection<Booking> getAllUser(long useId, Integer from, Integer size) throws UserNotFoundExteption {
+        if (from == null && size == null) {
+            try {
+                userServise.findById(useId);
+            } catch (ModelNotExitsException e) {
+                throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
+            }
+            return bookingRepository.findByBooker_IdOrderByStartDesc(useId);
+        } else {
+            Pageable pageable = PageRequest.of(from, size);
+            try {
+                userServise.findById(useId);
+            } catch (ModelNotExitsException e) {
+                throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
+            }
+            return bookingRepository.findByBooker_IdOrderByStartDesc(pageable, useId).toList();
+
         }
-        return bookingRepository.findByBooker_IdOrderByStartDesc(useId);
     }
 
     @Override
-    public Collection<Booking> getAllUser(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException {
+    public Collection<Booking> getAllUser(long useId, BookingState state, Integer from, Integer size) throws UserNotFoundExteption, UnknownStateException {
         try {
             userServise.findById(useId);
         } catch (ModelNotExitsException e) {
@@ -107,7 +120,7 @@ public class BookingServiseImpl implements BookingServise {
         }
         switch (state) {
             case ALL:
-                return getAllUser(useId);
+                return getAllUser(useId, from, size);
             case PAST:
                 return bookingRepository.findByBookerIdStatePast(useId,
                         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
@@ -150,13 +163,23 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public Collection<Booking> getAllOwner(long useId) throws UserNotFoundExteption {
-        try {
-            userServise.findById(useId);
-        } catch (ModelNotExitsException e) {
-            throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
+    public Collection<Booking> getAllOwner(long useId, Integer from, Integer size) throws UserNotFoundExteption {
+        if (from == null && size == null) {
+            try {
+                userServise.findById(useId);
+            } catch (ModelNotExitsException e) {
+                throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
+            }
+            return bookingRepository.findOwnerAll(useId);
+        }else {
+            Pageable pageable = PageRequest.of(from,size);
+            try {
+                userServise.findById(useId);
+            } catch (ModelNotExitsException e) {
+                throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
+            }
+            return bookingRepository.findOwnerAll(pageable,useId).toList();
         }
-        return bookingRepository.findOwnerAll(useId);
     }
 
     private boolean timeValidation(Long start, Long end) {
