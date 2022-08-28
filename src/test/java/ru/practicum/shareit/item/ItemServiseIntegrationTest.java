@@ -36,117 +36,6 @@ class ItemServiseIntegrationTest {
     private final BookingServise bookingServise;
     final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
 
-
-    /*   @Test
-       @DirtiesContext
-       void test1_createItem() throws ModelAlreadyExistsException, IncorrectUserIdException, ModelNotExitsException {
-           setUser();
-           Item item = getItem();
-           item.setAvailable(true);
-           itemServise.createItem(1, item);
-
-           assertEquals("item1", itemServise.findById(1).getName());
-           assertEquals("item1dis, finded", itemServise.findById(1).getDescription());
-           assertTrue(itemServise.findById(1).getAvailable());
-       }
-
-
-
-       @Test
-       @DirtiesContext
-       void test2_CreateItemWithErrors() throws ModelAlreadyExistsException {
-           setUser();
-           assertThrows(IncorrectUserIdException.class, () -> {
-               Item item = getItem();
-               itemServise.createItem(2, item);
-           });
-       }
-
-
-       @Test
-       @DirtiesContext
-       void test3_patchItem() throws IncorrectUserIdException, ModelAlreadyExistsException, ModelNotExitsException, IncorectUserOrItemIdException {
-           Item item = getItem();
-           setUser();
-           itemServise.createItem(1, item);
-
-           Item updatedItem = new Item();
-           updatedItem.setName("updatedName");
-           updatedItem.setAvailable(false);
-
-           itemServise.patchItem(1, 1, updatedItem);
-
-           assertEquals("updatedName", itemServise.findById(1).getName());
-
-
-           assertEquals(false, itemServise.findById(1).getAvailable());
-       }
-
-       @Test
-       @DirtiesContext
-       void test4_patchWithError() throws ModelAlreadyExistsException, IncorrectUserIdException {
-           setUser();
-           Item item = getItem();
-           User user2 = new User(null, "email2@mail.com", "user2");
-           userServise.addUser(user2);
-           itemServise.createItem(1, item);
-
-           assertThrows(IncorectUserOrItemIdException.class, () -> {
-               Item updatedItem = new Item();
-               updatedItem.setAvailable(false);
-               itemServise.patchItem(2, 1, updatedItem);
-           });
-       }
-
-
-       @Test
-       @DirtiesContext
-       void test5_findById() throws ModelAlreadyExistsException, IncorrectUserIdException, ModelNotExitsException {
-           setUser();
-           Item item = getItem();
-           itemServise.createItem(1, item);
-
-           assertEquals(item.getName(), itemServise.findById(1).getName());
-       }
-
-       @Test
-       @DirtiesContext
-       void test5_1_findByIdWithBookingAndComment() throws ModelNotExitsException, InterruptedException, NotUsedCommentException {
-           data2Users1Item3BookingOwnerUser1();
-           sleep(4000);
-           itemServise.addComment(1L, 2, "Comment");
-           ItemDtoWithBoking itemDtoWithBoking = itemServise.findById(1, 1);
-           assertEquals(1, itemDtoWithBoking.getLastBooking().getId());
-           assertEquals(2, itemDtoWithBoking.getNextBooking().getId());
-           assertTrue(itemDtoWithBoking.getComments().stream().anyMatch(r -> r.getText().equals("Comment")));
-
-       }
-
-       @Test
-       @DirtiesContext
-       void test6_findNotExitsItem() {
-           assertThrows(ModelNotExitsException.class, () -> itemServise.findById(2));
-       }
-
-       @Test
-       @DirtiesContext
-       void test7_findAllByOwnerId() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
-           setUser();
-           Item item1 = getItem();
-           Item item2 = new Item();
-           item2.setAvailable(true);
-           item2.setName("item2");
-           item2.setDescription("item2");
-           User user2 = new User(null, "user2@Email.com", "user2");
-           userServise.addUser(user2);
-           itemServise.createItem(1, itemDtoMaper.toDto(item1));
-           itemServise.createItem(2, itemDtoMaper.toDto(item2));
-
-           assertTrue(itemServise.findAllByOwnerId(1L,0,5).stream()
-                   .map(ItemDtoWithBoking::getName)
-                   .anyMatch(i -> i.equals(item1.getName())));
-       }
-*/
     @Test
     @DirtiesContext
     void test8_findItemByText() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
@@ -157,28 +46,7 @@ class ItemServiseIntegrationTest {
         Collection<Item> itemList = itemServise.findByText("finded", 0, 5);
         assertEquals(1, itemList.size());
         assertEquals(itemList.stream().map(Item::getName).findFirst().orElse(null), item.getName());
-    }/*
-
-    @Test
-    @DirtiesContext
-    void test9_1createComent() throws InterruptedException, ModelNotExitsException, NotUsedCommentException {
-        data2Users1Item3BookingOwnerUser1();
-        sleep(4000);
-        itemServise.addComment(1L, 2, "Comment");
-        ItemDtoWithBoking item = itemServise.findById(1, 1);
-        assertTrue(item.getComments().stream().anyMatch(r -> r.getText().equals("Comment")));
-
     }
-    /*
-
-
-    @Test
-    @DirtiesContext
-    void test9_2createComent() {
-        data2Users1Item3BookingOwnerUser1();
-
-        assertThrows(NotUsedCommentException.class, () -> itemServise.addComment(1L, 2, "Comment"));
-    }*/
 
     private Item getItem() {
         Item item = new Item();

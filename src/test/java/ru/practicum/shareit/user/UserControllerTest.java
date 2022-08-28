@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 @Import(UserDtoMaper.class)
 class UserControllerTest {
-    final String GOOD_EMAIL = "email@email.com";
+    final String goodEmail = "email@email.com";
     @MockBean
     UserServise userServise;
     @Autowired
@@ -51,13 +51,13 @@ class UserControllerTest {
     @Test
     void test1_createUser() throws Exception {
         UserDto userDto = new UserDto();
-        userDto.setEmail(GOOD_EMAIL);
+        userDto.setEmail(goodEmail);
         userDto.setName("name");
         User user = new User();
-        user.setEmail(GOOD_EMAIL);
+        user.setEmail(goodEmail);
         user.setName("name");
         User usersaved = new User();
-        usersaved.setEmail(GOOD_EMAIL);
+        usersaved.setEmail(goodEmail);
         usersaved.setName("name");
         usersaved.setId(1L);
         when(userServise.addUser(user))
@@ -68,7 +68,7 @@ class UserControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.email", is(GOOD_EMAIL)));
+                .andExpect(jsonPath("$.email", is(goodEmail)));
     }
 
     @Test
@@ -104,7 +104,7 @@ class UserControllerTest {
     @Test
     void test1_1_createAlradiExist() throws Exception {
         User user = new User();
-        user.setEmail(GOOD_EMAIL);
+        user.setEmail(goodEmail);
         user.setName("name");
         when(userServise.addUser(user))
                 .thenThrow(new ModelAlreadyExistsException("message", "param", "val"));
@@ -143,7 +143,7 @@ class UserControllerTest {
     @Test
     void test3_patchUser() throws Exception {
         UserDto userDto = new UserDto();
-        userDto.setEmail(GOOD_EMAIL);
+        userDto.setEmail(goodEmail);
         userDto.setName("name");
         when(userServise.updateUser(1L, dtoMaper.fromDto(userDto)))
                 .thenReturn(dtoMaper.fromDto(userDto));
@@ -159,7 +159,7 @@ class UserControllerTest {
     @Test
     void test4_getUser() throws Exception {
         UserDto userDto = new UserDto();
-        userDto.setEmail(GOOD_EMAIL);
+        userDto.setEmail(goodEmail);
         userDto.setName("name");
         when(userServise.findById(1L))
                 .thenReturn(dtoMaper.fromDto(userDto));
@@ -174,7 +174,7 @@ class UserControllerTest {
     @Test
     void test5_getUser() throws Exception {
         UserDto userDto = new UserDto();
-        userDto.setEmail(GOOD_EMAIL);
+        userDto.setEmail(goodEmail);
         userDto.setName("name");
         when(userServise.findAll())
                 .thenReturn(List.of(dtoMaper.fromDto(userDto)));

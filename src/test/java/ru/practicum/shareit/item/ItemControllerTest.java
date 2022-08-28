@@ -13,7 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
-import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
+import ru.practicum.shareit.exceptions.IncorrectUserIdException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.NotUsedCommentException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentDtoMaper;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -71,8 +74,8 @@ class ItemControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertThat(result.getResolvedException().getClass(),
                         is(IncorrectUserIdException.class)));
-
     }
+
     @Test
     void test1_3createItem() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),

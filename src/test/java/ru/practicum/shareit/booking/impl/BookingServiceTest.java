@@ -192,8 +192,8 @@ class BookingServiceTest {
                 .when(bookingRepository.findById(1L))
                 .thenReturn(Optional.of(booking));
         bookingServise.setStatus(1L, 1L, true);
-        Mockito.
-                verify(bookingRepository, Mockito.times(1)).save(booking);
+        Mockito
+                .verify(bookingRepository, Mockito.times(1)).save(booking);
 
     }
 
@@ -208,8 +208,8 @@ class BookingServiceTest {
                         LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC), ITEM_ID1_OWNER1_AVALIBLE_TRUE,
                         USER_ID2, BookingStatus.WAITING)));
         bookingServise.setStatus(1L, 1L, false);
-        Mockito.
-                verify(bookingRepository, Mockito.times(1)).save(result);
+        Mockito
+                .verify(bookingRepository, Mockito.times(1)).save(result);
     }
 
     @Test
