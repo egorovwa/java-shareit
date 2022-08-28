@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
 import org.junit.jupiter.api.Test;
-import ru.practicum.shareit.item.model.Comment;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
