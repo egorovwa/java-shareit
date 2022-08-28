@@ -79,8 +79,9 @@ class ItemRepositoryTest {
         assertThat(itemList.stream().findFirst().get(), is(itemfinded));
         assertThat(itemList.size(), is(1));
     }
-@Test
-@DirtiesContext
+
+    @Test
+    @DirtiesContext
     void test1_3findByText_inDescription() {
         userRepository.save(USER_ID1);
 

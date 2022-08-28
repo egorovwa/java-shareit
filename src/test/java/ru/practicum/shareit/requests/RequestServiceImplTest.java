@@ -1,6 +1,5 @@
 package ru.practicum.shareit.requests;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -64,7 +63,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void test2_findAll() throws ModelNotExitsException {
+    void test2_findAll_withPage() throws ModelNotExitsException {
 
         Pageable pageable = PageRequest.of(0, 2, Sort.by("created").descending());
         List<ItemRequest> itemRequests = List.of(testItemRequest(TEST_TIME_LONG),
@@ -91,48 +90,102 @@ class RequestServiceImplTest {
         assertThat(withOutPageble.stream().findFirst().get().getDescription(),
                 is(testItemRequest2(TEST_TIME_LONG).getDescription()));
     }
+
+    @Test
+    void test2_3findAll_withOutPage() throws ModelNotExitsException {
+        List<ItemRequest> itemRequests = List.of(testItemRequest(TEST_TIME_LONG),
+                testItemRequest(TEST_TIME_LONG + 10000));
+        Mockito
+                .when(mokRequestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(1L))
+                .thenReturn(itemRequests);
+        Mockito
+                .when(mokRequestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(1L))
+                .thenReturn(List.of(testItemRequest2(TEST_TIME_LONG), testItemRequest(TEST_TIME_LONG + 10000)));
+        Mockito
+                .when(mokUserService.findById(Mockito.anyLong()))
+                .thenReturn(USER_ID2);
+        RequestServiceImpl requestService = new RequestServiceImpl(mokUserService, mokRequestRepository);
+        Collection<ItemRequest> withOutPageble = requestService.findAllWithPage(null, null, 1L);
+        assertThat(withOutPageble.stream().findFirst().get().getDescription(),
+                is(testItemRequest2(TEST_TIME_LONG).getDescription()));
+    }
+
     @Test
     void test2_2findAll_userNotFound() throws ModelNotExitsException {
         Mockito
                 .when(mokUserService.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class,()->requestService.findAllWithPage(0,5,1L));
+        assertThrows(UserNotFoundExteption.class, () -> requestService.findAllWithPage(0, 5, 1L));
     }
+
     @Test
-    void test3_findById_notFound(){
+    void test3_findById_notFound() {
         Mockito
                 .when(mokRequestRepository.findById(1L))
                 .thenReturn(Optional.empty());
-        assertThrows(RequestNotExistException.class, ()-> requestService.findById(1L));
+        assertThrows(RequestNotExistException.class, () -> requestService.findById(1L));
     }
+
+    @Test
+    void test3_findById() throws RequestNotExistException {
+        Mockito
+                .when(mokRequestRepository.findById(1L))
+                .thenReturn(Optional.of(testItemRequest(TEST_TIME_LONG)));
+        assertThat(requestService.findById(1L), is(testItemRequest(TEST_TIME_LONG)));
+    }
+
     @Test
     void test4_findAllForRequestor_requestorNotFound() throws ModelNotExitsException {
         Mockito
                 .when(mokUserService.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(ModelNotExitsException.class,()->requestService.findAllForRequestor(1L));
+        assertThrows(ModelNotExitsException.class, () -> requestService.findAllForRequestor(1L));
     }
+
+    @Test
+    void test4_1_findAllForRequestor() throws ModelNotExitsException {
+        Mockito
+                .when(mokUserService.findById(1L))
+                .thenReturn(USER_ID1);
+        requestService.findAllForRequestor(1L);
+        Mockito.verify(mokRequestRepository, Mockito.times(1))
+                .findItemRequestsByRequestorIdOrderByCreatedDesc(1L);
+    }
+
     @Test
     void test5_findItemRequest_userNotFound() throws ModelNotExitsException {
         Mockito
                 .when(mokUserService.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(ModelNotExitsException.class,()->requestService.findItemRequest(1L,1L));
+        assertThrows(ModelNotExitsException.class, () -> requestService.findItemRequest(1L, 1L));
     }
+
     @Test
     void test5_1_findItemRequest_requesNotFound() throws ModelNotExitsException {
         Mockito
                 .when(mokRequestRepository.findById(1L))
                 .thenReturn(Optional.empty());
-        assertThrows(ModelNotExitsException.class,()->requestService.findItemRequest(1L,1L));
+        assertThrows(ModelNotExitsException.class, () -> requestService.findItemRequest(1L, 1L));
     }
+
     @Test
-    void test6_save(){
-        ItemRequest itemRequest =ITEMREQUEST_ID1_USER1;
+    void test5_2_findItemRequest() throws ModelNotExitsException {
+        Mockito
+                .when(mokUserService.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(mokRequestRepository.findById(1L))
+                .thenReturn(Optional.of(testItemRequest(TEST_TIME_LONG)));
+        assertThat(requestService.findItemRequest(1L, 1L), is(testItemRequest(TEST_TIME_LONG)));
+    }
+
+    @Test
+    void test6_save() {
+        ItemRequest itemRequest = ITEMREQUEST_ID1_USER1;
         Mockito
                 .when(mokRequestRepository.save(itemRequest))
                 .thenReturn(itemRequest);
-        assertThat(requestService.save(itemRequest),is(itemRequest));
+        assertThat(requestService.save(itemRequest), is(itemRequest));
     }
 
 

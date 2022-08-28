@@ -8,8 +8,6 @@ import ru.practicum.shareit.booking.BookingServise;
 import ru.practicum.shareit.item.ItemServise;
 import ru.practicum.shareit.user.UserServise;
 
-import static java.lang.Thread.sleep;
-
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

@@ -143,12 +143,11 @@ public class ItemServiseImpl implements ItemServise {
                 log.info("поиск вещей по тексту ({})", text);
                 return Collections.unmodifiableCollection(itemRepository.findByText(pageable, text).toList());
             } else return new ArrayList<>();
-        }else {
+        } else {
             if (Strings.isNotBlank(text)) {
                 log.info("поиск вещей по тексту ({})", text);
                 return Collections.unmodifiableCollection(itemRepository.findByText(text));
             } else return new ArrayList<>();
-
         }
     }
 
@@ -163,7 +162,5 @@ public class ItemServiseImpl implements ItemServise {
         } else {
             throw new NotUsedCommentException("пользователь не пользовался вещью", userId, itemId);
         }
-
-
     }
 }

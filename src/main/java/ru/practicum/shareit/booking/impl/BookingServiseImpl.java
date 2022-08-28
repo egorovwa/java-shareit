@@ -171,20 +171,19 @@ public class BookingServiseImpl implements BookingServise {
                 throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
             }
             return bookingRepository.findOwnerAll(useId);
-        }else {
-            Pageable pageable = PageRequest.of(from,size);
+        } else {
+            Pageable pageable = PageRequest.of(from, size);
             try {
                 userServise.findById(useId);
             } catch (ModelNotExitsException e) {
                 throw new UserNotFoundExteption(e.getMessage(), e.getParam(), e.getValue());
             }
-            return bookingRepository.findOwnerAll(pageable,useId).toList();
+            return bookingRepository.findOwnerAll(pageable, useId).toList();
         }
     }
 
     private boolean timeValidation(Long start, Long end) {
-        return end - start > 0 && start > LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
-                && end > LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        return end - start > 0 && start > LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     }
 
     @Override

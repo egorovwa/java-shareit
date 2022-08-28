@@ -47,6 +47,17 @@ class ItemServiseImplTest {
     ItemServiseImpl itemServise = new ItemServiseImpl(userServise, itemRepository, bookingRepository,
             commentRepository, itemDtoMaper, commentDtoMaper, requestService);
 
+    private static ItemDto testItemDtoWithOutRequest() {
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("item");
+        itemDto.setDescription("Description");
+        itemDto.setAvailable(true);
+        return itemDto;
+    }
+
+    private static Item testItemId1User1() {
+        return new Item(1L, "name", "d", true, USER_ID1);
+    }
 
     @Test
     void test1_createItem_withOutRequest() throws ModelNotExitsException, IncorrectUserIdException { // TODO: 18.08.2022 безсмыссленно в интегр
@@ -66,7 +77,6 @@ class ItemServiseImplTest {
         assertThat(savedItem.getAvailable(), is(true));
         assertNull(savedItem.getRequest());
     }
-
 
     @Test
     void test1_2_createItem_userNotFound() throws ModelNotExitsException, IncorrectUserIdException {
@@ -96,7 +106,6 @@ class ItemServiseImplTest {
         itemServise.createItem(2, itemDto);
         Mockito.verify(itemRepository, Mockito.times(1)).save(itemMustBeSaved);
     }
-
 
     @Test
     void test2_1_patchItem_incorrectUserId() {
@@ -202,7 +211,7 @@ class ItemServiseImplTest {
                 USER_ID1, bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
                 .toItemDto(Optional.of(BOOKING_NEXT)), List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
         Mockito
-                .when(itemRepository.findByOwnerIdOrderByIdAsc(Pageable.ofSize(5),1L))
+                .when(itemRepository.findByOwnerIdOrderByIdAsc(Pageable.ofSize(5), 1L))
                 .thenReturn(new PageImpl<>(List.of(item)));
         Mockito
                 .when(bookingRepository.findLastBookingToItem(1, TEST_TIME_LONG))
@@ -214,6 +223,32 @@ class ItemServiseImplTest {
                 .when(commentRepository.findByItem_IdOrderByCreatedDesc(1L))
                 .thenReturn(List.of(COMMENTID1_USER2));
         assertThat(itemServise.findAllByOwnerId(1L, 0, 5).stream().findFirst().get(), is(withBoking));
+        Mockito.verify(itemRepository, Mockito.times(1))
+                .findByOwnerIdOrderByIdAsc(Pageable.ofSize(5), 1L);
+
+    }
+
+    @Test
+    void test5_1findAllByOwnerId_withOutPage() {
+        Item item = testItemId1User1();
+        ItemDtoWithBoking withBoking = new ItemDtoWithBoking(1L, item.getName(), item.getDescription(), true,
+                USER_ID1, bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
+                .toItemDto(Optional.of(BOOKING_NEXT)), List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
+        Mockito
+                .when(itemRepository.findByOwnerIdOrderByIdAsc(1L))
+                .thenReturn(List.of(item));
+        Mockito
+                .when(bookingRepository.findLastBookingToItem(1, TEST_TIME_LONG))
+                .thenReturn(List.of(BOOKING_FIST));
+        Mockito
+                .when(bookingRepository.findNextBookingToItem(1, TEST_TIME_LONG))
+                .thenReturn(List.of(BOOKING_NEXT));
+        Mockito
+                .when(commentRepository.findByItem_IdOrderByCreatedDesc(1L))
+                .thenReturn(List.of(COMMENTID1_USER2));
+        assertThat(itemServise.findAllByOwnerId(1L, null, null).stream().findFirst().get(), is(withBoking));
+        Mockito.verify(itemRepository, Mockito.times(1))
+                .findByOwnerIdOrderByIdAsc(1L);
 
     }
 
@@ -221,14 +256,32 @@ class ItemServiseImplTest {
     void test6_1findByText_notBlankText() {
 
         Mockito
-                .when(itemRepository.findByText(Pageable.ofSize(5),"text"))
+                .when(itemRepository.findByText(Pageable.ofSize(5), "text"))
                 .thenReturn(new PageImpl(List.of(testItemId1User1())));
         assertEquals(1, itemServise.findByText("text", 0, 5).size());
+        Mockito.verify(itemRepository, Mockito.times(1))
+                .findByText(Pageable.ofSize(5), "text");
     }
 
     @Test
-    void test6_2findByText_WithOutText() {
-        assertEquals(0, itemServise.findByText("", 0, 5).size());
+    void test6_2findByText_notBlankText_withOutFromSize() {
+
+        Mockito
+                .when(itemRepository.findByText("text"))
+                .thenReturn(List.of(testItemId1User1()));
+        assertEquals(1, itemServise.findByText("text", null, null).size());
+        Mockito.verify(itemRepository, Mockito.times(1))
+                .findByText("text");
+    }
+
+    @Test
+    void test6_3findByText_WithOutText_withOutPage() {
+        assertEquals(0, itemServise.findByText("", null, null).size());
+    }
+
+    @Test
+    void test6_4findByText_WithOutText() {
+        assertEquals(0, itemServise.findByText(null, 0, 5).size());
     }
 
     @Test
@@ -238,30 +291,33 @@ class ItemServiseImplTest {
                 .thenThrow(ModelNotExitsException.class);
         assertThrows(ModelNotExitsException.class, () -> itemServise.addComment(1L, 1L, "text"));
     }
+
     @Test
-    void test7_2_addComment_itemNotFound(){
+    void test7_2_addComment_itemNotFound() {
         Mockito
                 .when(itemRepository.findById(1L))
                 .thenReturn(Optional.empty());
-        assertThrows(ModelNotExitsException.class, ()->itemServise.addComment(1L,1L,"text"));
+        assertThrows(ModelNotExitsException.class, () -> itemServise.addComment(1L, 1L, "text"));
     }
+
     @Test
     void test7_3_addComment_NotUsed() throws ModelNotExitsException, NotUsedCommentException {
         Mockito
-                .when(bookingRepository.usedCount(1L,1L,TEST_TIME_LONG))
+                .when(bookingRepository.usedCount(1L, 1L, TEST_TIME_LONG))
                 .thenReturn(0);
         Mockito
                 .when(userServise.findById(1L))
                 .thenReturn(USER_ID1);
         Mockito
                 .when(itemRepository.findById(1L))
-                        .thenReturn(Optional.of(testItemId1User1()));
-        assertThrows(NotUsedCommentException.class, ()->itemServise.addComment(1L,1,"text"));
+                .thenReturn(Optional.of(testItemId1User1()));
+        assertThrows(NotUsedCommentException.class, () -> itemServise.addComment(1L, 1, "text"));
     }
+
     @Test
     void test7_4_addComment_dateTimeNow() throws ModelNotExitsException, NotUsedCommentException {  // TODO: 25.08.2022 убрать срабатывает через раз
         Mockito
-                .when(bookingRepository.usedCount(2L,1L,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)))
+                .when(bookingRepository.usedCount(2L, 1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)))
                 .thenReturn(1);
         Mockito
                 .when(userServise.findById(2L))
@@ -269,24 +325,12 @@ class ItemServiseImplTest {
         Mockito
                 .when(itemRepository.findById(1L))
                 .thenReturn(Optional.of(testItemId1User1()));
-        Comment comment = new Comment(null,"text",testItemId1User1(),
-                USER_ID2,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        Comment comment = new Comment(null, "text", testItemId1User1(),
+                USER_ID2, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         comment.setAuthor(USER_ID2);
-        itemServise.addComment(1L,2L,"text");
-Mockito
-        .verify(commentRepository,Mockito.times(1)).save(comment);
+        itemServise.addComment(1L, 2L, "text");
+        Mockito
+                .verify(commentRepository, Mockito.times(1)).save(comment);
 
-    }
-
-    private static ItemDto testItemDtoWithOutRequest() {
-        ItemDto itemDto = new ItemDto();
-        itemDto.setName("item");
-        itemDto.setDescription("Description");
-        itemDto.setAvailable(true);
-        return itemDto;
-    }
-
-    private static Item testItemId1User1() {
-        return new Item(1L, "name", "d", true, USER_ID1);
     }
 }

@@ -185,7 +185,7 @@ class BookingRepositoryTest {
     @DirtiesContext
     void usedCount() {
         data();
-        Integer count = bookingRepository.usedCount(2L,1L,
+        Integer count = bookingRepository.usedCount(2L, 1L,
                 LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         assertThat(count, is(1));
     }

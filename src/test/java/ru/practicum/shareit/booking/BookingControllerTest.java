@@ -22,11 +22,13 @@ import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.Entitys.BOOKING1_USER2_ITEM1_WAITING;
 
@@ -42,6 +44,7 @@ class BookingControllerTest {
     BookingDtoToCreate dtoToCreate;
     Booking booking;
     BookingDtoMaper dtoMaper = new BookingDtoMaper();
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @BeforeEach
     void setup(WebApplicationContext web) {
@@ -97,6 +100,20 @@ class BookingControllerTest {
     }
 
     @Test
+    void test1_4_createBooking() throws Exception {
+        when(bookingServise.createBooking(Mockito.any(), Mockito.anyLong()))
+                .thenReturn(BOOKING1_USER2_ITEM1_WAITING);
+        mvc.perform(post("/bookings")
+                        .content(objectMapper.writeValueAsString(dtoToCreate))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)));
+    }
+
+
+    @Test
     void test2_1bookingСonfirmation_incorrectUserId() throws Exception {
         when(bookingServise.setStatus(1L, 1L, true))
                 .thenThrow(new IncorrectUserIdException("message", "id"));
@@ -139,7 +156,32 @@ class BookingControllerTest {
     }
 
     @Test
-    void getById() {
+    void test2_4_bookingСonfirmation() throws Exception {
+        booking.setStatus(BookingStatus.APPROVED);
+        when(bookingServise.setStatus(1L, 1L, true))
+                .thenReturn(booking);
+        mvc.perform(patch("/bookings/{bookingId}", 1L)
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("approved", String.valueOf(true))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.status", is("APPROVED")));
+    }
+
+    @Test
+    void test5_getById() throws Exception {
+        when(bookingServise.findById(1L, 2L))
+                .thenReturn(BOOKING1_USER2_ITEM1_WAITING);
+        mvc.perform(get("/bookings/{bookingId}", 1)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 2L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.start",
+                        is(timeFormatter.format(LocalDateTime.ofEpochSecond(BOOKING1_USER2_ITEM1_WAITING.getStart(),
+                                0, ZoneOffset.UTC)))));
     }
 
     @Test
@@ -184,6 +226,7 @@ class BookingControllerTest {
                 .verify(bookingServise, Mockito.times(1))
                 .getAllUser(1L, BookingState.FUTURE, 0, 3);
     }
+
     @Test
     void test4_1getAllOwner_withOutState() throws Exception {
         mvc.perform(get("/bookings/owner")

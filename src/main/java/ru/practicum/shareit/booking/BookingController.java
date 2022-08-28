@@ -65,7 +65,7 @@ public class BookingController {
                                               @PathParam("from") Integer from,
                                               @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption {
         if (state == null) {
-            return bookingServise.getAllOwner(useId,from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllOwner(useId, from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
             return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }

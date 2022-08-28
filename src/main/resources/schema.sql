@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS items
     description VARCHAR(1000)                           NOT NULL,
     available   BOOLEAN                                 NOT NULL,
     owner       BIGINT                                  NOT NULL REFERENCES users (id),
-    request_id     BIGINT REFERENCES requests (id),
+    request_id  BIGINT REFERENCES requests (id),
     CONSTRAINT pk_item PRIMARY KEY (id)
 );
 

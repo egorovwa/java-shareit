@@ -115,6 +115,19 @@ class ItemRequesstControllerTest {
     }
 
     @Test
+    void test5_findAllForRequestor() throws Exception {
+        when(requestService.findAllForRequestor(1L))
+                .thenReturn(List.of(ITEMREQUEST_ID1_USER1));
+        mvc.perform(get("/requests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(1)));
+
+    }
+
+    @Test
     void test3_findtemRequest() throws Exception {
         when(requestService.findItemRequest(1L, 1L))
                 .thenReturn(new ItemRequest(1L, "aaaaaa",

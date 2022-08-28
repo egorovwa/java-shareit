@@ -95,6 +95,26 @@ class UserServiseImplTest {
     }
 
     @Test
+    void test2_5_updateUserName() throws ModelNotExitsException, ModelAlreadyExistsException {
+        User savedUser = USER_ID1;
+        User toUpdateUser = new User();
+        toUpdateUser.setName("update");
+        User updatedUser = USER_ID1;
+        updatedUser.setName("update");
+        Mockito
+                .when(userRepository.findById(1L))
+                .thenReturn(Optional.of(savedUser));
+        Mockito
+                .when(userRepository.save(updatedUser))
+                .thenReturn(updatedUser);
+        UserServiseImpl userServise = new UserServiseImpl(userRepository);
+
+        User resultUser = userServise.updateUser(1, toUpdateUser);
+
+        assertThat(resultUser.getName(), is("update"));
+    }
+
+    @Test
     void test2_3_UpdateUserWithError() {
         User toUpdate = new User();
         toUpdate.setEmail("Mail2@mail.ru");
@@ -107,12 +127,13 @@ class UserServiseImplTest {
         UserServiseImpl userServise = new UserServiseImpl(userRepository);
         assertThrows(ModelAlreadyExistsException.class, () -> userServise.updateUser(1L, toUpdate));
     }
+
     @Test
-   void test2_2_UpdateUser_UserNotFound(){
+    void test2_4_UpdateUser_UserNotFound() {
         Mockito
                 .when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
-        assertThrows(ModelNotExitsException.class, ()->userServise.updateUser(1,USER_ID1));
+        assertThrows(ModelNotExitsException.class, () -> userServise.updateUser(1, USER_ID1));
     }
 
     @Test
@@ -124,14 +145,15 @@ class UserServiseImplTest {
 
         assertThrows(ModelNotExitsException.class, () -> userServise.deleteUser(11));
     }
+
     @Test
     void test3_1_deleteUser() throws ModelNotExitsException {
         Mockito
                 .when(userRepository.findById(1L))
-                        .thenReturn(Optional.of(USER_ID1));
+                .thenReturn(Optional.of(USER_ID1));
         userServise.deleteUser(1L);
         Mockito
-                .verify(userRepository,Mockito.times(1))
+                .verify(userRepository, Mockito.times(1))
                 .deleteById(1L);
     }
 
@@ -142,10 +164,11 @@ class UserServiseImplTest {
                 .thenReturn(Optional.empty());
         assertThrows(ModelNotExitsException.class, () -> userServise.findById(22));
     }
+
     @Test
-    void test5_findAll(){
+    void test5_findAll() {
         userServise.findAll();
-        Mockito.verify(userRepository,Mockito.times(1)).findAll();
+        Mockito.verify(userRepository, Mockito.times(1)).findAll();
     }
 // TODO: 24.08.2022 проверять вроде нечего
 /*    @Test

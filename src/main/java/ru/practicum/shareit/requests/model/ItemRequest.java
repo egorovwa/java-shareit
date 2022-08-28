@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * // TODO .
@@ -35,7 +34,7 @@ public class ItemRequest {
     private User requestor;
     private Long created;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "request")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "request")
     private Collection<Item> items = new ArrayList<>();
 
     public ItemRequest(String description, User requestor) {

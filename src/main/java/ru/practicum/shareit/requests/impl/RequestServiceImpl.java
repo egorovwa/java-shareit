@@ -35,8 +35,8 @@ public class RequestServiceImpl implements RequestService {
         try {
 
             User user = userServise.findById(userId);
-        }catch (ModelNotExitsException e){
-            throw  new UserNotFoundExteption("пользователь не чсуществует", "id",
+        } catch (ModelNotExitsException e) {
+            throw new UserNotFoundExteption("пользователь не чсуществует", "id",
                     userId.toString());
         }
         if (from != null && size != null) {
@@ -56,7 +56,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ItemRequest save(ItemRequest itemRequest) {
-       return requestRepository.save(itemRequest);
+        return requestRepository.save(itemRequest);
 
     }
 
@@ -69,7 +69,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public ItemRequest findItemRequest(Long itemId, Long userId) throws ModelNotExitsException {
         User user = userServise.findById(userId);
-                
+
         return requestRepository.findById(itemId)
                 .orElseThrow(() -> new ModelNotExitsException("запрос не существует", "id", itemId.toString()));
     }

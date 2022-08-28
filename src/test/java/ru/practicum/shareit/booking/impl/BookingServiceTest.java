@@ -7,6 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -23,8 +26,11 @@ import ru.practicum.shareit.user.UserServise;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.practicum.shareit.Entitys.*;
 
@@ -38,8 +44,9 @@ class BookingServiceTest {
     ItemServise itemServise;
     @InjectMocks
     BookingServiseImpl bookingServise;
+
     @BeforeEach
-    void clear(){
+    void clear() {
         Mockito.clearAllCaches();
     }
 
@@ -93,12 +100,25 @@ class BookingServiceTest {
     }
 
     @Test
-    void test1_5createBooking_TimeIntersection() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
+    void test1_5createBooking_TimeIntersection_whenTimeLast() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
         Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
         User user = USER_ID2;
-        Booking booking = new Booking(null, BOOKING_DTO_TO_CREATE_ITEM1.getStart().toEpochSecond(ZoneOffset.UTC),
-                BOOKING_DTO_TO_CREATE_ITEM1.getEnd().toEpochSecond(ZoneOffset.UTC),
-                item, user, BookingStatus.WAITING);
+        Mockito
+                .when(itemServise.findById(1L))
+                .thenReturn(item);
+        Mockito
+                .when(userServise.findById(2L))
+                .thenReturn(USER_ID2);
+        assertThrows(TimeIntersectionException.class, () ->
+                bookingServise.createBooking(BOOKING_DTO_TO_CREATE_ITEM1, 2));
+    }
+
+    @Test
+    void test1_7createBooking_TimeIntersection_startAfteEnd() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
+        Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
+        User user = USER_ID2;
+        BookingDtoToCreate toCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofMinutes(5)),
+                LocalDateTime.now().plus(Duration.ofMinutes(1)), 1L);
         Mockito
                 .when(itemServise.findById(1L))
                 .thenReturn(item);
@@ -159,33 +179,36 @@ class BookingServiceTest {
     void test2_4_setStatus_userNotOwner() {
         Mockito
                 .when(bookingRepository.findById(1L))
-                .thenReturn(Optional.of(new Booking(1L,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                        LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC),ITEM_ID1_OWNER1_AVALIBLE_TRUE,
-                        USER_ID2,BookingStatus.WAITING)));
+                .thenReturn(Optional.of(new Booking(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                        LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC), ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                        USER_ID2, BookingStatus.WAITING)));
         assertThrows(IncorrectUserIdException.class, () -> bookingServise.setStatus(2L, 1L, true));
     }
 
     @Test
     void test2_5_setStatus_APPROVED() throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
+        Booking booking = new Booking(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC),
+                ITEM_ID1_OWNER1_AVALIBLE_TRUE, USER_ID2, BookingStatus.WAITING);
         Mockito
                 .when(bookingRepository.findById(1L))
-                .thenReturn(Optional.of(BOOKING1_USER2_ITEM1_WAITING));
+                .thenReturn(Optional.of(booking));
         bookingServise.setStatus(1L, 1L, true);
         Mockito.
-                verify(bookingRepository, Mockito.times(1)).save(BOOKING1_USER2_ITEM1_APPROVED);
+                verify(bookingRepository, Mockito.times(1)).save(booking);
 
     }
 
     @Test
     void test2_6_setStatus_REJECTED() throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
-        Booking result = new Booking(1L,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC),ITEM_ID1_OWNER1_AVALIBLE_TRUE,
-                USER_ID2,BookingStatus.REJECTED);
+        Booking result = new Booking(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC), ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                USER_ID2, BookingStatus.REJECTED);
         Mockito
                 .when(bookingRepository.findById(1L))
-                .thenReturn(Optional.of(new Booking(1L,LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                        LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC),ITEM_ID1_OWNER1_AVALIBLE_TRUE,
-                        USER_ID2,BookingStatus.WAITING)));
+                .thenReturn(Optional.of(new Booking(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                        LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC), ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                        USER_ID2, BookingStatus.WAITING)));
         bookingServise.setStatus(1L, 1L, false);
         Mockito.
                 verify(bookingRepository, Mockito.times(1)).save(result);
@@ -215,6 +238,30 @@ class BookingServiceTest {
         assertThrows(IncorrectUserIdException.class, () -> bookingServise.findById(1L, 3L));
     }
 
+    @Test
+    void test3_5findById_owner() throws ModelNotExitsException, IncorrectUserIdException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(BOOKING1_USER2_ITEM1_WAITING));
+        Booking booking = bookingServise.findById(1L, 1L);
+        assertThat(booking, is(BOOKING1_USER2_ITEM1_WAITING));
+    }
+
+    @Test
+    void test3_6findById_booker() throws ModelNotExitsException, IncorrectUserIdException {
+        Mockito
+                .when(userServise.findById(2L))
+                .thenReturn(USER_ID2);
+        Mockito
+                .when(bookingRepository.findById(1L))
+                .thenReturn(Optional.of(BOOKING1_USER2_ITEM1_WAITING));
+        Booking booking = bookingServise.findById(1L, 2L);
+        assertThat(booking, is(BOOKING1_USER2_ITEM1_WAITING));
+    }
+
 
     @Test
     void test4_1_getAllUser_userNotFound() throws ModelNotExitsException {
@@ -223,14 +270,40 @@ class BookingServiceTest {
                 .thenThrow(ModelNotExitsException.class);
         assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, 0, 5));
     }
+
     @Test
-    void test4_1_getAllUser_userNotFound_withOutFromSize() throws ModelNotExitsException {
+    void test4_2_getAllUser_userNotFound_withOutFromSize() throws ModelNotExitsException {
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L,null,null));
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, null, null));
     }
 
+    @Test
+    void test4_3_getAllUser_withOutFromSize() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(bookingRepository.findByBooker_IdOrderByStartDesc(1L))
+                .thenReturn(List.of(BOOKING1_USER2_ITEM1_WAITING));
+        bookingServise.getAllUser(1L, null, null);
+        Mockito.verify(bookingRepository, Mockito.times(1)).findByBooker_IdOrderByStartDesc(1L);
+    }
+
+    @Test
+    void test4_4_getAllUser_withFromSize() throws ModelNotExitsException {
+        Pageable pageable = PageRequest.of(0, 5);
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(bookingRepository.findByBooker_IdOrderByStartDesc(pageable, 1L))
+                .thenReturn(new PageImpl<>(List.of(BOOKING1_USER2_ITEM1_WAITING)));
+        bookingServise.getAllUser(1L, 0, 5);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByBooker_IdOrderByStartDesc(pageable, 1L);
+    }
 
     @Test
     void test5_1_getAllUser_userNotFound() throws ModelNotExitsException {
@@ -238,6 +311,20 @@ class BookingServiceTest {
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
         assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, BookingState.FUTURE, 0, 5));
+    }
+
+    @Test
+    void test5_7_testGetAllUser_ALL() throws UnknownStateException, ModelNotExitsException {
+        Pageable pageable = PageRequest.of(0, 5);
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(bookingRepository.findByBooker_IdOrderByStartDesc(pageable, 1L))
+                .thenReturn(new PageImpl<>(List.of(BOOKING1_USER2_ITEM1_WAITING)));
+        bookingServise.getAllUser(1L, BookingState.ALL, 0, 5);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findByBooker_IdOrderByStartDesc(pageable, 1L);
     }
 
     @Test
@@ -274,7 +361,6 @@ class BookingServiceTest {
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findFuture(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
-
 
     @Test
     void test6_1_getAllOwner_userNotFound() throws ModelNotExitsException {
@@ -326,12 +412,75 @@ class BookingServiceTest {
                 .thenThrow(ModelNotExitsException.class);
         assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, 0, 5));
     }
+
     @Test
     void test6_8_getAllOwner_userNotFound_withOutFromSize() throws ModelNotExitsException {
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
         assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, null, null));
+    }
+
+    @Test
+    void test6_9_getAllUser_withOutFromSize() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(bookingRepository.findOwnerAll(1L))
+                .thenReturn(List.of(BOOKING1_USER2_ITEM1_WAITING));
+        bookingServise.getAllOwner(1L, null, null);
+        Mockito.verify(bookingRepository, Mockito.times(1)).findOwnerAll(1L);
+    }
+
+    @Test
+    void test6_10_getAllUser_withFromSize() throws ModelNotExitsException {
+        Pageable pageable = PageRequest.of(0, 5);
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(bookingRepository.findOwnerAll(pageable, 1L))
+                .thenReturn(new PageImpl<>(List.of(BOOKING1_USER2_ITEM1_WAITING)));
+        bookingServise.getAllOwner(1L, 0, 5);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findOwnerAll(pageable, 1L);
+    }
+
+    @Test
+    void test6_11_testGetAllUser_ALL() throws UnknownStateException, ModelNotExitsException {
+        Pageable pageable = PageRequest.of(0, 5);
+        Mockito
+                .when(userServise.findById(1L))
+                .thenReturn(USER_ID1);
+        Mockito
+                .when(bookingRepository.findOwnerAll(1L))
+                .thenReturn(List.of(BOOKING1_USER2_ITEM1_WAITING));
+        bookingServise.getAllOwner(1L, BookingState.ALL);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findOwnerAll(1L);
+    }
+
+    @Test
+    void test7_findLastBookingToItem() {
+        long time = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        Mockito
+                .when(bookingRepository.findLastBookingToItem(1L, time))
+                .thenReturn(List.of(BOOKING_FIST));
+        bookingServise.findLastBookingToItem(1L);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findLastBookingToItem(1L, time);
+    }
+
+    @Test
+    void test8_findNextBookingToItem() {
+        long time = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        Mockito
+                .when(bookingRepository.findNextBookingToItem(1L, time))
+                .thenReturn(List.of(BOOKING_FIST));
+        bookingServise.findNextBookingToItem(1L);
+        Mockito.verify(bookingRepository, Mockito.times(1))
+                .findNextBookingToItem(1L, time);
     }
 
 }

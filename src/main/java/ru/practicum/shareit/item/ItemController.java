@@ -43,15 +43,15 @@ public class ItemController {
 
     @GetMapping
     public Collection<ItemDtoWithBoking> findAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                          @PathParam("from")Integer from,
-                                                          @PathParam("size") Integer size){
+                                                          @PathParam("from") Integer from,
+                                                          @PathParam("size") Integer size) {
         return itemServise.findAllByOwnerId(userId, from, size);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> findByText(@RequestParam String text,@PathParam("from") Integer from,
+    public Collection<ItemDto> findByText(@RequestParam String text, @PathParam("from") Integer from,
                                           @PathParam("size") Integer size) {
-        return itemServise.findByText(text,from,size).stream()
+        return itemServise.findByText(text, from, size).stream()
                 .map(itemDtoMaper::toDto)
                 .collect(Collectors.toList());
     }

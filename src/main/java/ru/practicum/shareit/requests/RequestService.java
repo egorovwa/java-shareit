@@ -9,7 +9,7 @@ import java.util.Collection;
 
 
 public interface RequestService {
-ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws ModelNotExitsException;
+    ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws ModelNotExitsException;
 
 
     Collection<ItemRequest> findAllWithPage(Integer from, Integer size, Long userId) throws ModelNotExitsException; // TODO: 17.08.2022 aplication test
@@ -17,6 +17,8 @@ ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws Mod
     ItemRequest findById(Long requestId) throws RequestNotExistException;
 
     ItemRequest save(ItemRequest itemRequest);
+
     Collection<ItemRequest> findAllForRequestor(Long userId) throws ModelNotExitsException;
+
     ItemRequest findItemRequest(Long itemId, Long userId) throws ModelNotExitsException;
 }

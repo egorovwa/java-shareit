@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -44,9 +46,8 @@ class ItemControllerTest {
     @Autowired
     MockMvc mvc;
     ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper());
+    CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
     DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
-
 
 
     @BeforeEach
@@ -94,6 +95,22 @@ class ItemControllerTest {
     }
 
     @Test
+    void test1_3createItem() throws Exception {
+        ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
+                ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
+                true, null, 1L);
+        when(itemServise.createItem(1, itemDto))
+                .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
+        mvc.perform(post("/items")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1)
+                        .content(mapper.writeValueAsString(itemDto)))
+                .andExpect(jsonPath("$.id", is(1)));
+        Mockito.verify(itemServise, Mockito.times(1)).createItem(1L, itemDto);
+    }
+
+    @Test
     void test2_1_patchItem_ModelNotExitsException() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
                 ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
@@ -130,6 +147,25 @@ class ItemControllerTest {
     }
 
     @Test
+    void test2_3_patchItem() throws Exception {
+        ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
+                ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
+                true, null, 1L);
+        Item inItem = dtoMaper.fromDto(itemDto);
+        when(itemServise.patchItem(1, 1, inItem))
+                .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
+        mvc.perform(patch("/items/{itemId}", 1)
+                        .content(mapper.writeValueAsString(itemDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1))
+                .andExpect(jsonPath("$.id", is(1)));
+        Mockito.verify(itemServise, Mockito.times(1))
+                .patchItem(1L, 1L, dtoMaper.fromDto(itemDto));
+
+    }
+
+    @Test
     void test3_findById_ModelNotExitsException() throws Exception {
         when(itemServise.findById(1L, 1L))
                 .thenThrow(new ModelNotExitsException("messsage", "id", "value"));
@@ -141,6 +177,34 @@ class ItemControllerTest {
                 .andExpect(result -> assertThat(result.getResolvedException().getClass(),
                         is(ModelNotExitsException.class)));
 
+    }
+
+    @Test
+    void test3_1_findById() throws Exception {
+        when(itemServise.findById(1L, 1L))
+                .thenReturn(dtoMaper.toDtoWithBooking(ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                        List.of(commentDtoMaper.toDto(COMMENTID1_USER2))));
+        mvc.perform(get("/items/{itemId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)));
+    }
+
+    @Test
+    void test3_2_findByOwnerId() throws Exception {
+        when(itemServise.findAllByOwnerId(1L, 0, 5))
+                .thenReturn(List.of(dtoMaper.toDtoWithBooking(ITEM_ID1_OWNER1_AVALIBLE_TRUE,
+                        List.of(commentDtoMaper.toDto(COMMENTID1_USER2)))));
+        mvc.perform(get("/items")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header("X-Sharer-User-Id", 1)
+                        .param("from", "0")
+                        .param("size", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(1)));
     }
 
     @Test
@@ -194,5 +258,20 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.created",
                         is(timeFormatter.format(LocalDateTime
                                 .ofEpochSecond(COMMENTID1_USER2.getCreated(), 0, ZoneOffset.UTC)))));
+    }
+
+    @Test
+    void test5_findByText() throws Exception {
+        when(itemServise.findByText("text", 0, 5))
+                .thenReturn(List.of(ITEM_ID1_OWNER1_AVALIBLE_TRUE));
+        mvc.perform(get("/items/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .param("text", "text")
+                        .param("from", "0")
+                        .param("size", "5")
+                        .header("X-Sharer-User-Id", 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(1)));
     }
 }

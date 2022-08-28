@@ -11,6 +11,7 @@ import java.util.Collection;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Collection<Booking> findByBooker_IdOrderByStartDesc(long id);
+
     Page<Booking> findByBooker_IdOrderByStartDesc(Pageable pageable, long id);
 
     @Query("SELECT b FROM Booking b " +
@@ -29,6 +30,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :ownerId ORDER BY b.start DESC")
     Collection<Booking> findOwnerAll(long ownerId);
+
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :ownerId ORDER BY b.start DESC")
     Page<Booking> findOwnerAll(Pageable pageable, long ownerId);
 
