@@ -45,9 +45,9 @@ class ItemControllerTest {
     ObjectMapper mapper;
     @Autowired
     MockMvc mvc;
-    ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper());
-    CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
-    DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    final ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper());
+    final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
+    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 
     @BeforeEach
@@ -73,27 +73,6 @@ class ItemControllerTest {
                         is(IncorrectUserIdException.class)));
 
     }
-
-    @Test
-    void test1_2createItem_RequestNotExistException() throws Exception {
-        ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
-                ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
-                true, null, 1L);
-        when(itemServise.createItem(1, itemDto))
-                .thenThrow(new RequestNotExistException("message", "param", "val"));
-        mvc.perform(post("/items")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .header("X-Sharer-User-Id", 1)
-                        .content(mapper.writeValueAsString(itemDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertThat(result.getResolvedException().getClass(),
-                        is(RequestNotExistException.class)))
-                .andExpect(result -> assertThat(result.getResolvedException().getMessage(),
-                        is("message")));
-
-    }
-
     @Test
     void test1_3createItem() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
@@ -245,9 +224,8 @@ class ItemControllerTest {
     void test4_3_addComment() throws Exception {
         CommentDto commentDto = new CommentDto();
         commentDto.setText(COMMENTID1_USER2.getText());
-        Comment comment = COMMENTID1_USER2;
         when(itemServise.addComment(1L, 2L, COMMENTID1_USER2.getText()))
-                .thenReturn(comment);
+                .thenReturn(COMMENTID1_USER2);
         mvc.perform(post("/items/{itemId}/comment", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)

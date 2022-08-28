@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 @Import(UserDtoMaper.class)
 class UserControllerTest {
-    String GOOD_EMAIL = "email@email.com";
+    final String GOOD_EMAIL = "email@email.com";
     @MockBean
     UserServise userServise;
     @Autowired
@@ -41,7 +41,7 @@ class UserControllerTest {
     @Autowired
     MockMvc mvc;
 
-    UserDtoMaper dtoMaper = new UserDtoMaper();
+    final UserDtoMaper dtoMaper = new UserDtoMaper();
 
     @BeforeEach
     void setup(WebApplicationContext web) {

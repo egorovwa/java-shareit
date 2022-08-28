@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static ru.practicum.shareit.Entitys.*;
 
 class ItemRequestDtoMaperTest {
-    ItemRequestDtoMaper itemRequestDtoMaper = new ItemRequestDtoMaper(new ItemDtoMaper(new BookingDtoMaper()));
+    final ItemRequestDtoMaper itemRequestDtoMaper = new ItemRequestDtoMaper(new ItemDtoMaper(new BookingDtoMaper()));
 
     @Test
     void toCreatedDto() {
@@ -40,11 +40,11 @@ class ItemRequestDtoMaperTest {
 
     @Test
     void toDtoForRequestor() {
-        ItemRequest itemRequest = new ItemRequest(1l, "sss", USER_ID2, TEST_TIME_LONG,
+        ItemRequest itemRequest = new ItemRequest(1L, "sss", USER_ID2, TEST_TIME_LONG,
                 List.of(ITEM_ID1_OWNER1_AVALIBLE_TRUE));
         ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
 
-        ItemRequestDtoForRequestor dto = new ItemRequestDtoForRequestor(1l, "sss",
+        ItemRequestDtoForRequestor dto = new ItemRequestDtoForRequestor(1L, "sss",
                 USER_ID2, TEST_TIME_DATE_TIME, List.of(itemDtoMaper.toDto(ITEM_ID1_OWNER1_AVALIBLE_TRUE)));
         assertThat(itemRequestDtoMaper.toDtoForRequestor(itemRequest), is(dto));
     }

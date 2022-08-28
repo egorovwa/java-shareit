@@ -39,7 +39,7 @@ public class ItemErrorHandler {
 
     @ExceptionHandler(RequestNotExistException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> requestNotExist(ModelNotExitsException e) {  // TODO: 17.08.2022 возможно не надо
+    public Map<String, String> requestNotExist(ModelNotExitsException e) {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
     }
 

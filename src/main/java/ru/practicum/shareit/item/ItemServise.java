@@ -9,7 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.Collection;
 
 public interface ItemServise {
-    Item createItem(long userId, ItemDto itemDto) throws IncorrectUserIdException, RequestNotExistException;
+    Item createItem(long userId, ItemDto itemDto) throws IncorrectUserIdException;
 
     Item patchItem(long userId, long itemId, Item item) throws ModelNotExitsException, IncorectUserOrItemIdException;
 

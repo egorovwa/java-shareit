@@ -55,14 +55,13 @@ class UserServiseImplTest {
 
     @Test
     void test2_1_updateUserName() throws ModelNotExitsException, ModelAlreadyExistsException {
-        User savedUser = USER_ID1;
         User toUpdateUser = new User();
         toUpdateUser.setName("updatedName");
         User updatedUser = USER_ID1;
         updatedUser.setName("updatedName");
         Mockito
                 .when(userRepository.findById(1L))
-                .thenReturn(Optional.of(savedUser));
+                .thenReturn(Optional.of(USER_ID1));
         Mockito
                 .when(userRepository.save(updatedUser))
                 .thenReturn(updatedUser);
@@ -76,14 +75,13 @@ class UserServiseImplTest {
 
     @Test
     void test2_2_updateUserEmail() throws ModelNotExitsException, ModelAlreadyExistsException {
-        User savedUser = USER_ID1;
         User toUpdateUser = new User();
         toUpdateUser.setEmail("updated@email.com");
         User updatedUser = USER_ID1;
         updatedUser.setEmail("updated@email.com");
         Mockito
                 .when(userRepository.findById(1L))
-                .thenReturn(Optional.of(savedUser));
+                .thenReturn(Optional.of(USER_ID1));
         Mockito
                 .when(userRepository.save(updatedUser))
                 .thenReturn(updatedUser);
@@ -96,14 +94,13 @@ class UserServiseImplTest {
 
     @Test
     void test2_5_updateUserName() throws ModelNotExitsException, ModelAlreadyExistsException {
-        User savedUser = USER_ID1;
         User toUpdateUser = new User();
         toUpdateUser.setName("update");
         User updatedUser = USER_ID1;
         updatedUser.setName("update");
         Mockito
                 .when(userRepository.findById(1L))
-                .thenReturn(Optional.of(savedUser));
+                .thenReturn(Optional.of(USER_ID1));
         Mockito
                 .when(userRepository.save(updatedUser))
                 .thenReturn(updatedUser);
@@ -158,7 +155,7 @@ class UserServiseImplTest {
     }
 
     @Test
-    void test4_findByIdNotFound() throws ModelNotExitsException {
+    void test4_findByIdNotFound() {
         Mockito
                 .when(userRepository.findById(22L))
                 .thenReturn(Optional.empty());

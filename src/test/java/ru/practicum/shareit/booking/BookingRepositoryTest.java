@@ -22,7 +22,7 @@ import static ru.practicum.shareit.Entitys.*;
 
 @DataJpaTest
 class BookingRepositoryTest {
-    private static long HOUR = 1000 * 60 * 60;
+    private static final long HOUR = 1000 * 60 * 60;
     @Autowired
     UserRepository userRepository;
     @Autowired

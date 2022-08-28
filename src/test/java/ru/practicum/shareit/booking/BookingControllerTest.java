@@ -44,7 +44,7 @@ class BookingControllerTest {
     BookingDtoToCreate dtoToCreate;
     Booking booking;
     BookingDtoMaper dtoMaper = new BookingDtoMaper();
-    DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @BeforeEach
     void setup(WebApplicationContext web) {

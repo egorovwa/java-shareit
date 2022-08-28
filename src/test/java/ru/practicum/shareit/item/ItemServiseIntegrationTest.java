@@ -34,7 +34,7 @@ class ItemServiseIntegrationTest {
     private final ItemServise itemServise;
     private final UserServise userServise;
     private final BookingServise bookingServise;
-    ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
+    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
 
 
     /*   @Test
@@ -213,7 +213,7 @@ class ItemServiseIntegrationTest {
         itemList.forEach(r -> {
             try {
                 itemServise.createItem(1, itemDtoMaper.toDto(r));
-            } catch (IncorrectUserIdException | RequestNotExistException e) {
+            } catch (IncorrectUserIdException e) {
                 throw new RuntimeException(e);
             }
         });

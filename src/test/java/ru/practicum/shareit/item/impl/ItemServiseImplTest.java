@@ -36,15 +36,15 @@ import static ru.practicum.shareit.Entitys.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiseImplTest {
-    ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-    UserServise userServise = Mockito.mock(UserServise.class);
-    BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-    RequestService requestService = Mockito.mock(RequestService.class);
-    CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
-    CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
-    BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
-    ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper);
-    ItemServiseImpl itemServise = new ItemServiseImpl(userServise, itemRepository, bookingRepository,
+    final ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+    final UserServise userServise = Mockito.mock(UserServise.class);
+    final BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
+    final RequestService requestService = Mockito.mock(RequestService.class);
+    final CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
+    final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
+    final BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
+    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper);
+    final ItemServiseImpl itemServise = new ItemServiseImpl(userServise, itemRepository, bookingRepository,
             commentRepository, itemDtoMaper, commentDtoMaper, requestService);
 
     private static ItemDto testItemDtoWithOutRequest() {
@@ -60,7 +60,7 @@ class ItemServiseImplTest {
     }
 
     @Test
-    void test1_createItem_withOutRequest() throws ModelNotExitsException, IncorrectUserIdException { // TODO: 18.08.2022 безсмыссленно в интегр
+    void test1_createItem_withOutRequest() throws IncorrectUserIdException {
         Item item = new Item(1L, "item", "Description", true, USER_ID1);
         Mockito
                 .when(itemRepository.save(Mockito.any()))
@@ -79,7 +79,7 @@ class ItemServiseImplTest {
     }
 
     @Test
-    void test1_2_createItem_userNotFound() throws ModelNotExitsException, IncorrectUserIdException {
+    void test1_2_createItem_userNotFound() throws ModelNotExitsException {
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
@@ -257,7 +257,7 @@ class ItemServiseImplTest {
 
         Mockito
                 .when(itemRepository.findByText(Pageable.ofSize(5), "text"))
-                .thenReturn(new PageImpl(List.of(testItemId1User1())));
+                .thenReturn(new PageImpl<>(List.of(testItemId1User1())));
         assertEquals(1, itemServise.findByText("text", 0, 5).size());
         Mockito.verify(itemRepository, Mockito.times(1))
                 .findByText(Pageable.ofSize(5), "text");
@@ -301,7 +301,7 @@ class ItemServiseImplTest {
     }
 
     @Test
-    void test7_3_addComment_NotUsed() throws ModelNotExitsException, NotUsedCommentException {
+    void test7_3_addComment_NotUsed() throws ModelNotExitsException {
         Mockito
                 .when(bookingRepository.usedCount(1L, 1L, TEST_TIME_LONG))
                 .thenReturn(0);
@@ -315,7 +315,7 @@ class ItemServiseImplTest {
     }
 
     @Test
-    void test7_4_addComment_dateTimeNow() throws ModelNotExitsException, NotUsedCommentException {  // TODO: 25.08.2022 убрать срабатывает через раз
+    void test7_4_addComment_dateTimeNow() throws ModelNotExitsException, NotUsedCommentException {
         Mockito
                 .when(bookingRepository.usedCount(2L, 1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)))
                 .thenReturn(1);

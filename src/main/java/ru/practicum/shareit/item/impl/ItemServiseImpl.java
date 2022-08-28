@@ -38,7 +38,7 @@ public class ItemServiseImpl implements ItemServise {
     private final RequestService requestService;
 
     @Override
-    public Item createItem(long userId, ItemDto itemDto) throws IncorrectUserIdException, RequestNotExistException { // TODO: 17.08.2022 Request notFound Exception
+    public Item createItem(long userId, ItemDto itemDto) throws IncorrectUserIdException {
         Item item = itemDtoMaper.fromDto(itemDto);
         try {
             User user = userServise.findById(userId);
@@ -153,10 +153,10 @@ public class ItemServiseImpl implements ItemServise {
 
     @Override
     public Comment addComment(Long itemId, long userId, String text) throws ModelNotExitsException, NotUsedCommentException {
-        Item item = findById(itemId); // TODO: 05.08.2022 проверить exception
+        Item item = findById(itemId);
         User user = userServise.findById(userId);
         int i = bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-        if (bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) >= 1) {   // TODO: 25.08.2022 проверить
+        if (bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) >= 1) {
             return commentRepository.save(new Comment(null, text, item, user,
                     LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)));
         } else {

@@ -12,7 +12,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static ru.practicum.shareit.Entitys.*;
 
 class ItemDtoMaperTest {
-    ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
+    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
 
     @Test
     void fromDto() {

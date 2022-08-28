@@ -22,8 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static ru.practicum.shareit.Entitys.*;
 
 @DataJpaTest
@@ -45,7 +44,7 @@ class RequestRepositoryTest {
         itemRequest.setRequestor(user);
         requestRepository.save(itemRequest);
         ItemRequest savedRequest = testEntityManager.find(ItemRequest.class, 1L);
-        assertTrue(savedRequest != null);
+        assertNotNull(savedRequest);
         assertThat(savedRequest.getDescription(), is(itemRequest.getDescription()));
         assertThat(savedRequest.getCreated(), is(TEST_TIME_LONG));
         assertThat(savedRequest.getRequestor(), is(USER_ID1));
@@ -64,14 +63,14 @@ class RequestRepositoryTest {
 
     @Test
     @DirtiesContext
-    void test3_findAllWithPage() throws InterruptedException {
+    void test3_findAllWithPage() {
         User userRequestor = userRepository.save(USER_ID1);
         User userResponser = userRepository.save(USER_ID2);
         String description = "Created : ";
         List<ItemRequest> savedRequests = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             ItemRequest itemRequest = new ItemRequest();
-            Long createTime = TEST_TIME_DATE_TIME.minus(Duration.ofHours(i))
+            long createTime = TEST_TIME_DATE_TIME.minus(Duration.ofHours(i))
                     .toEpochSecond(ZoneOffset.UTC);
             itemRequest.setCreated(createTime);
             itemRequest.setDescription(description + LocalDateTime
@@ -98,7 +97,7 @@ class RequestRepositoryTest {
         List<ItemRequest> savedRequests = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             ItemRequest itemRequest = new ItemRequest();
-            Long createTime = TEST_TIME_DATE_TIME.minus(Duration.ofHours(i))
+            long createTime = TEST_TIME_DATE_TIME.minus(Duration.ofHours(i))
                     .toEpochSecond(ZoneOffset.UTC);
             itemRequest.setCreated(createTime);
             itemRequest.setDescription(description + LocalDateTime
@@ -129,7 +128,7 @@ class RequestRepositoryTest {
         List<ItemRequest> savedRequests = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             ItemRequest itemRequest = new ItemRequest();
-            Long createTime = TEST_TIME_DATE_TIME.minus(Duration.ofHours(i))
+            long createTime = TEST_TIME_DATE_TIME.minus(Duration.ofHours(i))
                     .toEpochSecond(ZoneOffset.UTC);
             itemRequest.setCreated(createTime);
             itemRequest.setDescription(description + LocalDateTime

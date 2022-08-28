@@ -52,7 +52,7 @@ class BookingServiceTest {
 
 
     @Test
-    void test1_1createBooking_itemNotFound() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
+    void test1_1createBooking_itemNotFound() throws ModelNotExitsException {
         Mockito
                 .when(itemServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
@@ -100,12 +100,11 @@ class BookingServiceTest {
     }
 
     @Test
-    void test1_5createBooking_TimeIntersection_whenTimeLast() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
-        Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
+    void test1_5createBooking_TimeIntersection_whenTimeLast() throws ModelNotExitsException {
         User user = USER_ID2;
         Mockito
                 .when(itemServise.findById(1L))
-                .thenReturn(item);
+                .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
         Mockito
                 .when(userServise.findById(2L))
                 .thenReturn(USER_ID2);
@@ -114,14 +113,13 @@ class BookingServiceTest {
     }
 
     @Test
-    void test1_7createBooking_TimeIntersection_startAfteEnd() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
-        Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
+    void test1_7createBooking_TimeIntersection_startAfteEnd() throws ModelNotExitsException {
         User user = USER_ID2;
         BookingDtoToCreate toCreate = new BookingDtoToCreate(LocalDateTime.now().plus(Duration.ofMinutes(5)),
                 LocalDateTime.now().plus(Duration.ofMinutes(1)), 1L);
         Mockito
                 .when(itemServise.findById(1L))
-                .thenReturn(item);
+                .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
         Mockito
                 .when(userServise.findById(2L))
                 .thenReturn(USER_ID2);

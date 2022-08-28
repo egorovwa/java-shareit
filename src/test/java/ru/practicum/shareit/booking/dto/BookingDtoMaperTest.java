@@ -14,7 +14,7 @@ import static ru.practicum.shareit.Entitys.BOOKING1_USER2_ITEM1_WAITING;
 import static ru.practicum.shareit.Entitys.USER_ID2;
 
 class BookingDtoMaperTest {
-    BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
+    final BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
 
     @Test
     void toDtoCreated() {

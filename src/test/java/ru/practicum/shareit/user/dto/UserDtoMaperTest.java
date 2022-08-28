@@ -9,7 +9,7 @@ import static ru.practicum.shareit.Entitys.USER_ID1;
 
 
 class UserDtoMaperTest {
-    UserDtoMaper userDtoMaper = new UserDtoMaper();
+    final UserDtoMaper userDtoMaper = new UserDtoMaper();
 
     @Test
     void toDto() {

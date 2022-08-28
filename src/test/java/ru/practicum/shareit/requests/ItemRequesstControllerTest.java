@@ -50,8 +50,8 @@ class ItemRequesstControllerTest {
     @Autowired
     MockMvc mvc;
     User user;
-    LocalDateTime createTime = LocalDateTime.of(2022, 8, 16, 19, 9, 0);
-    DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    final LocalDateTime createTime = LocalDateTime.of(2022, 8, 16, 19, 9, 0);
+    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @BeforeEach
     void setup(WebApplicationContext web) {

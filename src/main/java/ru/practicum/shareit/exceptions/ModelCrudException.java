@@ -1,6 +1,6 @@
 package ru.practicum.shareit.exceptions;
 
-public class ModelCrudException extends Exception {      // TODO: 18.07.2022 название придумать
+public class ModelCrudException extends Exception {
     final String param;
     final String value;
 

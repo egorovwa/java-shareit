@@ -12,15 +12,14 @@ import static ru.practicum.shareit.Entitys.COMMENTID1_USER2;
 import static ru.practicum.shareit.Entitys.USER_ID2;
 
 class CommentDtoMaperTest {
-    CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
+    final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
 
     @Test
     void toDto() {
-        Comment comment = COMMENTID1_USER2;
         CommentDto dto = new CommentDto(1L, COMMENTID1_USER2.getText(),
                 LocalDateTime.ofEpochSecond(COMMENTID1_USER2.getCreated(), 0, ZoneOffset.UTC),
                 USER_ID2.getName());
-        assertThat(commentDtoMaper.toDto(comment), is(dto));
+        assertThat(commentDtoMaper.toDto(COMMENTID1_USER2), is(dto));
 
     }
 }

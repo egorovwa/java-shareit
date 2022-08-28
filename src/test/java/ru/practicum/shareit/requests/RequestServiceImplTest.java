@@ -161,7 +161,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void test5_1_findItemRequest_requesNotFound() throws ModelNotExitsException {
+    void test5_1_findItemRequest_requesNotFound() {
         Mockito
                 .when(mokRequestRepository.findById(1L))
                 .thenReturn(Optional.empty());

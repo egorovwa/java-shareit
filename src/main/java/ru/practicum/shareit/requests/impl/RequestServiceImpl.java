@@ -24,7 +24,7 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
 
     @Override
-    public ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws ModelNotExitsException {   // TODO: 16.08.2022 пока без мапера
+    public ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws ModelNotExitsException {
         User user = userServise.findById(userId);
         ItemRequest itemRequest = new ItemRequest(itemRequestDto.getDescription(), user);
         return requestRepository.save(itemRequest);
