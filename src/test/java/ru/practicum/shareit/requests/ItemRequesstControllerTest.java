@@ -19,6 +19,7 @@ import ru.practicum.shareit.requests.dto.ItemRequestDtoForRequestor;
 import ru.practicum.shareit.requests.dto.ItemRequestDtoMaper;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.util.PageParam;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -94,12 +95,13 @@ class ItemRequesstControllerTest {
 
     @Test
     void test2_findAllWithPage() throws Exception {
+        PageParam pageParam = PageParam.create(0, 3);
         List<ItemRequest> itemRequests = new ArrayList<>();
         for (long i = 1; i <= 3; i++) {
             itemRequests.add(new ItemRequest(i, "aaaaaa",
                     USER_ID1, TEST_TIME_LONG, new ArrayList<>()));
         }
-        when(requestService.findAllWithPage(0, 3, 1L))   // TODO: 20.08.2022 обавил юзер id
+        when(requestService.findAllWithPage(pageParam, 1L))
                 .thenReturn(itemRequests);
 
 

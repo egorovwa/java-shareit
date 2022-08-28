@@ -8,7 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
+import ru.practicum.shareit.exceptions.IncorrectUserIdException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.NotUsedCommentException;
 import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemServise;
@@ -19,6 +22,7 @@ import ru.practicum.shareit.requests.RequestService;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.util.PageParam;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -119,9 +123,9 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, Integer from, Integer size) {
-        if (from != null && size != null) {
-            Pageable pageable = PageRequest.of(from, size);
+    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, PageParam pageParam) {
+        if (pageParam != null) {
+            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize());
             log.info("поиск вещей пользователя id ={}", userId);
             return itemRepository.findByOwnerIdOrderByIdAsc(pageable, userId).stream().map(i -> itemDtoMaper
                             .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
@@ -136,9 +140,9 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Collection<Item> findByText(String text, Integer from, Integer size) {
-        if (from != null && size != null) {
-            Pageable pageable = PageRequest.of(from, size);
+    public Collection<Item> findByText(String text, PageParam pageParam) {
+        if (pageParam != null) {
+            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize());
             if (Strings.isNotBlank(text)) {
                 log.info("поиск вещей по тексту ({})", text);
                 return Collections.unmodifiableCollection(itemRepository.findByText(pageable, text).toList());

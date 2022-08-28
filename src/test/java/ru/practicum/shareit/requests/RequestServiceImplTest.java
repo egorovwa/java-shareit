@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import ru.practicum.shareit.booking.exceptions.UserNotFoundExteption;
+import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.RequestNotExistException;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
@@ -15,6 +16,7 @@ import ru.practicum.shareit.requests.impl.RequestServiceImpl;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.util.PageParam;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -63,7 +65,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void test2_findAll_withPage() throws ModelNotExitsException {
+    void test2_findAll_withPage() throws ModelNotExitsException, IncorrectPageValueException {
 
         Pageable pageable = PageRequest.of(0, 2, Sort.by("created").descending());
         List<ItemRequest> itemRequests = List.of(testItemRequest(TEST_TIME_LONG),
@@ -81,10 +83,10 @@ class RequestServiceImplTest {
                 .when(mokUserService.findById(Mockito.anyLong()))
                 .thenReturn(USER_ID2);
         RequestServiceImpl requestService = new RequestServiceImpl(mokUserService, mokRequestRepository);
+        PageParam pageParam = PageParam.create(0, 2);
 
-
-        Collection<ItemRequest> withPageble = requestService.findAllWithPage(0, 2, 1L);
-        Collection<ItemRequest> withOutPageble = requestService.findAllWithPage(null, null, 1L);
+        Collection<ItemRequest> withPageble = requestService.findAllWithPage(pageParam, 1L);
+        Collection<ItemRequest> withOutPageble = requestService.findAllWithPage(null, 1L);
         assertThat("from, size", withPageble.stream().findFirst().get().getDescription(),
                 is(testItemRequest(TEST_TIME_LONG).getDescription()));
         assertThat(withOutPageble.stream().findFirst().get().getDescription(),
@@ -105,17 +107,18 @@ class RequestServiceImplTest {
                 .when(mokUserService.findById(Mockito.anyLong()))
                 .thenReturn(USER_ID2);
         RequestServiceImpl requestService = new RequestServiceImpl(mokUserService, mokRequestRepository);
-        Collection<ItemRequest> withOutPageble = requestService.findAllWithPage(null, null, 1L);
+        Collection<ItemRequest> withOutPageble = requestService.findAllWithPage(null, 1L);
         assertThat(withOutPageble.stream().findFirst().get().getDescription(),
                 is(testItemRequest2(TEST_TIME_LONG).getDescription()));
     }
 
     @Test
-    void test2_2findAll_userNotFound() throws ModelNotExitsException {
+    void test2_2findAll_userNotFound() throws ModelNotExitsException, IncorrectPageValueException {
         Mockito
                 .when(mokUserService.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> requestService.findAllWithPage(0, 5, 1L));
+        PageParam pageParam = PageParam.create(0, 5);
+        assertThrows(UserNotFoundExteption.class, () -> requestService.findAllWithPage(pageParam, 1L));
     }
 
     @Test

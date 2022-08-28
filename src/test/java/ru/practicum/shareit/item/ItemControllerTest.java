@@ -23,6 +23,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.util.PageParam;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -176,7 +177,8 @@ class ItemControllerTest {
 
     @Test
     void test3_2_findByOwnerId() throws Exception {
-        when(itemServise.findAllByOwnerId(1L, 0, 5))
+        PageParam pageParam = PageParam.create(0, 5);
+        when(itemServise.findAllByOwnerId(1L, pageParam))
                 .thenReturn(List.of(dtoMaper.toDtoWithBooking(ITEM_ID1_OWNER1_AVALIBLE_TRUE,
                         List.of(commentDtoMaper.toDto(COMMENTID1_USER2)))));
         mvc.perform(get("/items")
@@ -243,7 +245,8 @@ class ItemControllerTest {
 
     @Test
     void test5_findByText() throws Exception {
-        when(itemServise.findByText("text", 0, 5))
+        PageParam pageParam = PageParam.create(0,5);
+        when(itemServise.findByText("text", pageParam))
                 .thenReturn(List.of(ITEM_ID1_OWNER1_AVALIBLE_TRUE));
         mvc.perform(get("/items/search")
                         .contentType(MediaType.APPLICATION_JSON)

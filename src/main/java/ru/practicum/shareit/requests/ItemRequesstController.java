@@ -2,10 +2,12 @@ package ru.practicum.shareit.requests;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.dto.ItemRequestDtoForRequestor;
 import ru.practicum.shareit.requests.dto.ItemRequestDtoMaper;
+import ru.practicum.shareit.util.PageParam;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -28,8 +30,9 @@ public class ItemRequesstController {
     public Collection<ItemRequestDtoForRequestor> findAllItemRequest(
             @RequestParam(value = "from", required = false) Integer from,
             @RequestParam(value = "size", required = false) Integer size,
-            @RequestHeader("X-Sharer-User-Id") Long userId) throws ModelNotExitsException {
-        return requestService.findAllWithPage(from, size, userId).stream()
+            @RequestHeader("X-Sharer-User-Id") Long userId) throws ModelNotExitsException, IncorrectPageValueException {
+        PageParam pageParam = PageParam.create(from, size);
+        return requestService.findAllWithPage(pageParam, userId).stream()
                 .map(maper::toDtoForRequestor).collect(Collectors.toList());
     }
 

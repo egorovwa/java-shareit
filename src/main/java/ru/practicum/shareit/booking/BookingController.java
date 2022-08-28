@@ -7,8 +7,10 @@ import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.StateDtoMaper;
 import ru.practicum.shareit.booking.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.util.PageParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -51,11 +53,13 @@ public class BookingController {
     public Collection<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long useId,
                                          @PathParam("state") String state,
                                          @PathParam("from") Integer from,
-                                         @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption {
+                                         @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
         if (state == null) {
-            return bookingServise.getAllUser(useId, from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            PageParam pageParam = PageParam.create(from, size);
+            return bookingServise.getAllUser(useId,pageParam).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
-            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state), from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            PageParam pageParam = PageParam.create(from, size);
+            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state), pageParam).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }
     }
 
@@ -63,9 +67,10 @@ public class BookingController {
     public Collection<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") long useId,
                                               @PathParam("state") String state,
                                               @PathParam("from") Integer from,
-                                              @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption {
+                                              @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
         if (state == null) {
-            return bookingServise.getAllOwner(useId, from, size).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            PageParam pageParam = PageParam.create(from,size);
+            return bookingServise.getAllOwner(useId, pageParam).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
             return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }

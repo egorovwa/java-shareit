@@ -5,6 +5,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBoking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.util.PageParam;
 
 import java.util.Collection;
 
@@ -17,9 +18,9 @@ public interface ItemServise {
 
     Item findById(long itemId) throws ModelNotExitsException;
 
-    Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, Integer from, Integer size);
+    Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, PageParam pageParam);
 
-    Collection<Item> findByText(String text, Integer from, Integer size);
+    Collection<Item> findByText(String text, PageParam pageParam);
 
     Comment addComment(Long itemId, long userId, String text) throws ModelNotExitsException, NotUsedCommentException;
 }

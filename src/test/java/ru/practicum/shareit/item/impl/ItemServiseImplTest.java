@@ -8,10 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
-import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
-import ru.practicum.shareit.exceptions.IncorrectUserIdException;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.exceptions.NotUsedCommentException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.CommentDtoMaper;
@@ -22,6 +19,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.RequestService;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.util.PageParam;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -205,7 +203,7 @@ class ItemServiseImplTest {
     }
 
     @Test
-    void test5_findAllByOwnerId() {
+    void test5_findAllByOwnerId() throws IncorrectPageValueException {
         Item item = testItemId1User1();
         ItemDtoWithBoking withBoking = new ItemDtoWithBoking(1L, item.getName(), item.getDescription(), true,
                 USER_ID1, bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
@@ -222,7 +220,8 @@ class ItemServiseImplTest {
         Mockito
                 .when(commentRepository.findByItem_IdOrderByCreatedDesc(1L))
                 .thenReturn(List.of(COMMENTID1_USER2));
-        assertThat(itemServise.findAllByOwnerId(1L, 0, 5).stream().findFirst().get(), is(withBoking));
+        PageParam pageParam = PageParam.create(0, 5);
+        assertThat(itemServise.findAllByOwnerId(1L, pageParam).stream().findFirst().get(), is(withBoking));
         Mockito.verify(itemRepository, Mockito.times(1))
                 .findByOwnerIdOrderByIdAsc(Pageable.ofSize(5), 1L);
 
@@ -246,19 +245,20 @@ class ItemServiseImplTest {
         Mockito
                 .when(commentRepository.findByItem_IdOrderByCreatedDesc(1L))
                 .thenReturn(List.of(COMMENTID1_USER2));
-        assertThat(itemServise.findAllByOwnerId(1L, null, null).stream().findFirst().get(), is(withBoking));
+        assertThat(itemServise.findAllByOwnerId(1L, null).stream().findFirst().get(), is(withBoking));
         Mockito.verify(itemRepository, Mockito.times(1))
                 .findByOwnerIdOrderByIdAsc(1L);
 
     }
 
     @Test
-    void test6_1findByText_notBlankText() {
+    void test6_1findByText_notBlankText() throws IncorrectPageValueException {
 
         Mockito
                 .when(itemRepository.findByText(Pageable.ofSize(5), "text"))
                 .thenReturn(new PageImpl<>(List.of(testItemId1User1())));
-        assertEquals(1, itemServise.findByText("text", 0, 5).size());
+        PageParam pageParam = PageParam.create(0, 5);
+        assertEquals(1, itemServise.findByText("text", pageParam).size());
         Mockito.verify(itemRepository, Mockito.times(1))
                 .findByText(Pageable.ofSize(5), "text");
     }
@@ -269,19 +269,20 @@ class ItemServiseImplTest {
         Mockito
                 .when(itemRepository.findByText("text"))
                 .thenReturn(List.of(testItemId1User1()));
-        assertEquals(1, itemServise.findByText("text", null, null).size());
+        assertEquals(1, itemServise.findByText("text", null).size());
         Mockito.verify(itemRepository, Mockito.times(1))
                 .findByText("text");
     }
 
     @Test
     void test6_3findByText_WithOutText_withOutPage() {
-        assertEquals(0, itemServise.findByText("", null, null).size());
+        assertEquals(0, itemServise.findByText("", null).size());
     }
 
     @Test
-    void test6_4findByText_WithOutText() {
-        assertEquals(0, itemServise.findByText(null, 0, 5).size());
+    void test6_4findByText_WithOutText() throws IncorrectPageValueException {
+        PageParam pageParam = PageParam.create(0,5);
+        assertEquals(0, itemServise.findByText(null, pageParam).size());
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.util.PageParam;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
@@ -44,14 +45,16 @@ public class ItemController {
     @GetMapping
     public Collection<ItemDtoWithBoking> findAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId,
                                                           @PathParam("from") Integer from,
-                                                          @PathParam("size") Integer size) {
-        return itemServise.findAllByOwnerId(userId, from, size);
+                                                          @PathParam("size") Integer size) throws IncorrectPageValueException {
+        PageParam pageParam = PageParam.create(from, size);
+        return itemServise.findAllByOwnerId(userId, pageParam);
     }
 
     @GetMapping("/search")
     public Collection<ItemDto> findByText(@RequestParam String text, @PathParam("from") Integer from,
-                                          @PathParam("size") Integer size) {
-        return itemServise.findByText(text, from, size).stream()
+                                          @PathParam("size") Integer size) throws IncorrectPageValueException {
+        PageParam pageParam = PageParam.create(from, size);
+        return itemServise.findByText(text, pageParam).stream()
                 .map(itemDtoMaper::toDto)
                 .collect(Collectors.toList());
     }

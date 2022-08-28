@@ -18,6 +18,7 @@ import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.util.PageParam;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -45,6 +46,7 @@ class BookingControllerTest {
     Booking booking;
     BookingDtoMaper dtoMaper = new BookingDtoMaper();
     final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
 
     @BeforeEach
     void setup(WebApplicationContext web) {
@@ -186,7 +188,8 @@ class BookingControllerTest {
 
     @Test
     void test3_1_getAll_userNotFound() throws Exception {
-        when(bookingServise.getAllUser(1L, BookingState.ALL, 0, 3))
+        PageParam pageParam = PageParam.create(0,1);
+        when(bookingServise.getAllUser(1L, BookingState.ALL, pageParam))
                 .thenThrow(new UnknownStateException("message", "value"));
         mvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", 1L)
@@ -203,6 +206,7 @@ class BookingControllerTest {
 
     @Test
     void test4_1getAllUser_withOutState() throws Exception {
+        PageParam pageParam = PageParam.create(0,3);
         mvc.perform(get("/bookings")
                 .header("X-Sharer-User-Id", 1L)
                 .param("from", "0")
@@ -210,11 +214,12 @@ class BookingControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8));
         Mockito
-                .verify(bookingServise, Mockito.times(1)).getAllUser(1L, 0, 3);
+                .verify(bookingServise, Mockito.times(1)).getAllUser(1L, pageParam);
     }
 
     @Test
     void test4_1getAllUser_withState() throws Exception {
+        PageParam pageParam = PageParam.create(0,3);
         mvc.perform(get("/bookings")
                 .header("X-Sharer-User-Id", 1L)
                 .param("state", String.valueOf(BookingState.FUTURE))
@@ -224,11 +229,12 @@ class BookingControllerTest {
                 .characterEncoding(StandardCharsets.UTF_8));
         Mockito
                 .verify(bookingServise, Mockito.times(1))
-                .getAllUser(1L, BookingState.FUTURE, 0, 3);
+                .getAllUser(1L, BookingState.FUTURE, pageParam);
     }
 
     @Test
     void test4_1getAllOwner_withOutState() throws Exception {
+        PageParam pageParam = PageParam.create(0,3);
         mvc.perform(get("/bookings/owner")
                 .header("X-Sharer-User-Id", 1L)
                 .param("from", "0")
@@ -237,7 +243,7 @@ class BookingControllerTest {
                 .characterEncoding(StandardCharsets.UTF_8));
         Mockito
                 .verify(bookingServise, Mockito.times(1))
-                .getAllOwner(1L, 0, 3);
+                .getAllOwner(1L, pageParam);
     }
 
     @Test

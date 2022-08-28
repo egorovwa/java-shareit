@@ -11,14 +11,12 @@ import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.exceptions.ItemNotAvalibleExxeption;
 import ru.practicum.shareit.booking.exceptions.TimeIntersectionException;
-import ru.practicum.shareit.exceptions.IncorrectUserIdException;
-import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.exceptions.RequestNotExistException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.util.PageParam;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -38,12 +36,12 @@ class ItemServiseIntegrationTest {
 
     @Test
     @DirtiesContext
-    void test8_findItemByText() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException {
+    void test8_findItemByText() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException, IncorrectPageValueException {
         setUser();
         Item item = getItem();
         itemServise.createItem(1, itemDtoMaper.toDto(item));
-
-        Collection<Item> itemList = itemServise.findByText("finded", 0, 5);
+        PageParam pageParam =PageParam.create(0,5);
+        Collection<Item> itemList = itemServise.findByText("finded", pageParam);
         assertEquals(1, itemList.size());
         assertEquals(itemList.stream().map(Item::getName).findFirst().orElse(null), item.getName());
     }

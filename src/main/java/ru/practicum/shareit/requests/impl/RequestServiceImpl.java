@@ -14,6 +14,7 @@ import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.util.PageParam;
 
 import java.util.Collection;
 
@@ -31,7 +32,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Collection<ItemRequest> findAllWithPage(Integer from, Integer size, Long userId) throws ModelNotExitsException {
+    public Collection<ItemRequest> findAllWithPage(PageParam pageParam, Long userId) throws ModelNotExitsException {
         try {
 
             User user = userServise.findById(userId);
@@ -39,8 +40,9 @@ public class RequestServiceImpl implements RequestService {
             throw new UserNotFoundExteption("пользователь не чсуществует", "id",
                     userId.toString());
         }
-        if (from != null && size != null) {
-            Pageable pageable = PageRequest.of(from, size, Sort.by("created").descending());
+        if (pageParam != null) {
+            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize()
+                    , Sort.by("created").descending());
             return requestRepository.findAllByRequestorIdIsNot(pageable, userId).toList();
         } else {
             return requestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(userId);

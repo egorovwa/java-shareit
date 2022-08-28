@@ -18,6 +18,7 @@ import ru.practicum.shareit.item.ItemServise;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.util.PageParam;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -91,8 +92,8 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public Collection<Booking> getAllUser(long useId, Integer from, Integer size) throws UserNotFoundExteption {
-        if (from == null && size == null) {
+    public Collection<Booking> getAllUser(long useId, PageParam pageParam) throws UserNotFoundExteption {
+        if (pageParam == null) {
             try {
                 userServise.findById(useId);
             } catch (ModelNotExitsException e) {
@@ -100,7 +101,7 @@ public class BookingServiseImpl implements BookingServise {
             }
             return bookingRepository.findByBooker_IdOrderByStartDesc(useId);
         } else {
-            Pageable pageable = PageRequest.of(from, size);
+            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize());
             try {
                 userServise.findById(useId);
             } catch (ModelNotExitsException e) {
@@ -112,7 +113,7 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public Collection<Booking> getAllUser(long useId, BookingState state, Integer from, Integer size) throws UserNotFoundExteption, UnknownStateException {
+    public Collection<Booking> getAllUser(long useId, BookingState state, PageParam pageParam) throws UserNotFoundExteption, UnknownStateException {
         try {
             userServise.findById(useId);
         } catch (ModelNotExitsException e) {
@@ -120,7 +121,7 @@ public class BookingServiseImpl implements BookingServise {
         }
         switch (state) {
             case ALL:
-                return getAllUser(useId, from, size);
+                return getAllUser(useId, pageParam);
             case PAST:
                 return bookingRepository.findByBookerIdStatePast(useId,
                         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
@@ -163,8 +164,8 @@ public class BookingServiseImpl implements BookingServise {
     }
 
     @Override
-    public Collection<Booking> getAllOwner(long useId, Integer from, Integer size) throws UserNotFoundExteption {
-        if (from == null && size == null) {
+    public Collection<Booking> getAllOwner(long useId, PageParam pageParam) throws UserNotFoundExteption {
+        if (pageParam == null) {
             try {
                 userServise.findById(useId);
             } catch (ModelNotExitsException e) {
@@ -172,7 +173,7 @@ public class BookingServiseImpl implements BookingServise {
             }
             return bookingRepository.findOwnerAll(useId);
         } else {
-            Pageable pageable = PageRequest.of(from, size);
+            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize());
             try {
                 userServise.findById(useId);
             } catch (ModelNotExitsException e) {
