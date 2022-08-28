@@ -1,6 +1,5 @@
 package ru.practicum.shareit.requests;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalToObject;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -118,21 +116,21 @@ class ItemRequesstControllerTest {
 
     @Test
     void test3_findtemRequest() throws Exception {
-
-        when(requestService.findItemRequest(1L,1L))
+        when(requestService.findItemRequest(1L, 1L))
                 .thenReturn(new ItemRequest(1L, "aaaaaa",
                         USER_ID1, TEST_TIME_LONG, new ArrayList<>()));
         ItemRequestDtoForRequestor dto = new ItemRequestDtoForRequestor(1L, "aaaaaa",
                 USER_ID1, TEST_TIME_DATE_TIME, new ArrayList<>());
-        mvc.perform(get("/requests/{itemId}",1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .header(USER_ID_HEADER_NAME,1))
+        mvc.perform(get("/requests/{itemId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(USER_ID_HEADER_NAME, 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.requestor.email", is(USER_ID1.getEmail())));
 
     }
+
     @Test
     void test4_createRequestWithWrongUserId() throws Exception {
         ItemRequest itemRequest = new ItemRequest(1L, "description", user,
@@ -141,17 +139,18 @@ class ItemRequesstControllerTest {
         itemRequestDto.setDescription("description");
 
         when(requestService.createRequest(anyLong(), any()))
-                .thenThrow(new ModelNotExitsException("message","id","1"));
+                .thenThrow(new ModelNotExitsException("message", "id", "1"));
         mvc.perform(post("/requests")
-                .content(mapper.writeValueAsString(itemRequestDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .header(USER_ID_HEADER_NAME, 1L)
-                .accept(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(itemRequestDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(USER_ID_HEADER_NAME, 1L)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof
                         ModelNotExitsException))
                 .andExpect(result -> assertThat(result.getResolvedException().getMessage(), is("message")));
     }
+
 
 }

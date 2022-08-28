@@ -3,11 +3,14 @@ package ru.practicum.shareit.requests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import ru.practicum.shareit.booking.exceptions.UserNotFoundExteption;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.RequestNotExistException;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.impl.RequestServiceImpl;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -18,11 +21,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static ru.practicum.shareit.Entitys.TEST_TIME_LONG;
-import static ru.practicum.shareit.Entitys.USER_ID2;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.practicum.shareit.Entitys.*;
 
 @ExtendWith(MockitoExtension.class)
 class RequestServiceImplTest {
@@ -30,6 +34,8 @@ class RequestServiceImplTest {
     UserServise mokUserService;
     @Mock
     RequestRepository mokRequestRepository;
+    @InjectMocks
+    RequestServiceImpl requestService;
 
 
     @Test
@@ -53,7 +59,7 @@ class RequestServiceImplTest {
         assertThat("Description не совпадает", itemRequestDto.getDescription(), is(itemRequest.getDescription()));
         assertThat("createTime не совпадает", itemRequest.getCreated(), is(createTime));
         assertThat("user не совпадает", itemRequest.getRequestor().getEmail(), is(testUser().getEmail()));
-        Assertions.assertThrows(ModelNotExitsException.class, () -> requestService.createRequest(2L, itemRequestDto),
+        assertThrows(ModelNotExitsException.class, () -> requestService.createRequest(2L, itemRequestDto),
                 "Создается от несуществующего user");
     }
 
@@ -85,6 +91,50 @@ class RequestServiceImplTest {
         assertThat(withOutPageble.stream().findFirst().get().getDescription(),
                 is(testItemRequest2(TEST_TIME_LONG).getDescription()));
     }
+    @Test
+    void test2_2findAll_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(mokUserService.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(UserNotFoundExteption.class,()->requestService.findAllWithPage(0,5,1L));
+    }
+    @Test
+    void test3_findById_notFound(){
+        Mockito
+                .when(mokRequestRepository.findById(1L))
+                .thenReturn(Optional.empty());
+        assertThrows(RequestNotExistException.class, ()-> requestService.findById(1L));
+    }
+    @Test
+    void test4_findAllForRequestor_requestorNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(mokUserService.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(ModelNotExitsException.class,()->requestService.findAllForRequestor(1L));
+    }
+    @Test
+    void test5_findItemRequest_userNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(mokUserService.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(ModelNotExitsException.class,()->requestService.findItemRequest(1L,1L));
+    }
+    @Test
+    void test5_1_findItemRequest_requesNotFound() throws ModelNotExitsException {
+        Mockito
+                .when(mokRequestRepository.findById(1L))
+                .thenReturn(Optional.empty());
+        assertThrows(ModelNotExitsException.class,()->requestService.findItemRequest(1L,1L));
+    }
+    @Test
+    void test6_save(){
+        ItemRequest itemRequest =ITEMREQUEST_ID1_USER1;
+        Mockito
+                .when(mokRequestRepository.save(itemRequest))
+                .thenReturn(itemRequest);
+        assertThat(requestService.save(itemRequest),is(itemRequest));
+    }
+
 
     private User testUser() {
         return new User(1L, "Email@mail.com", "user");

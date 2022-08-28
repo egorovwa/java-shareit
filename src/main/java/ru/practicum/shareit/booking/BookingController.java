@@ -37,7 +37,8 @@ public class BookingController {
     @Valid
     public BookingDto bookingСonfirmation(@RequestHeader("X-Sharer-User-Id") long useId,
                                           @PathVariable Long bookingId,
-                                          @PathParam("approved") @NotNull Boolean approved) throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
+                                          @PathParam("approved") @NotNull Boolean approved) throws IncorrectUserIdException,
+            ParametrNotFoundException, StatusAlredyException {
         return dtoMaper.toDto(bookingServise.setStatus(useId, bookingId, approved));
     }
 

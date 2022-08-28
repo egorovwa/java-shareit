@@ -55,8 +55,9 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void save(ItemRequest itemRequest) {
-        requestRepository.save(itemRequest);
+    public ItemRequest save(ItemRequest itemRequest) {
+       return requestRepository.save(itemRequest);
+
     }
 
     @Override

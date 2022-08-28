@@ -16,7 +16,7 @@ ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws Mod
 
     ItemRequest findById(Long requestId) throws RequestNotExistException;
 
-    void save(ItemRequest itemRequest);
+    ItemRequest save(ItemRequest itemRequest);
     Collection<ItemRequest> findAllForRequestor(Long userId) throws ModelNotExitsException;
     ItemRequest findItemRequest(Long itemId, Long userId) throws ModelNotExitsException;
 }

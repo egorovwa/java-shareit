@@ -107,6 +107,13 @@ class UserServiseImplTest {
         UserServiseImpl userServise = new UserServiseImpl(userRepository);
         assertThrows(ModelAlreadyExistsException.class, () -> userServise.updateUser(1L, toUpdate));
     }
+    @Test
+   void test2_2_UpdateUser_UserNotFound(){
+        Mockito
+                .when(userRepository.findById(1L))
+                .thenReturn(Optional.empty());
+        assertThrows(ModelNotExitsException.class, ()->userServise.updateUser(1,USER_ID1));
+    }
 
     @Test
     void test3_deleteUserWithWrongId() {

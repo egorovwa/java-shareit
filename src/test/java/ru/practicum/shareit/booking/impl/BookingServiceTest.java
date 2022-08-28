@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.practicum.shareit.Entitys.*;
 
 @ExtendWith(MockitoExtension.class)
-class BookingServiseImplTest {
+class BookingServiceTest {
     @Mock
     BookingRepository bookingRepository;
     @Mock
@@ -223,6 +223,14 @@ class BookingServiseImplTest {
                 .thenThrow(ModelNotExitsException.class);
         assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, 0, 5));
     }
+    @Test
+    void test4_1_getAllUser_userNotFound_withOutFromSize() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L,null,null));
+    }
+
 
     @Test
     void test5_1_getAllUser_userNotFound() throws ModelNotExitsException {
@@ -317,6 +325,13 @@ class BookingServiseImplTest {
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
         assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, 0, 5));
+    }
+    @Test
+    void test6_8_getAllOwner_userNotFound_withOutFromSize() throws ModelNotExitsException {
+        Mockito
+                .when(userServise.findById(1L))
+                .thenThrow(ModelNotExitsException.class);
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, null, null));
     }
 
 }
