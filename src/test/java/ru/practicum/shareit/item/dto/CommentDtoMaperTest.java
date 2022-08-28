@@ -7,8 +7,8 @@ import java.time.ZoneOffset;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.practicum.shareit.Entitys.COMMENTID1_USER2;
-import static ru.practicum.shareit.Entitys.USER_ID2;
+import static ru.practicum.shareit.TestConstants.COMMENTID1_USER2;
+import static ru.practicum.shareit.TestConstants.USER_ID2;
 
 class CommentDtoMaperTest {
     final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();

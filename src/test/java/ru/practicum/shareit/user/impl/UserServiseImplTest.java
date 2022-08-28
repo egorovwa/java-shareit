@@ -18,8 +18,8 @@ import java.util.Optional;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static ru.practicum.shareit.Entitys.USER_ID1;
-import static ru.practicum.shareit.Entitys.USER_ID2;
+import static ru.practicum.shareit.TestConstants.USER_ID1;
+import static ru.practicum.shareit.TestConstants.USER_ID2;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiseImplTest {

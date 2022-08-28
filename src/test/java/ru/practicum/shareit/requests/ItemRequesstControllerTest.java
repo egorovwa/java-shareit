@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.practicum.shareit.Entitys.*;
+import static ru.practicum.shareit.TestConstants.*;
 
 @WebMvcTest(controllers = ItemRequesstController.class)
 @Import({ItemRequestDtoMaper.class, ItemDtoMaper.class, BookingDtoMaper.class})

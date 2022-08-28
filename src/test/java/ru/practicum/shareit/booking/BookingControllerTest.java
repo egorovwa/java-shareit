@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.practicum.shareit.Entitys.BOOKING1_USER2_ITEM1_WAITING;
+import static ru.practicum.shareit.TestConstants.BOOKING1_USER2_ITEM1_WAITING;
 
 @WebMvcTest(BookingController.class)
 @Import(BookingDtoMaper.class)

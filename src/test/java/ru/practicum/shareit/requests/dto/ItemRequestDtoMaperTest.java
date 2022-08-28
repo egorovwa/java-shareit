@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.practicum.shareit.Entitys.*;
+import static ru.practicum.shareit.TestConstants.*;
 
 class ItemRequestDtoMaperTest {
     final ItemRequestDtoMaper itemRequestDtoMaper = new ItemRequestDtoMaper(new ItemDtoMaper(new BookingDtoMaper()));

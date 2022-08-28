@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.practicum.shareit.Entitys.*;
+import static ru.practicum.shareit.TestConstants.*;
 
 class ItemDtoMaperTest {
     final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());

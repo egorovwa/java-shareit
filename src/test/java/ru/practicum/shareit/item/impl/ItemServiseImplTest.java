@@ -32,7 +32,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static ru.practicum.shareit.Entitys.*;
+import static ru.practicum.shareit.TestConstants.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiseImplTest {

@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.practicum.shareit.Entitys.*;
+import static ru.practicum.shareit.TestConstants.*;
 
 @DataJpaTest
 class RequestRepositoryTest {

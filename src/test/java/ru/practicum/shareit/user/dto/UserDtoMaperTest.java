@@ -5,7 +5,7 @@ import ru.practicum.shareit.user.User;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.practicum.shareit.Entitys.USER_ID1;
+import static ru.practicum.shareit.TestConstants.USER_ID1;
 
 
 class UserDtoMaperTest {

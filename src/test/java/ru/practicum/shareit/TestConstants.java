@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 
-public class Entitys {
+public class TestConstants {
     public static final User USER_ID1 = new User(1L, "Mail@mail.ru", "userName");
     public static final User USER_ID2 = new User(2L, "Mail2@mail.ru", "userName2");
     public static final User USER_ID3 = new User(3L, "Mail3@mail.ru", "userName3");

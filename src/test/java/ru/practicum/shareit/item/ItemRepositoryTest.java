@@ -16,7 +16,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static ru.practicum.shareit.Entitys.USER_ID1;
+import static ru.practicum.shareit.TestConstants.USER_ID1;
 
 @DataJpaTest
 class ItemRepositoryTest {
