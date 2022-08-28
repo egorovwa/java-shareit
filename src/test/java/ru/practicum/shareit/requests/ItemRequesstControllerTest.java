@@ -44,6 +44,8 @@ import static ru.practicum.shareit.TestConstants.*;
 @Import({ItemRequestDtoMaper.class, ItemDtoMaper.class, BookingDtoMaper.class})
 class ItemRequesstControllerTest {
     public static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
+    final LocalDateTime createTime = LocalDateTime.of(2022, 8, 16, 19, 9, 0);
+    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     @MockBean
     RequestService requestService;
     @Autowired
@@ -51,8 +53,6 @@ class ItemRequesstControllerTest {
     @Autowired
     MockMvc mvc;
     User user;
-    final LocalDateTime createTime = LocalDateTime.of(2022, 8, 16, 19, 9, 0);
-    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @BeforeEach
     void setup(WebApplicationContext web) {

@@ -29,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemServiseIntegrationTest {
+    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
     private final ItemServise itemServise;
     private final UserServise userServise;
     private final BookingServise bookingServise;
-    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
 
     @Test
     @DirtiesContext
@@ -40,7 +40,7 @@ class ItemServiseIntegrationTest {
         setUser();
         Item item = getItem();
         itemServise.createItem(1, itemDtoMaper.toDto(item));
-        PageParam pageParam =PageParam.create(0,5);
+        PageParam pageParam = PageParam.create(0, 5);
         Collection<Item> itemList = itemServise.findByText("finded", pageParam);
         assertEquals(1, itemList.size());
         assertEquals(itemList.stream().map(Item::getName).findFirst().orElse(null), item.getName());

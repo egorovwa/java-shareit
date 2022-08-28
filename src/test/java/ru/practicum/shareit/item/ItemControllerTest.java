@@ -43,16 +43,15 @@ import static ru.practicum.shareit.TestConstants.*;
 @Import({ItemDtoMaper.class, CommentDtoMaper.class, BookingDtoMaper.class})
 class ItemControllerTest {
 
+    final ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper());
+    final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
+    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     @MockBean
     ItemServise itemServise;
     @Autowired
     ObjectMapper mapper;
     @Autowired
     MockMvc mvc;
-    final ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper());
-    final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
-    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
 
     @BeforeEach
     void setup(WebApplicationContext web) {
@@ -245,7 +244,7 @@ class ItemControllerTest {
 
     @Test
     void test5_findByText() throws Exception {
-        PageParam pageParam = PageParam.create(0,5);
+        PageParam pageParam = PageParam.create(0, 5);
         when(itemServise.findByText("text", pageParam))
                 .thenReturn(List.of(ITEM_ID1_OWNER1_AVALIBLE_TRUE));
         mvc.perform(get("/items/search")

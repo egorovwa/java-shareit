@@ -36,6 +36,7 @@ import static ru.practicum.shareit.TestConstants.BOOKING1_USER2_ITEM1_WAITING;
 @WebMvcTest(BookingController.class)
 @Import(BookingDtoMaper.class)
 class BookingControllerTest {
+    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     @MockBean
     BookingServise bookingServise;
     @Autowired
@@ -45,8 +46,6 @@ class BookingControllerTest {
     BookingDtoToCreate dtoToCreate;
     Booking booking;
     BookingDtoMaper dtoMaper = new BookingDtoMaper();
-    final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
 
     @BeforeEach
     void setup(WebApplicationContext web) {
@@ -188,7 +187,7 @@ class BookingControllerTest {
 
     @Test
     void test3_1_getAll_userNotFound() throws Exception {
-        PageParam pageParam = PageParam.create(0,1);
+        PageParam pageParam = PageParam.create(0, 1);
         when(bookingServise.getAllUser(1L, BookingState.ALL, pageParam))
                 .thenThrow(new UnknownStateException("message", "value"));
         mvc.perform(get("/bookings")
@@ -206,7 +205,7 @@ class BookingControllerTest {
 
     @Test
     void test4_1getAllUser_withOutState() throws Exception {
-        PageParam pageParam = PageParam.create(0,3);
+        PageParam pageParam = PageParam.create(0, 3);
         mvc.perform(get("/bookings")
                 .header("X-Sharer-User-Id", 1L)
                 .param("from", "0")
@@ -219,7 +218,7 @@ class BookingControllerTest {
 
     @Test
     void test4_1getAllUser_withState() throws Exception {
-        PageParam pageParam = PageParam.create(0,3);
+        PageParam pageParam = PageParam.create(0, 3);
         mvc.perform(get("/bookings")
                 .header("X-Sharer-User-Id", 1L)
                 .param("state", String.valueOf(BookingState.FUTURE))
@@ -234,7 +233,7 @@ class BookingControllerTest {
 
     @Test
     void test4_1getAllOwner_withOutState() throws Exception {
-        PageParam pageParam = PageParam.create(0,3);
+        PageParam pageParam = PageParam.create(0, 3);
         mvc.perform(get("/bookings/owner")
                 .header("X-Sharer-User-Id", 1L)
                 .param("from", "0")

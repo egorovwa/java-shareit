@@ -281,7 +281,7 @@ class ItemServiseImplTest {
 
     @Test
     void test6_4findByText_WithOutText() throws IncorrectPageValueException {
-        PageParam pageParam = PageParam.create(0,5);
+        PageParam pageParam = PageParam.create(0, 5);
         assertEquals(0, itemServise.findByText(null, pageParam).size());
     }
 

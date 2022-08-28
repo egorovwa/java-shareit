@@ -41,8 +41,8 @@ public class RequestServiceImpl implements RequestService {
                     userId.toString());
         }
         if (pageParam != null) {
-            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize()
-                    , Sort.by("created").descending());
+            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize(),
+                    Sort.by("created").descending());
             return requestRepository.findAllByRequestorIdIsNot(pageable, userId).toList();
         } else {
             return requestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(userId);

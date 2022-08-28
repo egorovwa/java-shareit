@@ -42,10 +42,10 @@ public class ItemErrorHandler {
     public Map<String, String> requestNotExist(ModelNotExitsException e) {
         return Map.of("error", e.getMessage(), e.getParam(), e.getValue());
     }
+
     @ExceptionHandler(IncorrectPageValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String,String> incorrectPageValue(IncorrectPageValueException e){
+    public Map<String, String> incorrectPageValue(IncorrectPageValueException e) {
         return Map.of("error", e.getMessage());
     }
-
 }

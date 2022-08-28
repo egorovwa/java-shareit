@@ -11,7 +11,8 @@ import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static ru.practicum.shareit.TestConstants.*;
+import static ru.practicum.shareit.TestConstants.ITEM_ID1_OWNER1_AVALIBLE_TRUE;
+import static ru.practicum.shareit.TestConstants.USER_ID2;
 
 class BookingDtoMaperTest {
     final BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
@@ -33,7 +34,8 @@ class BookingDtoMaperTest {
     void toItemDto() {
         Booking booking = new Booking(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
                 LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC), ITEM_ID1_OWNER1_AVALIBLE_TRUE,
-                USER_ID2, BookingStatus.WAITING);;
+                USER_ID2, BookingStatus.WAITING);
+        ;
         BookingDtoToItem dto =
                 new BookingDtoToItem(1L, LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
                         LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),

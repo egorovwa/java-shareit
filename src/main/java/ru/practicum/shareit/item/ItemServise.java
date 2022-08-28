@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
+import ru.practicum.shareit.exceptions.IncorrectUserIdException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.exceptions.NotUsedCommentException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoWithBoking;
 import ru.practicum.shareit.item.model.Comment;

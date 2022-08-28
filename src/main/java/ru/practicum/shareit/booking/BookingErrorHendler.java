@@ -55,10 +55,10 @@ public class BookingErrorHendler {
     public Map<String, String> parametrNotFoudHendle(ParametrNotFoundException e) {
         return Map.of(e.getMessage(), e.getParam());
     }
+
     @ExceptionHandler(IncorrectPageValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String,String> incorrectPageValue(IncorrectPageValueException e){
+    public Map<String, String> incorrectPageValue(IncorrectPageValueException e) {
         return Map.of("error", e.getMessage());
     }
-
 }
