@@ -220,8 +220,8 @@ class ItemServiseImplTest {
         Mockito
                 .when(commentRepository.findByItem_IdOrderByCreatedDesc(1L))
                 .thenReturn(List.of(COMMENTID1_USER2));
-        PageParam pageParam = PageParam.create(0, 5);
-        assertThat(itemServise.findAllByOwnerId(1L, pageParam).stream().findFirst().get(), is(withBoking));
+        assertThat(itemServise.findAllByOwnerId(1L,
+                PageParam.createPageable(0, 5)).stream().findFirst().get(), is(withBoking));
         Mockito.verify(itemRepository, Mockito.times(1))
                 .findByOwnerIdOrderByIdAsc(Pageable.ofSize(5), 1L);
 
@@ -257,8 +257,7 @@ class ItemServiseImplTest {
         Mockito
                 .when(itemRepository.findByText(Pageable.ofSize(5), "text"))
                 .thenReturn(new PageImpl<>(List.of(testItemId1User1())));
-        PageParam pageParam = PageParam.create(0, 5);
-        assertEquals(1, itemServise.findByText("text", pageParam).size());
+        assertEquals(1, itemServise.findByText("text", PageParam.createPageable(0, 5)).size());
         Mockito.verify(itemRepository, Mockito.times(1))
                 .findByText(Pageable.ofSize(5), "text");
     }
@@ -281,8 +280,7 @@ class ItemServiseImplTest {
 
     @Test
     void test6_4findByText_WithOutText() throws IncorrectPageValueException {
-        PageParam pageParam = PageParam.create(0, 5);
-        assertEquals(0, itemServise.findByText(null, pageParam).size());
+        assertEquals(0, itemServise.findByText(null, PageParam.createPageable(0, 5)).size());
     }
 
     @Test

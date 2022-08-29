@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
@@ -22,7 +21,6 @@ import ru.practicum.shareit.requests.RequestService;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
-import ru.practicum.shareit.util.PageParam;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -123,9 +121,8 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, PageParam pageParam) {
-        if (pageParam != null) {
-            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize());
+    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, Pageable pageable) {
+        if (pageable != null) {
             log.info("поиск вещей пользователя id ={}", userId);
             return itemRepository.findByOwnerIdOrderByIdAsc(pageable, userId).stream().map(i -> itemDtoMaper
                             .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
@@ -140,9 +137,8 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Collection<Item> findByText(String text, PageParam pageParam) {
-        if (pageParam != null) {
-            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize());
+    public Collection<Item> findByText(String text, Pageable pageable) {
+        if (pageable != null) {
             if (Strings.isNotBlank(text)) {
                 log.info("поиск вещей по тексту ({})", text);
                 return Collections.unmodifiableCollection(itemRepository.findByText(pageable, text).toList());
@@ -161,9 +157,11 @@ public class ItemServiseImpl implements ItemServise {
         User user = userServise.findById(userId);
         int i = bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         if (bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) >= 1) {
+            log.info("Добавлен коментарий к вещи id {}", itemId);
             return commentRepository.save(new Comment(null, text, item, user,
                     LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)));
         } else {
+            log.warn("Попытка добавления коментария к вещи id {} пользователем id {}", itemId, userId);
             throw new NotUsedCommentException("пользователь не пользовался вещью", userId, itemId);
         }
     }

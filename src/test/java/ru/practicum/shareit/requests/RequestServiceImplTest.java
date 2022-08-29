@@ -83,9 +83,9 @@ class RequestServiceImplTest {
                 .when(mokUserService.findById(Mockito.anyLong()))
                 .thenReturn(USER_ID2);
         RequestServiceImpl requestService = new RequestServiceImpl(mokUserService, mokRequestRepository);
-        PageParam pageParam = PageParam.create(0, 2);
 
-        Collection<ItemRequest> withPageble = requestService.findAllWithPage(pageParam, 1L);
+        Collection<ItemRequest> withPageble =
+                requestService.findAllWithPage(PageParam.createPageable(0, 2, "created"), 1L);
         Collection<ItemRequest> withOutPageble = requestService.findAllWithPage(null, 1L);
         assertThat("from, size", withPageble.stream().findFirst().get().getDescription(),
                 is(testItemRequest(TEST_TIME_LONG).getDescription()));
@@ -117,8 +117,8 @@ class RequestServiceImplTest {
         Mockito
                 .when(mokUserService.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        PageParam pageParam = PageParam.create(0, 5);
-        assertThrows(UserNotFoundExteption.class, () -> requestService.findAllWithPage(pageParam, 1L));
+        assertThrows(UserNotFoundExteption.class, () ->
+                requestService.findAllWithPage(PageParam.createPageable(0, 5), 1L));
     }
 
     @Test

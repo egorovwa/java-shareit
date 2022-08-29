@@ -269,11 +269,11 @@ class BookingServiceTest {
 
     @Test
     void test4_1_getAllUser_userNotFound() throws ModelNotExitsException {
-        PageParam pageParam = null;
+
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, pageParam));
+        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllUser(1L, null));
     }
 
     @Test
@@ -293,21 +293,20 @@ class BookingServiceTest {
                 .when(bookingRepository.findByBooker_IdOrderByStartDesc(1L))
                 .thenReturn(List.of(BOOKING1_USER2_ITEM1_WAITING));
         PageParam pageParam = null;
-        bookingServise.getAllUser(1L, pageParam);
+        bookingServise.getAllUser(1L, null);
         Mockito.verify(bookingRepository, Mockito.times(1)).findByBooker_IdOrderByStartDesc(1L);
     }
 
     @Test
     void test4_4_getAllUser_withFromSize() throws ModelNotExitsException, IncorrectPageValueException {
         Pageable pageable = PageRequest.of(0, 5);
-        PageParam pageParam = PageParam.create(0, 5);
         Mockito
                 .when(userServise.findById(1L))
                 .thenReturn(USER_ID1);
         Mockito
                 .when(bookingRepository.findByBooker_IdOrderByStartDesc(pageable, 1L))
                 .thenReturn(new PageImpl<>(List.of(BOOKING1_USER2_ITEM1_WAITING)));
-        bookingServise.getAllUser(1L, pageParam);
+        bookingServise.getAllUser(1L, PageParam.createPageable(0, 5));
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBooker_IdOrderByStartDesc(pageable, 1L);
     }
@@ -323,54 +322,48 @@ class BookingServiceTest {
     @Test
     void test5_7_testGetAllUser_ALL() throws UnknownStateException, ModelNotExitsException, IncorrectPageValueException {
         Pageable pageable = PageRequest.of(0, 5);
-        PageParam pageParam = PageParam.create(0, 5);
         Mockito
                 .when(userServise.findById(1L))
                 .thenReturn(USER_ID1);
         Mockito
                 .when(bookingRepository.findByBooker_IdOrderByStartDesc(pageable, 1L))
                 .thenReturn(new PageImpl<>(List.of(BOOKING1_USER2_ITEM1_WAITING)));
-        bookingServise.getAllUser(1L, BookingState.ALL, pageParam);
+        bookingServise.getAllUser(1L, BookingState.ALL, PageParam.createPageable(0, 5));
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBooker_IdOrderByStartDesc(pageable, 1L);
     }
 
     @Test
     void test5_2_testGetAllUser_PAST() throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
-        PageParam pageParam = null;
-        bookingServise.getAllUser(1L, BookingState.PAST, pageParam);
+        bookingServise.getAllUser(1L, BookingState.PAST, null);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBookerIdStatePast(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
     void test5_3_testGetAllUser_WAITING() throws UnknownStateException, UserNotFoundExteption {
-        PageParam pageParam = null;
-        bookingServise.getAllUser(1L, BookingState.WAITING, pageParam);
+        bookingServise.getAllUser(1L, BookingState.WAITING, null);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBooker_IdAndStatus(1L, BookingStatus.WAITING);
     }
 
     @Test
     void test5_4_testGetAllUser_CURRENT() throws UnknownStateException, UserNotFoundExteption {
-        PageParam pageParam = null;
-        bookingServise.getAllUser(1L, BookingState.CURRENT, pageParam);
+        bookingServise.getAllUser(1L, BookingState.CURRENT, null);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBookerIdStateCurrent(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
 
     @Test
     void test5_5_testGetAllUser_REJECTED() throws UnknownStateException, UserNotFoundExteption {
-        PageParam pageParam = null;
-        bookingServise.getAllUser(1L, BookingState.REJECTED, pageParam);
+        bookingServise.getAllUser(1L, BookingState.REJECTED, null);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBooker_IdAndStatus(1L, BookingStatus.REJECTED);
     }
 
     @Test
     void test5_6_testGetAllUser_FUTURE() throws UnknownStateException, UserNotFoundExteption {
-        PageParam pageParam = null;
-        bookingServise.getAllUser(1L, BookingState.FUTURE, pageParam);
+        bookingServise.getAllUser(1L, BookingState.FUTURE, null);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findFuture(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
     }
@@ -420,46 +413,44 @@ class BookingServiceTest {
 
     @Test
     void test6_7_getAllOwner_userNotFound() throws ModelNotExitsException {
-        PageParam pageParam = null;
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, pageParam));
+        assertThrows(UserNotFoundExteption.class, () ->
+                bookingServise.getAllOwner(1L, PageParam.createPageable(null, null)));
     }
 
     @Test
     void test6_8_getAllOwner_userNotFound_withOutFromSize() throws ModelNotExitsException {
-        PageParam pageParam = null;
         Mockito
                 .when(userServise.findById(1L))
                 .thenThrow(ModelNotExitsException.class);
-        assertThrows(UserNotFoundExteption.class, () -> bookingServise.getAllOwner(1L, pageParam));
+        assertThrows(UserNotFoundExteption.class, () ->
+                bookingServise.getAllOwner(1L, PageParam.createPageable(null, null)));
     }
 
     @Test
-    void test6_9_getAllUser_withOutFromSize() throws ModelNotExitsException {
+    void test6_9_getAllUser_withOutFromSize() throws ModelNotExitsException, IncorrectPageValueException {
         Mockito
                 .when(userServise.findById(1L))
                 .thenReturn(USER_ID1);
-        PageParam pageParam = null;
         Mockito
                 .when(bookingRepository.findOwnerAll(1L))
                 .thenReturn(List.of(BOOKING1_USER2_ITEM1_WAITING));
-        bookingServise.getAllOwner(1L, pageParam);
+        bookingServise.getAllOwner(1L, PageParam.createPageable(null, null));
         Mockito.verify(bookingRepository, Mockito.times(1)).findOwnerAll(1L);
     }
 
     @Test
     void test6_10_getAllUser_withFromSize() throws ModelNotExitsException, IncorrectPageValueException {
         Pageable pageable = PageRequest.of(0, 5);
-        PageParam pageParam = PageParam.create(0, 5);
         Mockito
                 .when(userServise.findById(1L))
                 .thenReturn(USER_ID1);
         Mockito
                 .when(bookingRepository.findOwnerAll(pageable, 1L))
                 .thenReturn(new PageImpl<>(List.of(BOOKING1_USER2_ITEM1_WAITING)));
-        bookingServise.getAllOwner(1L, pageParam);
+        bookingServise.getAllOwner(1L, PageParam.createPageable(0, 5));
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findOwnerAll(pageable, 1L);
     }

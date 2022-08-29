@@ -40,8 +40,7 @@ class ItemServiseIntegrationTest {
         setUser();
         Item item = getItem();
         itemServise.createItem(1, itemDtoMaper.toDto(item));
-        PageParam pageParam = PageParam.create(0, 5);
-        Collection<Item> itemList = itemServise.findByText("finded", pageParam);
+        Collection<Item> itemList = itemServise.findByText("finded", PageParam.createPageable(0, 5));
         assertEquals(1, itemList.size());
         assertEquals(itemList.stream().map(Item::getName).findFirst().orElse(null), item.getName());
     }

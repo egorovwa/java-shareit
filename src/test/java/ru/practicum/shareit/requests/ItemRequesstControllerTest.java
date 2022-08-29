@@ -3,10 +3,12 @@ package ru.practicum.shareit.requests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -19,7 +21,6 @@ import ru.practicum.shareit.requests.dto.ItemRequestDtoForRequestor;
 import ru.practicum.shareit.requests.dto.ItemRequestDtoMaper;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.util.PageParam;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -95,13 +96,13 @@ class ItemRequesstControllerTest {
 
     @Test
     void test2_findAllWithPage() throws Exception {
-        PageParam pageParam = PageParam.create(0, 3);
+
         List<ItemRequest> itemRequests = new ArrayList<>();
         for (long i = 1; i <= 3; i++) {
             itemRequests.add(new ItemRequest(i, "aaaaaa",
                     USER_ID1, TEST_TIME_LONG, new ArrayList<>()));
         }
-        when(requestService.findAllWithPage(pageParam, 1L))
+        when(requestService.findAllWithPage(Mockito.any(PageRequest.class), anyLong()))
                 .thenReturn(itemRequests);
 
 

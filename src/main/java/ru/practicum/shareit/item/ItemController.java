@@ -46,15 +46,13 @@ public class ItemController {
     public Collection<ItemDtoWithBoking> findAllByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId,
                                                           @PathParam("from") Integer from,
                                                           @PathParam("size") Integer size) throws IncorrectPageValueException {
-        PageParam pageParam = PageParam.create(from, size);
-        return itemServise.findAllByOwnerId(userId, pageParam);
+        return itemServise.findAllByOwnerId(userId, PageParam.createPageable(from, size));
     }
 
     @GetMapping("/search")
     public Collection<ItemDto> findByText(@RequestParam String text, @PathParam("from") Integer from,
                                           @PathParam("size") Integer size) throws IncorrectPageValueException {
-        PageParam pageParam = PageParam.create(from, size);
-        return itemServise.findByText(text, pageParam).stream()
+        return itemServise.findByText(text, PageParam.createPageable(from, size)).stream()
                 .map(itemDtoMaper::toDto)
                 .collect(Collectors.toList());
     }

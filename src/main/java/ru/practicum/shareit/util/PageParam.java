@@ -1,35 +1,31 @@
 package ru.practicum.shareit.util;
 
-import lombok.EqualsAndHashCode;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 
-@EqualsAndHashCode
 public class PageParam {
-    Integer page;
-    Integer size;
-
-    private PageParam(Integer from, Integer size) {
-        this.page = from / size;
-        this.size = size;
-    }
-
-    public static PageParam create(Integer from, Integer size) throws IncorrectPageValueException {
+    public static Pageable createPageable(Integer from, Integer size, String sortColumn) throws IncorrectPageValueException {
         if (from == null || size == null) {
             return null;
         } else {
             if (from < 0 || size <= 0) {
                 throw new IncorrectPageValueException("Значения недолжныбыть менше 0");
             }
-            return new PageParam(from, size);
+            Sort sort = Sort.by(sortColumn).descending();
+            return PageRequest.of(from / size, size, sort);
         }
     }
 
-    public Integer getPage() {
-        return page;
+    public static Pageable createPageable(Integer from, Integer size) throws IncorrectPageValueException {
+        if (from == null || size == null) {
+            return null;
+        } else {
+            if (from < 0 || size <= 0) {
+                throw new IncorrectPageValueException("Значения недолжныбыть менше 0");
+            }
+            return PageRequest.of(from / size, size);
+        }
     }
-
-    public Integer getSize() {
-        return size;
-    }
-
 }

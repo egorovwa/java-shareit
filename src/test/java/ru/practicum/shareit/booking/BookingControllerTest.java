@@ -187,8 +187,7 @@ class BookingControllerTest {
 
     @Test
     void test3_1_getAll_userNotFound() throws Exception {
-        PageParam pageParam = PageParam.create(0, 1);
-        when(bookingServise.getAllUser(1L, BookingState.ALL, pageParam))
+        when(bookingServise.getAllUser(1L, BookingState.ALL, PageParam.createPageable(0, 1)))
                 .thenThrow(new UnknownStateException("message", "value"));
         mvc.perform(get("/bookings")
                         .header("X-Sharer-User-Id", 1L)
@@ -205,7 +204,6 @@ class BookingControllerTest {
 
     @Test
     void test4_1getAllUser_withOutState() throws Exception {
-        PageParam pageParam = PageParam.create(0, 3);
         mvc.perform(get("/bookings")
                 .header("X-Sharer-User-Id", 1L)
                 .param("from", "0")
@@ -213,12 +211,11 @@ class BookingControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8));
         Mockito
-                .verify(bookingServise, Mockito.times(1)).getAllUser(1L, pageParam);
+                .verify(bookingServise, Mockito.times(1)).getAllUser(1L, PageParam.createPageable(0, 3));
     }
 
     @Test
     void test4_1getAllUser_withState() throws Exception {
-        PageParam pageParam = PageParam.create(0, 3);
         mvc.perform(get("/bookings")
                 .header("X-Sharer-User-Id", 1L)
                 .param("state", String.valueOf(BookingState.FUTURE))
@@ -228,12 +225,11 @@ class BookingControllerTest {
                 .characterEncoding(StandardCharsets.UTF_8));
         Mockito
                 .verify(bookingServise, Mockito.times(1))
-                .getAllUser(1L, BookingState.FUTURE, pageParam);
+                .getAllUser(1L, BookingState.FUTURE, PageParam.createPageable(0, 3));
     }
 
     @Test
     void test4_1getAllOwner_withOutState() throws Exception {
-        PageParam pageParam = PageParam.create(0, 3);
         mvc.perform(get("/bookings/owner")
                 .header("X-Sharer-User-Id", 1L)
                 .param("from", "0")
@@ -242,7 +238,7 @@ class BookingControllerTest {
                 .characterEncoding(StandardCharsets.UTF_8));
         Mockito
                 .verify(bookingServise, Mockito.times(1))
-                .getAllOwner(1L, pageParam);
+                .getAllOwner(1L, PageParam.createPageable(0, 3));
     }
 
     @Test

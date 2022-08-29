@@ -54,12 +54,12 @@ public class BookingController {
                                          @PathParam("state") String state,
                                          @PathParam("from") Integer from,
                                          @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
+
         if (state == null) {
-            PageParam pageParam = PageParam.create(from, size);
-            return bookingServise.getAllUser(useId, pageParam).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+
+            return bookingServise.getAllUser(useId, PageParam.createPageable(from, size)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
-            PageParam pageParam = PageParam.create(from, size);
-            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state), pageParam).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state), PageParam.createPageable(from, size)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }
     }
 
@@ -69,8 +69,8 @@ public class BookingController {
                                               @PathParam("from") Integer from,
                                               @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
         if (state == null) {
-            PageParam pageParam = PageParam.create(from, size);
-            return bookingServise.getAllOwner(useId, pageParam).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+
+            return bookingServise.getAllOwner(useId, PageParam.createPageable(from, size)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
             return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }

@@ -176,8 +176,7 @@ class ItemControllerTest {
 
     @Test
     void test3_2_findByOwnerId() throws Exception {
-        PageParam pageParam = PageParam.create(0, 5);
-        when(itemServise.findAllByOwnerId(1L, pageParam))
+        when(itemServise.findAllByOwnerId(1L, PageParam.createPageable(0, 5)))
                 .thenReturn(List.of(dtoMaper.toDtoWithBooking(ITEM_ID1_OWNER1_AVALIBLE_TRUE,
                         List.of(commentDtoMaper.toDto(COMMENTID1_USER2)))));
         mvc.perform(get("/items")
@@ -244,8 +243,7 @@ class ItemControllerTest {
 
     @Test
     void test5_findByText() throws Exception {
-        PageParam pageParam = PageParam.create(0, 5);
-        when(itemServise.findByText("text", pageParam))
+        when(itemServise.findByText("text", PageParam.createPageable(0, 5)))
                 .thenReturn(List.of(ITEM_ID1_OWNER1_AVALIBLE_TRUE));
         mvc.perform(get("/items/search")
                         .contentType(MediaType.APPLICATION_JSON)

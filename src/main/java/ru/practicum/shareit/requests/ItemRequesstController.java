@@ -31,8 +31,7 @@ public class ItemRequesstController {
             @RequestParam(value = "from", required = false) Integer from,
             @RequestParam(value = "size", required = false) Integer size,
             @RequestHeader("X-Sharer-User-Id") Long userId) throws ModelNotExitsException, IncorrectPageValueException {
-        PageParam pageParam = PageParam.create(from, size);
-        return requestService.findAllWithPage(pageParam, userId).stream()
+        return requestService.findAllWithPage(PageParam.createPageable(from, size, "created"), userId).stream()
                 .map(maper::toDtoForRequestor).collect(Collectors.toList());
     }
 

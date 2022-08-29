@@ -1,9 +1,8 @@
 package ru.practicum.shareit.requests.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.exceptions.UserNotFoundExteption;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
@@ -14,12 +13,12 @@ import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
-import ru.practicum.shareit.util.PageParam;
 
 import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RequestServiceImpl implements RequestService {
     private final UserServise userServise;
     private final RequestRepository requestRepository;
@@ -28,23 +27,26 @@ public class RequestServiceImpl implements RequestService {
     public ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws ModelNotExitsException {
         User user = userServise.findById(userId);
         ItemRequest itemRequest = new ItemRequest(itemRequestDto.getDescription(), user);
+        log.info(" Ползователь Создал запрос  userid= {}", userId);
+
         return requestRepository.save(itemRequest);
     }
 
     @Override
-    public Collection<ItemRequest> findAllWithPage(PageParam pageParam, Long userId) throws ModelNotExitsException {
+    public Collection<ItemRequest> findAllWithPage(Pageable pageable, Long userId) throws ModelNotExitsException {
         try {
 
             User user = userServise.findById(userId);
         } catch (ModelNotExitsException e) {
+            log.warn(" Поытка получить запросы от несуществующего пользователя id {}", userId);
             throw new UserNotFoundExteption("пользователь не чсуществует", "id",
                     userId.toString());
         }
-        if (pageParam != null) {
-            Pageable pageable = PageRequest.of(pageParam.getPage(), pageParam.getSize(),
-                    Sort.by("created").descending());
+        if (pageable != null) {
+            log.info("Получение запросов полбзователем id {}", userId);
             return requestRepository.findAllByRequestorIdIsNot(pageable, userId).toList();
         } else {
+            log.info("Получение запросов полбзователем id {}", userId);
             return requestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(userId);
         }
 
@@ -58,6 +60,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ItemRequest save(ItemRequest itemRequest) {
+        log.info("Запрос сохранен  {}", itemRequest);
         return requestRepository.save(itemRequest);
 
     }
@@ -65,13 +68,14 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public Collection<ItemRequest> findAllForRequestor(Long userId) throws ModelNotExitsException {
         User user = userServise.findById(userId);
+        log.info("Получение пользователем {} его запросов", userId);
         return requestRepository.findItemRequestsByRequestorIdOrderByCreatedDesc(userId);
     }
 
     @Override
     public ItemRequest findItemRequest(Long itemId, Long userId) throws ModelNotExitsException {
         User user = userServise.findById(userId);
-
+        log.info("Получение пользователем {} всех запросов", userId);
         return requestRepository.findById(itemId)
                 .orElseThrow(() -> new ModelNotExitsException("запрос не существует", "id", itemId.toString()));
     }
