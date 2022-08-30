@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.booking.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 
@@ -55,4 +56,9 @@ public class BookingErrorHendler {
         return Map.of(e.getMessage(), e.getParam());
     }
 
+    @ExceptionHandler(IncorrectPageValueException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> incorrectPageValue(IncorrectPageValueException e) {
+        return Map.of("error", e.getMessage());
+    }
 }

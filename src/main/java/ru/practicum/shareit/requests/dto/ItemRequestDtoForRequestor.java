@@ -3,23 +3,20 @@ package ru.practicum.shareit.requests.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
-/**
- * // TODO .
- */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ItemRequestDto {
+@AllArgsConstructor
+public class ItemRequestDtoForRequestor {
     private Long id;
-    @NotBlank
-    @NotNull
     private String description;
     private User requestor;
     private LocalDateTime created;
+    private Collection<ItemDto> items = new ArrayList<>();
 }

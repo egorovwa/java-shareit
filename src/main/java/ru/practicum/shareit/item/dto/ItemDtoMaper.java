@@ -15,13 +15,20 @@ public class ItemDtoMaper {
     private final BookingDtoMaper bookingDtoMaper;
 
     public Item fromDto(ItemDto itemDto) {
+
         return new Item(itemDto.getId(), itemDto.getName(), itemDto.getDescription(),
                 itemDto.getAvailable(), itemDto.getOwner());
     }
 
     public ItemDto toDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(),
-                item.getDescription(), item.getAvailable(), item.getOwner());
+        if (item.getRequest() != null) {
+            return new ItemDto(item.getId(), item.getName(),
+                    item.getDescription(), item.getAvailable(), item.getOwner(), item.getRequest().getId());
+        } else {
+            return new ItemDto(item.getId(), item.getName(),
+                    item.getDescription(), item.getAvailable(), item.getOwner());
+        }
+
     }
 
     public ItemDtoWithBoking toDtoWithBooking(Item item, Optional<Booking> last, Optional<Booking> next,

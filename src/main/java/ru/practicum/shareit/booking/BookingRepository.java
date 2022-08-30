@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +11,8 @@ import java.util.Collection;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Collection<Booking> findByBooker_IdOrderByStartDesc(long id);
+
+    Page<Booking> findByBooker_IdOrderByStartDesc(Pageable pageable, long id);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id=:id AND b.end<:nowTime AND upper(b.status) = UPPER('APPROVED')" +
@@ -26,6 +30,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :ownerId ORDER BY b.start DESC")
     Collection<Booking> findOwnerAll(long ownerId);
+
+    @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE i.owner.id = :ownerId ORDER BY b.start DESC")
+    Page<Booking> findOwnerAll(Pageable pageable, long ownerId);
 
     @Query("SELECT b FROM Booking b JOIN b.item i ON b.item = i WHERE  i.owner.id = :userId AND b.start> :timeNow " +
             "ORDER BY b.start DESC")

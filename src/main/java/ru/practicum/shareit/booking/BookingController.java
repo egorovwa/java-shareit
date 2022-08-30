@@ -7,8 +7,10 @@ import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.StateDtoMaper;
 import ru.practicum.shareit.booking.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.util.PageParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -37,7 +39,8 @@ public class BookingController {
     @Valid
     public BookingDto bookingСonfirmation(@RequestHeader("X-Sharer-User-Id") long useId,
                                           @PathVariable Long bookingId,
-                                          @PathParam("approved") @NotNull Boolean approved) throws IncorrectUserIdException, ParametrNotFoundException, StatusAlredyException {
+                                          @PathParam("approved") @NotNull Boolean approved) throws IncorrectUserIdException,
+            ParametrNotFoundException, StatusAlredyException {
         return dtoMaper.toDto(bookingServise.setStatus(useId, bookingId, approved));
     }
 
@@ -48,19 +51,26 @@ public class BookingController {
 
     @GetMapping
     public Collection<BookingDto> getAll(@RequestHeader("X-Sharer-User-Id") long useId,
-                                         @PathParam("state") String state) throws UnknownStateException, UserNotFoundExteption {
+                                         @PathParam("state") String state,
+                                         @PathParam("from") Integer from,
+                                         @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
+
         if (state == null) {
-            return bookingServise.getAllUser(useId).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+
+            return bookingServise.getAllUser(useId, PageParam.createPageable(from, size)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
-            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+            return bookingServise.getAllUser(useId, StateDtoMaper.fromDto(state), PageParam.createPageable(from, size)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }
     }
 
     @GetMapping("/owner")
     public Collection<BookingDto> getAllOwner(@RequestHeader("X-Sharer-User-Id") long useId,
-                                              @PathParam("state") String state) throws UnknownStateException, UserNotFoundExteption {
+                                              @PathParam("state") String state,
+                                              @PathParam("from") Integer from,
+                                              @PathParam("size") Integer size) throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
         if (state == null) {
-            return bookingServise.getAllOwner(useId).stream().map(dtoMaper::toDto).collect(Collectors.toList());
+
+            return bookingServise.getAllOwner(useId, PageParam.createPageable(from, size)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         } else {
             return bookingServise.getAllOwner(useId, StateDtoMaper.fromDto(state)).stream().map(dtoMaper::toDto).collect(Collectors.toList());
         }

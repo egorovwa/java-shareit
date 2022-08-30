@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.dto.BookingDtoToCreate;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.*;
@@ -16,13 +17,13 @@ public interface BookingServise {
 
     Booking findById(long bookingId, long useId) throws ModelNotExitsException, IncorrectUserIdException;
 
-    Collection<Booking> getAllUser(long useId) throws UserNotFoundExteption;
+    Collection<Booking> getAllUser(long useId, Pageable pageable) throws UserNotFoundExteption;
 
-    Collection<Booking> getAllUser(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException;
+    Collection<Booking> getAllUser(long useId, BookingState state, Pageable pageParam) throws UserNotFoundExteption, UnknownStateException;
 
     Collection<Booking> getAllOwner(long useId, BookingState state) throws UserNotFoundExteption, UnknownStateException;
 
-    Collection<Booking> getAllOwner(long useId) throws UserNotFoundExteption;
+    Collection<Booking> getAllOwner(long useId, Pageable pageParam) throws UserNotFoundExteption;
 
     Optional<Booking> findLastBookingToItem(long itemId);
 

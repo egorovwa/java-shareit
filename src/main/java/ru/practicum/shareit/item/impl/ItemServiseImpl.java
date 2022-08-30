@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -13,12 +14,11 @@ import ru.practicum.shareit.exceptions.NotUsedCommentException;
 import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.ItemServise;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.CommentDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDtoWithBoking;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.RequestService;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
 
@@ -37,13 +37,20 @@ public class ItemServiseImpl implements ItemServise {
     private final CommentRepository commentRepository;
     private final ItemDtoMaper itemDtoMaper;
     private final CommentDtoMaper commentDtoMaper;
+    private final RequestService requestService;
 
     @Override
-    public Item createItem(long userId, Item item) throws IncorrectUserIdException {
+    public Item createItem(long userId, ItemDto itemDto) throws IncorrectUserIdException {
+        Item item = itemDtoMaper.fromDto(itemDto);
         try {
             User user = userServise.findById(userId);
             item.setOwner(user);
             log.info("Добавленна item ({}), пользователем id {}", item.getName(), userId);
+            if (itemDto.getRequestId() != null) {
+                ItemRequest itemRequest = requestService.findById(itemDto.getRequestId());
+                item.setRequest(itemRequest);
+                itemRequest.getItems().add(item);
+            }
             return itemRepository.save(item);
         } catch (ModelNotExitsException e) {
             log.warn("Попытка добавление item ({}), несуществующим пользователем id {}", item.getName(), userId);
@@ -114,33 +121,48 @@ public class ItemServiseImpl implements ItemServise {
     }
 
     @Override
-    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId) {
-        log.info("поиск вещей пользователя id ={}", userId);
-        return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream().map(i -> itemDtoMaper
-                        .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
-                                getItemComments(i.getId())))
-                .collect(Collectors.toUnmodifiableList());
+    public Collection<ItemDtoWithBoking> findAllByOwnerId(long userId, Pageable pageable) {
+        if (pageable != null) {
+            log.info("поиск вещей пользователя id ={}", userId);
+            return itemRepository.findByOwnerIdOrderByIdAsc(pageable, userId).stream().map(i -> itemDtoMaper
+                            .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
+                                    getItemComments(i.getId())))
+                    .collect(Collectors.toUnmodifiableList());
+        } else {
+            return itemRepository.findByOwnerIdOrderByIdAsc(userId).stream().map(i -> itemDtoMaper
+                            .toDtoWithBooking(i, getLastBooking(i.getId()), getNextBooking(i.getId()),
+                                    getItemComments(i.getId())))
+                    .collect(Collectors.toUnmodifiableList());
+        }
     }
 
     @Override
-    public Collection<Item> findByText(String text) {
-        if (Strings.isNotBlank(text)) {
-            log.info("поиск вещей по тексту ({})", text);
-            return Collections.unmodifiableCollection(itemRepository.findByText(text));
-        } else return new ArrayList<>();
+    public Collection<Item> findByText(String text, Pageable pageable) {
+        if (pageable != null) {
+            if (Strings.isNotBlank(text)) {
+                log.info("поиск вещей по тексту ({})", text);
+                return Collections.unmodifiableCollection(itemRepository.findByText(pageable, text).toList());
+            } else return new ArrayList<>();
+        } else {
+            if (Strings.isNotBlank(text)) {
+                log.info("поиск вещей по тексту ({})", text);
+                return Collections.unmodifiableCollection(itemRepository.findByText(text));
+            } else return new ArrayList<>();
+        }
     }
 
     @Override
     public Comment addComment(Long itemId, long userId, String text) throws ModelNotExitsException, NotUsedCommentException {
-        Item item = findById(itemId); // TODO: 05.08.2022 проверить exception
+        Item item = findById(itemId);
         User user = userServise.findById(userId);
-        if (bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) > 0) {
+        int i = bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        if (bookingRepository.usedCount(userId, itemId, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)) >= 1) {
+            log.info("Добавлен коментарий к вещи id {}", itemId);
             return commentRepository.save(new Comment(null, text, item, user,
                     LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)));
         } else {
+            log.warn("Попытка добавления коментария к вещи id {} пользователем id {}", itemId, userId);
             throw new NotUsedCommentException("пользователь не пользовался вещью", userId, itemId);
         }
-
-
     }
 }
