@@ -1,0 +1,57 @@
+package ru.practicum.shareit.requests;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exceptions.IncorrectPageValueException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
+import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.shareit.requests.dto.ItemRequestDtoForRequestor;
+import ru.practicum.shareit.requests.dto.ItemRequestDtoMaper;
+import ru.practicum.shareit.util.PageParam;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/requests")
+@RequiredArgsConstructor
+@Slf4j
+public class ItemRequesstController {
+    private final ItemRequestsClient requestsClient;
+
+    @PostMapping
+    public ResponseEntity<Object> createRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
+                                                @RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.info("Create request {}, userId = {}", itemRequestDto, userId);
+        return requestsClient.postRequest(userId, itemRequestDto);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Object> findAllItemRequest(
+            @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(value = "size",defaultValue = "10") Integer size,
+            @RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.info("Get all requests, userId = {}, from = {}, size = {}", userId, from, size);
+        return requestsClient.getRequests("/all", userId, from, size);
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> findAllForRequestor(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.info("Get all request for requestorId = {}", userId);
+        return requestsClient.getRequests(userId);
+    }
+
+    @GetMapping("/{itemId}")
+    public ResponseEntity<Object> findItemRequest(@PathVariable("itemId") Long itemId,
+                                                      @RequestHeader("X-Sharer-User-Id") Long userId) {
+        log.info("Get itemId = {}, userId = {}", itemId, userId);
+        return requestsClient.getRequests(userId,itemId);
+    }
+
+
+}
