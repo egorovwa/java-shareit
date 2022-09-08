@@ -3,23 +3,20 @@ package ru.practicum.shareit.requests;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.IncorrectPageValueException;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
-import ru.practicum.shareit.requests.dto.ItemRequestDtoForRequestor;
-import ru.practicum.shareit.requests.dto.ItemRequestDtoMaper;
-import ru.practicum.shareit.util.PageParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
-@RestController
+
+@Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class ItemRequesstController {
     private final ItemRequestsClient requestsClient;

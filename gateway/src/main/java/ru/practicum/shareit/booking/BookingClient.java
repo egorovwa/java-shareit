@@ -42,7 +42,7 @@ public class BookingClient extends BaseClient {
         return post("", userId, requestDto);
     }
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
-    public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
+    public ResponseEntity<Object> getBookings(long userId, Long bookingId) {
         return get("/" + bookingId, userId);
     }
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
@@ -53,7 +53,7 @@ public class BookingClient extends BaseClient {
         return patch(path + "?approved={approved}",useId, parameters);
     }
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
-    public ResponseEntity<Object> getBooking(String path, long useId, BookingState state, Integer from, Integer size) {
+    public ResponseEntity<Object> getBookings(String path, long useId, BookingState state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "state", state.name(),
                 "from", from,

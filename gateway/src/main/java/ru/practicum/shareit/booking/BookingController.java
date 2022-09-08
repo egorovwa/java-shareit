@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -10,10 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
+
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import javax.websocket.server.PathParam;
 
 @Controller
 @RequestMapping(path = "/bookings")
@@ -37,6 +37,9 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                            @RequestBody @Valid BookItemRequestDto requestDto) {
+        if(requestDto.getStart().isAfter(requestDto.getEnd()) || requestDto.getStart().isEqual(requestDto.getEnd())){
+            throw new IllegalArgumentException("Booking time not valid");
+        }
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
     }
@@ -45,7 +48,7 @@ public class BookingController {
     public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
                                              @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
-        return bookingClient.getBooking(userId, bookingId);
+        return bookingClient.getBookings(userId, bookingId);
     }
 
     @PatchMapping("/{bookingId}")
@@ -65,6 +68,6 @@ public class BookingController {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get all booking by owner state {}, userId={}", state, userId);
-        return bookingClient.getBooking("/owner", userId, state, from, size);
+        return bookingClient.getBookings("/owner", userId, state, from, size);
     }
 }

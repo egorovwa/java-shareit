@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.TestConstants.BOOKING1_USER2_ITEM1_WAITING;
 
-@WebMvcTest(BookingController.class)
+@WebMvcTest(value = BookingController.class)
 @Import(BookingDtoMaper.class)
 class BookingControllerTest {
     final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;

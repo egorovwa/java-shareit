@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
-import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoToCreate;
 
@@ -20,13 +17,13 @@ public class UserController {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> addUser(@Valid @RequestBody UserDtoToCreate userDto) throws UserBadEmailException {
+    public ResponseEntity<Object> addUser(@Valid @RequestBody UserDtoToCreate userDto) {
       log.info("Creating User {}", userDto);
         return userClient.postUser(userDto);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Object> findById(@PathVariable long userId) throws ModelNotExitsException {
+    public ResponseEntity<Object> findById(@PathVariable long userId) {
         log.info("Get user id= {}", userId);
         return userClient.getUser(userId);
     }
