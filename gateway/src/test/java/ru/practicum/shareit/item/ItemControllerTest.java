@@ -55,27 +55,25 @@ class ItemControllerTest {
     @Test
     void test1_2_createItem_nameBlank() throws Exception {
         ItemDto dto = new ItemDto(null, "", "dddddd", true, 1L);
-        assertThrows(NestedServletException.class, () -> {
                     mvc.perform(post(API_PREFIX)
                             .contentType(MediaType.APPLICATION_JSON)
                             .characterEncoding(StandardCharsets.UTF_8)
                             .content(objectMapper.writeValueAsString(dto))
-                            .header(HEADER_USER_ID, 1L));
-                }
-        );
+                            .header(HEADER_USER_ID, 1L))
+                            .andExpect(status().isBadRequest());
+
     }
 
     @Test
     void test1_3_createItem_descriptionBlank() throws Exception {
         ItemDto dto = new ItemDto(null, "name", "", true, 1L);
-        assertThrows(NestedServletException.class, () -> {
+
                     mvc.perform(post(API_PREFIX)
                             .contentType(MediaType.APPLICATION_JSON)
                             .characterEncoding(StandardCharsets.UTF_8)
                             .content(objectMapper.writeValueAsString(dto))
-                            .header(HEADER_USER_ID, 1L));
-                }
-        );
+                            .header(HEADER_USER_ID, 1L))
+                            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -107,13 +105,12 @@ class ItemControllerTest {
         ItemDto dto = new ItemDto(null, "", null, null, null);
         when(client.pacthItem(1L, 1L, dto))
                 .thenReturn(ResponseEntity.notFound().build());
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(patch(API_PREFIX + "/{itemId}", 1)
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .content(objectMapper.writeValueAsString(dto))
-                    .header(HEADER_USER_ID, 1L));
-        });
+                    .header(HEADER_USER_ID, 1L))
+                    .andExpect(status().isBadRequest());
 
     }
 
@@ -151,26 +148,25 @@ class ItemControllerTest {
 
     @Test
     void test4_2findAllByOwnerId_whenfromNegative() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX)
                     .header(HEADER_USER_ID, 1)
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .param("from", "-1")
-                    .param("size", "1"));
-        });
+                    .param("size", "1"))
+                    .andExpect(status().isBadRequest());
+
     }
 
     @Test
     void test4_2findAllByOwnerId_whenSizeZero() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX)
                     .header(HEADER_USER_ID, 1)
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .param("from", "1")
-                    .param("size", "0"));
-        });
+                    .param("size", "0"))
+                    .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -185,44 +181,28 @@ class ItemControllerTest {
         verify(client, times(1)).getItems("/search", "text", 2, 0, 1L);
 
     }
-
-    @Test
-    void test5_2findByText_whenTextSizeError() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
-            mvc.perform(get(API_PREFIX + "/search")
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(HEADER_USER_ID, 1)
-                    .param("text", "t")
-                    .param("from", "0")
-                    .param("size", "2"));
-        });
-    }
-
     @Test
     void test5_3findByText_whenFromNegative() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX + "/search")
                     .characterEncoding(StandardCharsets.UTF_8)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HEADER_USER_ID, 1)
                     .param("text", "text")
                     .param("from", "-1")
-                    .param("size", "2"));
-        });
+                    .param("size", "2"))
+                    .andExpect(status().isBadRequest());
     }
 
     @Test
     void test5_4findByText_whenSizeZero() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX + "/search")
                     .characterEncoding(StandardCharsets.UTF_8)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HEADER_USER_ID, 1)
                     .param("text", "text")
                     .param("from", "0")
-                    .param("size", "0"));
-        });
+                    .param("size", "0"))
+                    .andExpect(status().isBadRequest());
     }
 
     @Test

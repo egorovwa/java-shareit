@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -43,6 +44,7 @@ import static ru.practicum.shareit.TestConstants.*;
 
 @WebMvcTest(controllers = ItemRequesstController.class)
 @Import({ItemRequestDtoMaper.class, ItemDtoMaper.class, BookingDtoMaper.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ItemRequesstControllerTest {
     public static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
     final LocalDateTime createTime = LocalDateTime.of(2022, 8, 16, 19, 9, 0);

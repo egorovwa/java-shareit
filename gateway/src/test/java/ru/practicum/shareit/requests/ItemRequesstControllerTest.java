@@ -90,27 +90,26 @@ class ItemRequesstControllerTest {
     void test_2_2findAllItemRequest_whenFromNegative() throws Exception {
         when(client.getRequests("/all", 1L, 0, 3))
                 .thenReturn(ResponseEntity.accepted().build());
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX + "/all")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .header(HEADER_USER_ID, 1)
                     .param("from", "-1")
-                    .param("size", "3"));
-        });
+                    .param("size", "3"))
+                    .andExpect(status().isBadRequest());
     }
     @Test
     void test_2_3findAllItemRequest_whenSizeZero() throws Exception {
         when(client.getRequests("/all", 1L, 0, 3))
                 .thenReturn(ResponseEntity.accepted().build());
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX + "/all")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .header(HEADER_USER_ID, 1)
                     .param("from", "0")
-                    .param("size", "0"));
-        });
+                    .param("size", "0"))
+                    .andExpect(status().isBadRequest());
+
     }
     @Test
     void test_2_4findAllItemRequest_whenUserNotFound() throws Exception {

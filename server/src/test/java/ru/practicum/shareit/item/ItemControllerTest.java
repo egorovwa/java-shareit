@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -41,6 +42,7 @@ import static ru.practicum.shareit.TestConstants.*;
 
 @WebMvcTest(ItemController.class)
 @Import({ItemDtoMaper.class, CommentDtoMaper.class, BookingDtoMaper.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ItemControllerTest {
 
     final ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper());

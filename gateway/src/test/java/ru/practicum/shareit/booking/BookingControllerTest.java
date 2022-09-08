@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookingController.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class BookingControllerTest {
     @MockBean
     BookingClient client;
@@ -69,28 +69,28 @@ class BookingControllerTest {
 
     @Test
     void test1_2getBookings_whenFromNegative() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX)
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .header(HEADER_USER_ID, 1)
                     .param("state", "ALL")
                     .param("from", "-1")
-                    .param("size", "2"));
-        });
+                    .param("size", "2"))
+                    .andExpect(status().isBadRequest());
     }
 
     @Test
     void test1_3getBookings_whenSizeZero() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
+
             mvc.perform(get(API_PREFIX)
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .header(HEADER_USER_ID, 1)
                     .param("state", "ALL")
                     .param("from", "0")
-                    .param("size", "0"));
-        });
+                    .param("size", "0"))
+                    .andExpect(status().isBadRequest());
+
     }
 
     @Test
@@ -168,26 +168,24 @@ class BookingControllerTest {
 
     @Test
     void test5_3getAllOwner_whenFromNegatie() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX + "/owner")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .header(HEADER_USER_ID, 1)
                     .param("state", "ALL")
                     .param("from", "-1")
-                    .param("size", "2"));
-        });
+                    .param("size", "2"))
+                    .andExpect(status().isBadRequest());
     }
     @Test
     void test5_4getAllOwner_whenSize0() throws Exception {
-        assertThrows(NestedServletException.class, () -> {
             mvc.perform(get(API_PREFIX + "/owner")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8)
                     .header(HEADER_USER_ID, 1)
                     .param("state", "ALL")
                     .param("from", "0")
-                    .param("size", "0"));
-        });
+                    .param("size", "0"))
+                    .andExpect(status().isBadRequest());
     }
 }
