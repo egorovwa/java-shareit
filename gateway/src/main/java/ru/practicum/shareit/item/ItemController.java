@@ -15,9 +15,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
-/**
- * // TODO .
- */
+
 @Controller
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -57,7 +55,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> findByText(@RequestParam(name = "text") String text, // TODO: 08.09.2022 или NotBlank ???
+    public ResponseEntity<Object> findByText(@RequestParam(name = "text") String text,
                                              @RequestHeader("X-Sharer-User-Id") long userId,
                                              @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {

@@ -18,9 +18,7 @@ import javax.websocket.server.PathParam;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-/**
- * // TODO .
- */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")

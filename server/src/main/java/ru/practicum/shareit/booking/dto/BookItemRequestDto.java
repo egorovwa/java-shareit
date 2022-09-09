@@ -9,9 +9,7 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
-/**
- * // TODO .
- */
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

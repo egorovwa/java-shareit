@@ -8,9 +8,6 @@ import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 
-/**
- * // TODO .
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
