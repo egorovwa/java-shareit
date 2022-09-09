@@ -16,7 +16,6 @@ import java.util.Collection;
 public class ItemDtoWithBoking extends ItemDto {
     BookingDtoToItem lastBooking;
     BookingDtoToItem nextBooking;
-
     Collection<CommentDto> comments;
 
     public ItemDtoWithBoking(Long id, @NotBlank String name, @NotBlank String description, @NotNull Boolean available,

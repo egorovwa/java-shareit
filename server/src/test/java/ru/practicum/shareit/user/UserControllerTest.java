@@ -87,21 +87,6 @@ class UserControllerTest {
                         is(UserBadEmailException.class)));
 
     }
-
-    @Test
-    void test1_1_createWrongEmail() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setEmail("sdfsdf");
-        userDto.setName("name");
-        mvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString(userDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertThat(result.getResolvedException().getClass(),
-                        is(MethodArgumentNotValidException.class)));
-    }
-
     @Test
     void test1_1_createAlradiExist() throws Exception {
         User user = new User();

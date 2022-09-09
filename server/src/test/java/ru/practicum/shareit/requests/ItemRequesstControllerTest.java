@@ -85,15 +85,6 @@ class ItemRequesstControllerTest {
                 .andExpect(jsonPath("$.requestor.email", is(user.getEmail())))
                 .andExpect(jsonPath("$.created", is(timeFormatter.format(createTime))))
                 .andExpect(jsonPath("$.description", is(itemRequestDto.getDescription())));
-
-        itemRequestDto.setDescription("");
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(itemRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .header("X-Sharer-User-Id", 1L)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(400));
     }
 
     @Test

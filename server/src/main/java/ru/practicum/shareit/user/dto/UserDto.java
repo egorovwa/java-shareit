@@ -12,8 +12,6 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class UserDto {
     private Long id;
-    @Email
     private String email;
-    @Size(min = 2)
     private String name;
 }

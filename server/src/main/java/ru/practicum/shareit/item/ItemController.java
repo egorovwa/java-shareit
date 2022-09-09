@@ -21,7 +21,7 @@ public class ItemController {
     private final CommentDtoMaper commentDtoMaper;
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto itemDto)
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto)
             throws IncorrectUserIdException {
         return itemDtoMaper.toDto(itemServise.createItem(userId, itemDto));
     }
@@ -57,7 +57,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable("itemId") Long itemId,
                                  @RequestHeader("X-Sharer-User-Id") long userId,
-                                 @RequestBody @Valid CommentDto text) throws ModelNotExitsException, NotUsedCommentException {
+                                 @RequestBody CommentDto text) throws ModelNotExitsException, NotUsedCommentException {
         Comment comment = itemServise.addComment(itemId, userId, text.getText());
         return commentDtoMaper.toDto(comment);
     }

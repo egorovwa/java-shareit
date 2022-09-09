@@ -28,7 +28,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") long useId,
-                                    @RequestBody @Valid BookItemRequestDto bookItemRequestDto)
+                                    @RequestBody BookItemRequestDto bookItemRequestDto)
             throws ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption {
         return dtoMaper.toDtoCreated(bookingServise.createBooking(bookItemRequestDto, useId));
     }
@@ -38,13 +38,14 @@ public class BookingController {
     @Valid
     public BookingDto bookingСonfirmation(@RequestHeader("X-Sharer-User-Id") long useId,
                                           @PathVariable Long bookingId,
-                                          @PathParam("approved") @NotNull Boolean approved) throws IncorrectUserIdException,
+                                          @PathParam("approved") Boolean approved) throws IncorrectUserIdException,
             ParametrNotFoundException, StatusAlredyException {
         return dtoMaper.toDto(bookingServise.setStatus(useId, bookingId, approved));
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDto getById(@PathVariable long bookingId, @RequestHeader("X-Sharer-User-Id") long useId) throws ModelNotExitsException, IncorrectUserIdException {
+    public BookingDto getById(@PathVariable long bookingId,
+                              @RequestHeader("X-Sharer-User-Id") long useId) throws ModelNotExitsException, IncorrectUserIdException {
         return dtoMaper.toDto(bookingServise.findById(bookingId, useId));
     }
 

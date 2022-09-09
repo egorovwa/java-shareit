@@ -53,16 +53,6 @@ class RequestRepositoryTest {
 
     @Test
     @DirtiesContext
-    void test2_createRequestWithOutDescription() {
-        User user = userRepository.save(USER_ID1);
-        ItemRequest itemRequest = new ItemRequest();
-        itemRequest.setCreated(TEST_TIME_LONG);
-        itemRequest.setRequestor(user);
-        assertThrows(ConstraintViolationException.class, () -> requestRepository.save(itemRequest));
-    }
-
-    @Test
-    @DirtiesContext
     void test3_findAllWithPage() {
         User userRequestor = userRepository.save(USER_ID1);
         User userResponser = userRepository.save(USER_ID2);

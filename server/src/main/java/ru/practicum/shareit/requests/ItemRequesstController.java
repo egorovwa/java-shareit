@@ -21,7 +21,7 @@ public class ItemRequesstController {
     private final ItemRequestDtoMaper maper;
 
     @PostMapping
-    public ItemRequestDto createRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
+    public ItemRequestDto createRequest(@RequestBody ItemRequestDto itemRequestDto,
                                         @RequestHeader("X-Sharer-User-Id") Long userId) throws ModelNotExitsException {
         return maper.toCreatedDto(requestService.createRequest(userId, itemRequestDto));
     }

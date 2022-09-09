@@ -20,12 +20,12 @@ public class UserController {
     private final UserDtoMaper userDtoMaper;
 
     @PostMapping
-    public UserDto addUser(@Valid @RequestBody UserDto user) throws UserBadEmailException, ModelAlreadyExistsException {
+    public UserDto addUser(@RequestBody UserDto user) throws UserBadEmailException, ModelAlreadyExistsException {
         return userDtoMaper.toDto(userServise.addUser(userDtoMaper.fromDto(user)));
     }
 
     @PatchMapping("/{userId}")
-    public UserDto patchUser(@PathVariable long userId, @Valid @RequestBody UserDto user) throws ModelNotExitsException, ModelAlreadyExistsException {
+    public UserDto patchUser(@PathVariable long userId, @RequestBody UserDto user) throws ModelNotExitsException, ModelAlreadyExistsException {
         return userDtoMaper.toDto(userServise.updateUser(userId, userDtoMaper.fromDto(user)));
     }
 
