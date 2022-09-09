@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SuppressWarnings("ALL")
 @WebMvcTest(BookingController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class BookingControllerTest {
@@ -61,10 +62,8 @@ class BookingControllerTest {
                         .param("state", "aaa")
                         .param("from", "0")
                         .param("size", "2"))
-                .andExpect(result -> {
-                    assertTrue(result.getResolvedException() instanceof
-                            IllegalArgumentException);
-                });
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof
+                        IllegalArgumentException));
     }
 
     @Test

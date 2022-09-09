@@ -36,7 +36,7 @@ class ItemServiseIntegrationTest {
 
     @Test
     @DirtiesContext
-    void test8_findItemByText() throws ModelAlreadyExistsException, IncorrectUserIdException, RequestNotExistException, IncorrectPageValueException {
+    void test8_findItemByText() throws ModelAlreadyExistsException, IncorrectUserIdException, IncorrectPageValueException {
         setUser();
         Item item = getItem();
         itemServise.createItem(1, itemDtoMaper.toDto(item));

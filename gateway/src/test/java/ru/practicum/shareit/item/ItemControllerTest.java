@@ -225,10 +225,8 @@ class ItemControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .content(objectMapper.writeValueAsString(commentDto))
                         .header(HEADER_USER_ID, 1L))
-                .andExpect(result -> {
-                    assertTrue(result.getResolvedException() instanceof
-                            MethodArgumentNotValidException);
-                });
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof
+                        MethodArgumentNotValidException));
 
 
     }

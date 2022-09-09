@@ -47,10 +47,10 @@ class BookingServiceTest {
     ItemServise itemServise;
     @InjectMocks
     BookingServiseImpl bookingServise;
-    private Pageable defaultPageble = PageRequest.of(0, 10);
+    private final Pageable defaultPageble = PageRequest.of(0, 10);
 
 
-    BookingServiceTest() throws IncorrectPageValueException {
+    BookingServiceTest() {
     }
 
     @BeforeEach
@@ -336,7 +336,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void test5_2_testGetAllUser_PAST() throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
+    void test5_2_testGetAllUser_PAST() throws UnknownStateException, UserNotFoundExteption {
         bookingServise.getAllUser(1L, BookingState.PAST, null);
         Mockito.verify(bookingRepository, Mockito.times(1))
                 .findByBookerIdStatePast(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
@@ -379,7 +379,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void test6_2_getAllOwner_PAST() throws UnknownStateException, UserNotFoundExteption, IncorrectPageValueException {
+    void test6_2_getAllOwner_PAST() throws UnknownStateException, UserNotFoundExteption {
         Mockito
                 .when(bookingRepository.findOwnerPast(1L, defaultPageble, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)))
                 .thenReturn(Page.empty());

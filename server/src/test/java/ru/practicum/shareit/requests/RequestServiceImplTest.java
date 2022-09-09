@@ -113,7 +113,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void test2_2findAll_userNotFound() throws ModelNotExitsException, IncorrectPageValueException {
+    void test2_2findAll_userNotFound() throws ModelNotExitsException {
         Mockito
                 .when(mokUserService.findById(1L))
                 .thenThrow(ModelNotExitsException.class);

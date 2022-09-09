@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+@SuppressWarnings("ALL")
 @Controller
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor

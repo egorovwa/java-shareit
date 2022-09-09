@@ -19,8 +19,7 @@ import ru.practicum.shareit.user.dto.UserDtoToCreate;
 @Service
 @Slf4j
 public class UserClient extends BaseClient {
-    private static String API_PREFIX = "/users";
-    private final ApplicationContext context;
+    private static final String API_PREFIX = "/users";
 
     @Autowired
     public UserClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder, ApplicationContext context) {
@@ -28,7 +27,6 @@ public class UserClient extends BaseClient {
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build());
-        this.context = context;
     }
 
     @Cacheable(cacheNames = "userRequests", key = "#userDto.email", unless = "#result.statusCodeValue == 200")

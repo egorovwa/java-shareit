@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.practicum.shareit.TestConstants.BOOKING1_USER2_ITEM1_WAITING;
 
+@SuppressWarnings("ALL")
 @WebMvcTest(value = BookingController.class)
 @Import(BookingDtoMaper.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)

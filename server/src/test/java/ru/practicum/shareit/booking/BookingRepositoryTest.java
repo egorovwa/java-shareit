@@ -45,7 +45,7 @@ class BookingRepositoryTest {
     Booking bookingPast2;
     Booking bookingFuture3;
     Booking bookingWaiting4;
-    Pageable defaultPageble = PageRequest.of(0, 10);
+    final Pageable defaultPageble = PageRequest.of(0, 10);
 
     private void data() {
         user1 = userRepository.save(USER_ID1);

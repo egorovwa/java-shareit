@@ -33,6 +33,7 @@ public class BookingController {
         return dtoMaper.toDtoCreated(bookingServise.createBooking(bookItemRequestDto, useId));
     }
 
+    @SuppressWarnings("NonAsciiCharacters")
     @PatchMapping("/{bookingId}")
     @Valid
     public BookingDto bookingСonfirmation(@RequestHeader("X-Sharer-User-Id") long useId,
