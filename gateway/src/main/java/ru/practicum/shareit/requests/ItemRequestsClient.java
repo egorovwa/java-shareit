@@ -24,10 +24,12 @@ public class ItemRequestsClient extends BaseClient {
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build());
     }
+
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
     public ResponseEntity<Object> postRequest(Long userId, ItemRequestDto itemRequestDto) {
         return post("", userId, itemRequestDto);
     }
+
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
     public ResponseEntity<Object> getRequests(String path, Long userId, Integer from, Integer size) {
         Map<String, Object> pasrameters = Map.of(
@@ -35,10 +37,12 @@ public class ItemRequestsClient extends BaseClient {
                 "size", size);
         return get(path + "?from={from}&size={size}", userId, pasrameters);
     }
+
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
     public ResponseEntity<Object> getRequests(Long userId) {
         return get("", userId);
     }
+
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
     public ResponseEntity<Object> getRequests(Long userId, Long itemId) {
         String path = "/" + itemId;

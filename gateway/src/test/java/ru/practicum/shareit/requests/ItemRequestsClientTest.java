@@ -18,12 +18,10 @@ import org.springframework.web.client.RestTemplate;
 import ru.practicum.shareit.ShareItGateway;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest(classes = ShareItGateway.class)
@@ -34,20 +32,21 @@ class ItemRequestsClientTest {
     ItemRequestsClient client;
     @Mock
     RestTemplate restTemplate;
+
     @BeforeEach
-    void setup(){
+    void setup() {
         ReflectionTestUtils.setField(client, "rest", restTemplate);
     }
 
     @Test
     void test1_postRequest() {
-        ItemRequestDto dto = new ItemRequestDto(null,"ddddddd", null);
+        ItemRequestDto dto = new ItemRequestDto(null, "ddddddd", null);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(ResponseEntity.status(404).build());
-        client.postRequest(1L,dto);
-        client.postRequest(1L,dto);
-        client.postRequest(1L,dto);
+        client.postRequest(1L, dto);
+        client.postRequest(1L, dto);
+        client.postRequest(1L, dto);
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
@@ -58,9 +57,9 @@ class ItemRequestsClientTest {
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class), any(Map.class)))
                 .thenReturn(response);
-        client.getRequests("",1L,0,3);
-        client.getRequests("",1L,0,3);
-        client.getRequests("",1L,0,3);
+        client.getRequests("", 1L, 0, 3);
+        client.getRequests("", 1L, 0, 3);
+        client.getRequests("", 1L, 0, 3);
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class), any(Map.class));
     }

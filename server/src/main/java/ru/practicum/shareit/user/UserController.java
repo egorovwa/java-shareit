@@ -12,9 +12,6 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor

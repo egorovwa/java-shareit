@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -37,7 +36,7 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                            @RequestBody @Valid BookItemRequestDto requestDto) {
-        if(requestDto.getStart().isAfter(requestDto.getEnd()) || requestDto.getStart().isEqual(requestDto.getEnd())){
+        if (requestDto.getStart().isAfter(requestDto.getEnd()) || requestDto.getStart().isEqual(requestDto.getEnd())) {
             throw new IllegalArgumentException("Booking time not valid");
         }
         log.info("Creating booking {}, userId={}", requestDto, userId);
@@ -64,7 +63,7 @@ public class BookingController {
     public ResponseEntity<Object> getAllOwner(@RequestHeader("X-Sharer-User-Id") long userId,
                                               @RequestParam(name = "state", defaultValue = "all") String stateParam,
                                               @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size)  {
+                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get all booking by owner state {}, userId={}", state, userId);

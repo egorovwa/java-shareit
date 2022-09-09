@@ -167,12 +167,4 @@ class UserServiseImplTest {
         userServise.findAll();
         Mockito.verify(userRepository, Mockito.times(1)).findAll();
     }
-// TODO: 24.08.2022 проверять вроде нечего
-/*    @Test
-    void findById() {
-    }
-
-    @Test
-    void findAll() {
-    }*/
 }

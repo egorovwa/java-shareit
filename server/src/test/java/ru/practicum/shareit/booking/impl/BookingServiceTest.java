@@ -39,7 +39,6 @@ import static ru.practicum.shareit.TestConstants.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceTest {
-    private Pageable defaultPageble = PageRequest.of(0, 10);
     @Mock
     BookingRepository bookingRepository;
     @Mock
@@ -48,6 +47,7 @@ class BookingServiceTest {
     ItemServise itemServise;
     @InjectMocks
     BookingServiseImpl bookingServise;
+    private Pageable defaultPageble = PageRequest.of(0, 10);
 
 
     BookingServiceTest() throws IncorrectPageValueException {

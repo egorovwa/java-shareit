@@ -18,12 +18,9 @@ import org.springframework.web.client.RestTemplate;
 import ru.practicum.shareit.ShareItGateway;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.requests.ItemRequestsClient;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest(classes = ShareItGateway.class)
@@ -112,9 +109,9 @@ class ItemClientTest {
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(response);
-        client.postComment("path",1L,dto);
-        client.postComment("path",1L,dto);
-        client.postComment("path",1L,dto);
+        client.postComment("path", 1L, dto);
+        client.postComment("path", 1L, dto);
+        client.postComment("path", 1L, dto);
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }

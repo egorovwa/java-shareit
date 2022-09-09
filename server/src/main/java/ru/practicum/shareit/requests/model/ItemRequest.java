@@ -14,9 +14,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * // TODO .
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

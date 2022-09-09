@@ -9,6 +9,7 @@ public enum BookingState {
     FUTURE, // (англ. «будущие»),
     WAITING, // (англ. «ожидающие подтверждения»),
     REJECTED; // (англ. «отклонённые»).
+
     public static Optional<BookingState> from(String stringState) {
         for (BookingState state : values()) {
             if (state.name().equalsIgnoreCase(stringState)) {

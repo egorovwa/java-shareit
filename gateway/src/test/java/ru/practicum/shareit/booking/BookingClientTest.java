@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +20,7 @@ import ru.practicum.shareit.booking.dto.BookingState;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
+
 @SpringBootTest(classes = ShareItGateway.class)
 @ExtendWith(MockitoExtension.class)
 class BookingClientTest {
@@ -78,9 +78,9 @@ class BookingClientTest {
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class), any(Map.class)))
                 .thenReturn(ResponseEntity.notFound().build());
-        client.patchBooking(1L,1L, true);
-        client.patchBooking(1L,1L, true);
-        client.patchBooking(1L,1L, true);
+        client.patchBooking(1L, 1L, true);
+        client.patchBooking(1L, 1L, true);
+        client.patchBooking(1L, 1L, true);
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class), any(Map.class));
     }
@@ -90,8 +90,8 @@ class BookingClientTest {
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class), any(Map.class)))
                 .thenReturn(ResponseEntity.notFound().build());
-        client.getBookings("patt",1L, BookingState.CURRENT,0,3);
-        client.getBookings("patt",1L, BookingState.CURRENT,0,3);
+        client.getBookings("patt", 1L, BookingState.CURRENT, 0, 3);
+        client.getBookings("patt", 1L, BookingState.CURRENT, 0, 3);
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class), any(Map.class));
     }

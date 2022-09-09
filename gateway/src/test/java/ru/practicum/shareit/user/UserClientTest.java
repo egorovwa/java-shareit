@@ -51,9 +51,10 @@ class UserClientTest {
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
+
     @Test
     @DirtiesContext
-    void test2_getUser_duplicate(){
+    void test2_getUser_duplicate() {
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
@@ -65,6 +66,7 @@ class UserClientTest {
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
+
     @Test
     @DirtiesContext
     void test3_patchUser_duplicate() {
@@ -73,15 +75,16 @@ class UserClientTest {
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(response);
-        ResponseEntity<Object> out = userClient.pathUser(1L,userDto);
-        out = userClient.pathUser(1L,userDto);
-        out = userClient.pathUser(1L,userDto);
+        ResponseEntity<Object> out = userClient.pathUser(1L, userDto);
+        out = userClient.pathUser(1L, userDto);
+        out = userClient.pathUser(1L, userDto);
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
+
     @Test
     @DirtiesContext
-    void test4_delete_duplicate(){
+    void test4_delete_duplicate() {
         UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
@@ -92,9 +95,10 @@ class UserClientTest {
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
+
     @Test
     @DirtiesContext
-    void test5_getAll_duplicate(){
+    void test5_getAll_duplicate() {
         UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
@@ -104,38 +108,40 @@ class UserClientTest {
         Mockito.verify(restTemplate, Mockito.times(1)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
+
     @Test
     @DirtiesContext
-    void test6_creatAftePatch(){
+    void test6_creatAftePatch() {
         UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(userDto, HttpStatus.CONFLICT);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(response);
         ResponseEntity<Object> out = userClient.postUser(userDto);
-        UserDto patchDto = new UserDto(1L,"updated@email.com",null);
+        UserDto patchDto = new UserDto(1L, "updated@email.com", null);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(ResponseEntity.ok().build());
-       ResponseEntity<Object> resonsePatch = userClient.pathUser(1L,patchDto);
+        ResponseEntity<Object> resonsePatch = userClient.pathUser(1L, patchDto);
         userClient.postUser(userDto);
         Mockito.verify(restTemplate, Mockito.times(3)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));
     }
+
     @Test
     @DirtiesContext
-    void test6_1creatAftePatchName(){
+    void test6_1creatAftePatchName() {
         UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(userDto, HttpStatus.CONFLICT);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(response);
         ResponseEntity<Object> out = userClient.postUser(userDto);
-        UserDto patchDto = new UserDto(1L,null,"update");
+        UserDto patchDto = new UserDto(1L, null, "update");
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(ResponseEntity.ok().build());
-        ResponseEntity<Object> resonsePatch = userClient.pathUser(1L,patchDto);
+        ResponseEntity<Object> resonsePatch = userClient.pathUser(1L, patchDto);
         userClient.postUser(userDto);
         Mockito.verify(restTemplate, Mockito.times(3)).exchange(Mockito.anyString(),
                 any(HttpMethod.class), any(HttpEntity.class), any(Class.class));

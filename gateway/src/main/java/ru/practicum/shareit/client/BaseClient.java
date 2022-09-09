@@ -74,6 +74,7 @@ public class BaseClient {
     protected <T> ResponseEntity<Object> patch(String path, long userId, T body) {
         return patch(path, userId, null, body);
     }
+
     protected <T> ResponseEntity<Object> patch(String path, long userId, Map<String, Object> parameters) {
         return patch(path, userId, parameters, null);
     }
@@ -101,15 +102,15 @@ public class BaseClient {
         try {
             if (parameters != null) {
                 shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
-                log.debug("Request method {}, patch {}, requestEntity {}, parameters {}; response {}",method, path,
+                log.debug("Request method {}, patch {}, requestEntity {}, parameters {}; response {}", method, path,
                         requestEntity, parameters, shareitServerResponse);
             } else {
                 shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class);
-                log.debug("Request method {}, patch {}, requestEntity {}, parameters {}; response {}",method, path,
+                log.debug("Request method {}, patch {}, requestEntity {}, parameters {}; response {}", method, path,
                         requestEntity, parameters, shareitServerResponse);
             }
         } catch (HttpStatusCodeException e) {
-            log.debug("Request method {}, patch {}, requestEntity {}, parameters {}; response exception {}",method, path,
+            log.debug("Request method {}, patch {}, requestEntity {}, parameters {}; response exception {}", method, path,
                     requestEntity, parameters, e);
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         }

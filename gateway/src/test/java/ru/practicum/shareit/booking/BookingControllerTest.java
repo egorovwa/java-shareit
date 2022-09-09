@@ -11,7 +11,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.NestedServletException;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 
@@ -19,21 +18,22 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookingController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class BookingControllerTest {
+    private static final String API_PREFIX = "/bookings";
+    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
     @MockBean
     BookingClient client;
     @Autowired
     ObjectMapper objectMapper;
     MockMvc mvc;
-    private static final String API_PREFIX = "/bookings";
-    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @BeforeEach
     void setup(WebApplicationContext web) {
@@ -69,27 +69,27 @@ class BookingControllerTest {
 
     @Test
     void test1_2getBookings_whenFromNegative() throws Exception {
-            mvc.perform(get(API_PREFIX)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .header(HEADER_USER_ID, 1)
-                    .param("state", "ALL")
-                    .param("from", "-1")
-                    .param("size", "2"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1)
+                        .param("state", "ALL")
+                        .param("from", "-1")
+                        .param("size", "2"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void test1_3getBookings_whenSizeZero() throws Exception {
 
-            mvc.perform(get(API_PREFIX)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .header(HEADER_USER_ID, 1)
-                    .param("state", "ALL")
-                    .param("from", "0")
-                    .param("size", "0"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1)
+                        .param("state", "ALL")
+                        .param("from", "0")
+                        .param("size", "0"))
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -168,24 +168,25 @@ class BookingControllerTest {
 
     @Test
     void test5_3getAllOwner_whenFromNegatie() throws Exception {
-            mvc.perform(get(API_PREFIX + "/owner")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .header(HEADER_USER_ID, 1)
-                    .param("state", "ALL")
-                    .param("from", "-1")
-                    .param("size", "2"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX + "/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1)
+                        .param("state", "ALL")
+                        .param("from", "-1")
+                        .param("size", "2"))
+                .andExpect(status().isBadRequest());
     }
+
     @Test
     void test5_4getAllOwner_whenSize0() throws Exception {
-            mvc.perform(get(API_PREFIX + "/owner")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .header(HEADER_USER_ID, 1)
-                    .param("state", "ALL")
-                    .param("from", "0")
-                    .param("size", "0"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX + "/owner")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1)
+                        .param("state", "ALL")
+                        .param("from", "0")
+                        .param("size", "0"))
+                .andExpect(status().isBadRequest());
     }
 }

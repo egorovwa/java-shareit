@@ -1,10 +1,11 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.StateDtoMaper;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectPageValueException;
@@ -13,7 +14,6 @@ import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.util.PageParam;
 
 import javax.validation.Valid;
-import org.jetbrains.annotations.NotNull;
 import javax.websocket.server.PathParam;
 import java.util.Collection;
 import java.util.stream.Collectors;

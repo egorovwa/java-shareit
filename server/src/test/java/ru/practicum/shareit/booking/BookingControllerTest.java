@@ -14,8 +14,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
@@ -255,6 +255,6 @@ class BookingControllerTest {
                 .characterEncoding(StandardCharsets.UTF_8));
         Mockito
                 .verify(bookingServise, Mockito.times(1))
-                .getAllOwner(1L, PageRequest.of(0,3), BookingState.FUTURE);
+                .getAllOwner(1L, PageRequest.of(0, 3), BookingState.FUTURE);
     }
 }

@@ -9,29 +9,26 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.NestedServletException;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 
-import javax.validation.ConstraintViolationException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ItemRequesstController.class)
 class ItemRequesstControllerTest {
+    private static final String API_PREFIX = "/requests";
+    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
     @MockBean
     ItemRequestsClient client;
     @Autowired
     ObjectMapper objectMapper;
     MockMvc mvc;
-    private static final String API_PREFIX = "/requests";
-    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @BeforeEach
     void setup(WebApplicationContext web) {
@@ -90,37 +87,39 @@ class ItemRequesstControllerTest {
     void test_2_2findAllItemRequest_whenFromNegative() throws Exception {
         when(client.getRequests("/all", 1L, 0, 3))
                 .thenReturn(ResponseEntity.accepted().build());
-            mvc.perform(get(API_PREFIX + "/all")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .header(HEADER_USER_ID, 1)
-                    .param("from", "-1")
-                    .param("size", "3"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX + "/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1)
+                        .param("from", "-1")
+                        .param("size", "3"))
+                .andExpect(status().isBadRequest());
     }
+
     @Test
     void test_2_3findAllItemRequest_whenSizeZero() throws Exception {
         when(client.getRequests("/all", 1L, 0, 3))
                 .thenReturn(ResponseEntity.accepted().build());
-            mvc.perform(get(API_PREFIX + "/all")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .header(HEADER_USER_ID, 1)
-                    .param("from", "0")
-                    .param("size", "0"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX + "/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1)
+                        .param("from", "0")
+                        .param("size", "0"))
+                .andExpect(status().isBadRequest());
 
     }
+
     @Test
     void test_2_4findAllItemRequest_whenUserNotFound() throws Exception {
         when(client.getRequests("/all", 1L, 0, 3))
                 .thenReturn(ResponseEntity.badRequest().build());
         mvc.perform(get(API_PREFIX + "/all")
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .header(HEADER_USER_ID, 1)
-                .param("from", "0")
-                .param("size", "3"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1)
+                        .param("from", "0")
+                        .param("size", "3"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -132,33 +131,35 @@ class ItemRequesstControllerTest {
                 .header(HEADER_USER_ID, 1));
         verify(client, times(1)).getRequests(1L);
     }
+
     @Test
     void test3_2findAllForRequestor_userNotFound() throws Exception {
         when(client.getRequests(1L))
                 .thenReturn(ResponseEntity.badRequest().build());
         mvc.perform(get(API_PREFIX)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .header(HEADER_USER_ID, 1))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .header(HEADER_USER_ID, 1))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void test4_1findItemRequest() throws Exception {
-        mvc.perform(get(API_PREFIX+"/{itemId}", 1)
+        mvc.perform(get(API_PREFIX + "/{itemId}", 1)
                 .header(HEADER_USER_ID, 1)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON));
-        verify(client,times(1)).getRequests(1L,1L);
+        verify(client, times(1)).getRequests(1L, 1L);
     }
+
     @Test
     void test4_1findItemRequest_whenResponseNotFound() throws Exception {
-        when(client.getRequests(1L,1L))
+        when(client.getRequests(1L, 1L))
                 .thenReturn(ResponseEntity.notFound().build());
-        mvc.perform(get(API_PREFIX+"/{itemId}", 1)
-                .header(HEADER_USER_ID, 1)
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get(API_PREFIX + "/{itemId}", 1)
+                        .header(HEADER_USER_ID, 1)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 }

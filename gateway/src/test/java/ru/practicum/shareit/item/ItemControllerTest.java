@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,28 +12,25 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.NestedServletException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.requests.ItemRequestsClient;
 
-import javax.validation.ConstraintViolationException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ItemController.class)
 class ItemControllerTest {
+    private static final String API_PREFIX = "/items";
+    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
     @MockBean
     ItemClient client;
     @Autowired
     ObjectMapper objectMapper;
     MockMvc mvc;
-    private static final String API_PREFIX = "/items";
-    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @BeforeEach
     void setup(WebApplicationContext web) {
@@ -55,12 +51,12 @@ class ItemControllerTest {
     @Test
     void test1_2_createItem_nameBlank() throws Exception {
         ItemDto dto = new ItemDto(null, "", "dddddd", true, 1L);
-                    mvc.perform(post(API_PREFIX)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .characterEncoding(StandardCharsets.UTF_8)
-                            .content(objectMapper.writeValueAsString(dto))
-                            .header(HEADER_USER_ID, 1L))
-                            .andExpect(status().isBadRequest());
+        mvc.perform(post(API_PREFIX)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .header(HEADER_USER_ID, 1L))
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -68,12 +64,12 @@ class ItemControllerTest {
     void test1_3_createItem_descriptionBlank() throws Exception {
         ItemDto dto = new ItemDto(null, "name", "", true, 1L);
 
-                    mvc.perform(post(API_PREFIX)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .characterEncoding(StandardCharsets.UTF_8)
-                            .content(objectMapper.writeValueAsString(dto))
-                            .header(HEADER_USER_ID, 1L))
-                            .andExpect(status().isBadRequest());
+        mvc.perform(post(API_PREFIX)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .header(HEADER_USER_ID, 1L))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -105,12 +101,12 @@ class ItemControllerTest {
         ItemDto dto = new ItemDto(null, "", null, null, null);
         when(client.pacthItem(1L, 1L, dto))
                 .thenReturn(ResponseEntity.notFound().build());
-            mvc.perform(patch(API_PREFIX + "/{itemId}", 1)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .content(objectMapper.writeValueAsString(dto))
-                    .header(HEADER_USER_ID, 1L))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(patch(API_PREFIX + "/{itemId}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .header(HEADER_USER_ID, 1L))
+                .andExpect(status().isBadRequest());
 
     }
 
@@ -148,25 +144,25 @@ class ItemControllerTest {
 
     @Test
     void test4_2findAllByOwnerId_whenfromNegative() throws Exception {
-            mvc.perform(get(API_PREFIX)
-                    .header(HEADER_USER_ID, 1)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .param("from", "-1")
-                    .param("size", "1"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX)
+                        .header(HEADER_USER_ID, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .param("from", "-1")
+                        .param("size", "1"))
+                .andExpect(status().isBadRequest());
 
     }
 
     @Test
     void test4_2findAllByOwnerId_whenSizeZero() throws Exception {
-            mvc.perform(get(API_PREFIX)
-                    .header(HEADER_USER_ID, 1)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .param("from", "1")
-                    .param("size", "0"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX)
+                        .header(HEADER_USER_ID, 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .param("from", "1")
+                        .param("size", "0"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -181,28 +177,29 @@ class ItemControllerTest {
         verify(client, times(1)).getItems("/search", "text", 2, 0, 1L);
 
     }
+
     @Test
     void test5_3findByText_whenFromNegative() throws Exception {
-            mvc.perform(get(API_PREFIX + "/search")
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(HEADER_USER_ID, 1)
-                    .param("text", "text")
-                    .param("from", "-1")
-                    .param("size", "2"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX + "/search")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER_USER_ID, 1)
+                        .param("text", "text")
+                        .param("from", "-1")
+                        .param("size", "2"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void test5_4findByText_whenSizeZero() throws Exception {
-            mvc.perform(get(API_PREFIX + "/search")
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(HEADER_USER_ID, 1)
-                    .param("text", "text")
-                    .param("from", "0")
-                    .param("size", "0"))
-                    .andExpect(status().isBadRequest());
+        mvc.perform(get(API_PREFIX + "/search")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER_USER_ID, 1)
+                        .param("text", "text")
+                        .param("from", "0")
+                        .param("size", "0"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -223,13 +220,15 @@ class ItemControllerTest {
         CommentDto commentDto = new CommentDto();
         commentDto.setText("t");
 
-            mvc.perform(post(API_PREFIX + "/{itemId}/comment", 1)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .content(objectMapper.writeValueAsString(commentDto))
-                    .header(HEADER_USER_ID, 1L))
-                    .andExpect(result -> {assertTrue(result.getResolvedException() instanceof
-                            MethodArgumentNotValidException);});
+        mvc.perform(post(API_PREFIX + "/{itemId}/comment", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .content(objectMapper.writeValueAsString(commentDto))
+                        .header(HEADER_USER_ID, 1L))
+                .andExpect(result -> {
+                    assertTrue(result.getResolvedException() instanceof
+                            MethodArgumentNotValidException);
+                });
 
 
     }

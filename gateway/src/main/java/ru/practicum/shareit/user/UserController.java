@@ -18,7 +18,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> addUser(@Valid @RequestBody UserDtoToCreate userDto) {
-      log.info("Creating User {}", userDto);
+        log.info("Creating User {}", userDto);
         return userClient.postUser(userDto);
     }
 

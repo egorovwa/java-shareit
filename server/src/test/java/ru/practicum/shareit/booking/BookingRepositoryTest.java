@@ -45,7 +45,7 @@ class BookingRepositoryTest {
     Booking bookingPast2;
     Booking bookingFuture3;
     Booking bookingWaiting4;
-    Pageable defaultPageble = PageRequest.of(0,10);
+    Pageable defaultPageble = PageRequest.of(0, 10);
 
     private void data() {
         user1 = userRepository.save(USER_ID1);
@@ -135,7 +135,7 @@ class BookingRepositoryTest {
     void findOwnerFuture() {
         data();
         Page<Booking> bookings = bookingRepository.findOwnerFuture(1L,
-               defaultPageble, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+                defaultPageble, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         assertThat(bookings.stream().findFirst().get(), is(bookingFuture3));
     }
 
@@ -144,7 +144,7 @@ class BookingRepositoryTest {
     void findOwnerCurrent() {
         data();
         Page<Booking> bookings = bookingRepository.findOwnerCurrent(1L,
-               defaultPageble, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+                defaultPageble, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         assertThat(bookings.stream().findFirst().get(), is(bookingCurrent1));
     }
 
@@ -162,7 +162,7 @@ class BookingRepositoryTest {
     void findOwnerPast() {
         data();
         Page<Booking> bookingList = bookingRepository.findOwnerPast(1L,
-               defaultPageble, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+                defaultPageble, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         assertThat(bookingList.stream().findFirst().get(), is(bookingPast2));
     }
 
