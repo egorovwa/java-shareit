@@ -5,9 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.contract.user.dto.UserDto;
 import ru.practicum.contract.ValidationMarker;
-
+import ru.practicum.contract.user.dto.UserDto;
 
 import javax.validation.Valid;
 
@@ -35,7 +34,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     @Validated(ValidationMarker.OnPatch.class)
     public ResponseEntity<Object> patchUser(@PathVariable long userId, @Valid @RequestBody UserDto userDto) {
-        log.info("Patch user id = {}, inData = {}",userId,userDto);
+        log.info("Patch user id = {}, inData = {}", userId, userDto);
         return userClient.pathUser(userId, userDto);
     }
 

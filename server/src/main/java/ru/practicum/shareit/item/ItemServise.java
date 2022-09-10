@@ -2,12 +2,11 @@ package ru.practicum.shareit.item;
 
 import org.springframework.data.domain.Pageable;
 import ru.practicum.contract.item.dto.ItemDto;
-import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
+import ru.practicum.contract.item.dto.ItemDtoWithBoking;
 import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.NotUsedCommentException;
-import ru.practicum.contract.item.dto.ItemDtoWithBoking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 

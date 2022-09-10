@@ -18,7 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import ru.practicum.contract.user.dto.UserDto;
 import ru.practicum.shareit.ShareItGateway;
 
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;

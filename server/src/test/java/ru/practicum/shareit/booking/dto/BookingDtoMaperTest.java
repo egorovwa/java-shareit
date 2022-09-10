@@ -3,9 +3,8 @@ package ru.practicum.shareit.booking.dto;
 import org.junit.jupiter.api.Test;
 import ru.practicum.contract.booking.dto.BookingDto;
 import ru.practicum.contract.booking.dto.BookingDtoToItem;
-import ru.practicum.contract.user.dto.UserDto;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.contract.booking.dto.BookingStatus;
+import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.user.dto.UserDtoMaper;
 
@@ -22,7 +21,7 @@ import static ru.practicum.shareit.TestConstants.USER_ID2;
 class BookingDtoMaperTest {
     final BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
     UserDtoMaper userDtoMaper = new UserDtoMaper();
-    ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper,userDtoMaper);
+    ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper, userDtoMaper);
 
     @Test
     void toDtoCreated() {

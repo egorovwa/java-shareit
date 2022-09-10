@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.RequestNotExistException;
-import ru.practicum.contract.request.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 
 import java.util.Collection;

@@ -25,17 +25,16 @@ import static ru.practicum.shareit.TestConstants.*;
 @DataJpaTest
 class BookingRepositoryTest {
     private static final long HOUR = 1000 * 60 * 60;
+    final Pageable defaultPageble = PageRequest.of(0, 10);
     @Autowired
     UserRepository userRepository;
     @Autowired
     ItemRepository itemRepository;
     @Autowired
     BookingRepository bookingRepository;
-
     User user1;
     User user2;
     User user3;
-
     Item item1u1;
     Item item2u1;
     Item item3u1;
@@ -46,7 +45,6 @@ class BookingRepositoryTest {
     Booking bookingPast2;
     Booking bookingFuture3;
     Booking bookingWaiting4;
-    final Pageable defaultPageble = PageRequest.of(0, 10);
 
     private void data() {
         user1 = userRepository.save(USER_ID1);

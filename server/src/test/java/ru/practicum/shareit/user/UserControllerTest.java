@@ -86,6 +86,7 @@ class UserControllerTest {
                         is(UserBadEmailException.class)));
 
     }
+
     @Test
     void test1_1_createAlradiExist() throws Exception {
         User user = new User();

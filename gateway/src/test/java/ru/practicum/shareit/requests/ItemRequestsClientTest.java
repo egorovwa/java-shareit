@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
-import ru.practicum.shareit.ShareItGateway;
 import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
+import ru.practicum.shareit.ShareItGateway;
 
 import java.util.Map;
 

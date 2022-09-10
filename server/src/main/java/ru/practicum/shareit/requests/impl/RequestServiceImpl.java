@@ -10,7 +10,6 @@ import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.RequestNotExistException;
 import ru.practicum.shareit.requests.RequestRepository;
 import ru.practicum.shareit.requests.RequestService;
-import ru.practicum.contract.request.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;

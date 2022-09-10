@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 import ru.practicum.contract.client.BaseClient;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 
 import java.util.Map;
 

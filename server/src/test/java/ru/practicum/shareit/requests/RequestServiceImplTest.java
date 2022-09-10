@@ -12,7 +12,6 @@ import ru.practicum.shareit.booking.exceptions.UserNotFoundExteption;
 import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.RequestNotExistException;
-import ru.practicum.contract.request.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.impl.RequestServiceImpl;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;

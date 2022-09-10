@@ -8,7 +8,6 @@ import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.UserBadEmailException;
 import ru.practicum.shareit.user.dto.UserDtoMaper;
 
-
 import java.util.Collection;
 import java.util.stream.Collectors;
 

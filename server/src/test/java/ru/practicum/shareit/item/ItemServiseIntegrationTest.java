@@ -6,12 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.shareit.booking.BookingServise;
 import ru.practicum.contract.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.BookingServise;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.exceptions.ItemNotAvalibleExxeption;
 import ru.practicum.shareit.booking.exceptions.TimeIntersectionException;
-import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.exceptions.IncorrectPageValueException;
+import ru.practicum.shareit.exceptions.IncorrectUserIdException;
+import ru.practicum.shareit.exceptions.ModelAlreadyExistsException;
+import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -64,11 +67,11 @@ class ItemServiseIntegrationTest {
         List<Item> itemList = List.of(
                 new Item(null, "APPROVED", "APPROVED", true, null));
         List<BookItemRequestDto> bList = List.of(
-                new BookItemRequestDto(1L,(LocalDateTime.now().plus(Duration.ofSeconds(2))),
+                new BookItemRequestDto(1L, (LocalDateTime.now().plus(Duration.ofSeconds(2))),
                         LocalDateTime.now().plus(Duration.ofSeconds(3))),
-                new BookItemRequestDto(1L,(LocalDateTime.now().plus(Duration.ofHours(1))),
+                new BookItemRequestDto(1L, (LocalDateTime.now().plus(Duration.ofHours(1))),
                         LocalDateTime.now().plus(Duration.ofHours(2))),
-                new BookItemRequestDto(1L,(LocalDateTime.now().plus(Duration.ofHours(2))),
+                new BookItemRequestDto(1L, (LocalDateTime.now().plus(Duration.ofHours(2))),
                         LocalDateTime.now().plus(Duration.ofHours(3))));
         userList.forEach(user -> {
             try {

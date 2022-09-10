@@ -22,7 +22,7 @@ class ItemDtoMaperTest {
     void fromDto() {
         ItemDto itemDto = new ItemDto(1L, "email@mail.com", "sss", true
                 , 1L);
-        Item item = new Item(1L, "email@mail.com", "sss", true,null);
+        Item item = new Item(1L, "email@mail.com", "sss", true, null);
         assertThat(itemDtoMaper.fromDto(itemDto), is(item));
     }
 

@@ -23,6 +23,7 @@ public class ItemRequestDtoMaper {
                 userDtoMaper.toDto(itemRequest.getRequestor()), LocalDateTime.ofEpochSecond(itemRequest.getCreated(),
                 0, ZoneOffset.UTC));
     }
+
     public ItemRequestDtoForRequestor toDtoForRequestor(ItemRequest itemRequest) {
         return new ItemRequestDtoForRequestor(itemRequest.getId(), itemRequest.getDescription(),
                 userDtoMaper.toDto(itemRequest.getRequestor()),
