@@ -43,16 +43,16 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.GET, path, userId, parameters, null);
     }
 
-    protected <T> ResponseEntity<Object> post(String path, T body) {
-        return post(path, null, null, body);
+    protected <T> ResponseEntity<Object> post(T body) {
+        return post("", null, body);
     }
 
     protected <T> ResponseEntity<Object> post(String path, long userId, T body) {
-        return post(path, userId, null, body);
+        return post(path, userId, body);
     }
 
-    protected <T> ResponseEntity<Object> post(String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
-        return makeAndSendRequest(HttpMethod.POST, path, userId, parameters, body);
+    protected <T> ResponseEntity<Object> post(String path, Long userId, T body) {
+        return makeAndSendRequest(HttpMethod.POST, path, userId, null, body);
     }
 
     protected <T> ResponseEntity<Object> put(String path, long userId, T body) {
@@ -84,15 +84,15 @@ public class BaseClient {
     }
 
     protected ResponseEntity<Object> delete(String path) {
-        return delete(path, null, null);
+        return delete(path, null);
     }
 
     protected ResponseEntity<Object> delete(String path, long userId) {
-        return delete(path, userId, null);
+        return delete(path, userId);
     }
 
-    protected ResponseEntity<Object> delete(String path, Long userId, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.DELETE, path, userId, parameters, null);
+    protected ResponseEntity<Object> delete(String path, Long userId) {
+        return makeAndSendRequest(HttpMethod.DELETE, path, userId, null, null);
     }
 
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters, @Nullable T body) {

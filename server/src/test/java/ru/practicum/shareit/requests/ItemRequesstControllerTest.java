@@ -56,7 +56,7 @@ class ItemRequesstControllerTest {
     ObjectMapper mapper;
     @Autowired
     MockMvc mvc;
-    UserDtoMaper userDtoMaper = new UserDtoMaper();
+    final UserDtoMaper userDtoMaper = new UserDtoMaper();
     User user;
 
     @BeforeEach

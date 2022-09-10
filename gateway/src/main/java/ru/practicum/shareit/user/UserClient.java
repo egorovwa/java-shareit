@@ -31,7 +31,7 @@ public class UserClient extends BaseClient {
     @Cacheable(cacheNames = "userRequests", key = "#userDto.email", unless = "#result.statusCodeValue == 200")
     public ResponseEntity<Object> postUser(UserDto userDto) {
         log.debug("create user email = {}", userDto.getEmail());
-        return post("", userDto);
+        return post(userDto);
     }
 
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")

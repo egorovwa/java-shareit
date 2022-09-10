@@ -20,8 +20,8 @@ import static ru.practicum.shareit.TestConstants.USER_ID2;
 
 class BookingDtoMaperTest {
     final BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
-    UserDtoMaper userDtoMaper = new UserDtoMaper();
-    ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper, userDtoMaper);
+    final UserDtoMaper userDtoMaper = new UserDtoMaper();
+    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper, userDtoMaper);
 
     @Test
     void toDtoCreated() {
@@ -42,7 +42,7 @@ class BookingDtoMaperTest {
         Booking booking = new Booking(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
                 LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC), ITEM_ID1_OWNER1_AVALIBLE_TRUE,
                 USER_ID2, BookingStatus.WAITING);
-        ;
+
         BookingDtoToItem dto =
                 new BookingDtoToItem(1L, LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
                         LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
