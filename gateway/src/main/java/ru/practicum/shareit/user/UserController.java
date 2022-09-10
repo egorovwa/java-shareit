@@ -3,9 +3,11 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserDtoToCreate;
+import ru.practicum.contract.user.dto.UserDto;
+import ru.practicum.contract.ValidationMarker;
+
 
 import javax.validation.Valid;
 
@@ -13,11 +15,13 @@ import javax.validation.Valid;
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class UserController {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> addUser(@Valid @RequestBody UserDtoToCreate userDto) {
+    @Validated({ValidationMarker.OnCreate.class})
+    public ResponseEntity<Object> addUser(@Valid @RequestBody UserDto userDto) {
         log.info("Creating User {}", userDto);
         return userClient.postUser(userDto);
     }
@@ -29,8 +33,9 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
+    @Validated(ValidationMarker.OnPatch.class)
     public ResponseEntity<Object> patchUser(@PathVariable long userId, @Valid @RequestBody UserDto userDto) {
-        log.info("Patch user id = {}, inData = {}", userId, userDto);
+        log.info("Patch user id = {}, inData = {}",userId,userDto);
         return userClient.pathUser(userId, userDto);
     }
 

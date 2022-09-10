@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 
 import java.nio.charset.StandardCharsets;
 
@@ -37,7 +37,7 @@ class ItemRequesstControllerTest {
 
     @Test
     void test1_1_createRequest() throws Exception {
-        ItemRequestDto dto = new ItemRequestDto(null, "ddddd", null);
+        ItemRequestDtoToCreate dto = new ItemRequestDtoToCreate(null, "ddddd", null);
         mvc.perform(post(API_PREFIX)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
@@ -48,7 +48,7 @@ class ItemRequesstControllerTest {
 
     @Test
     void test1_2_createRequest_whenDescriptionBlank() throws Exception {
-        ItemRequestDto dto = new ItemRequestDto(null, "", null);
+        ItemRequestDtoToCreate dto = new ItemRequestDtoToCreate(null, "", null);
         mvc.perform(post(API_PREFIX)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -59,7 +59,7 @@ class ItemRequesstControllerTest {
 
     @Test
     void test1_3_createRequest_whenUserNotFound() throws Exception {
-        ItemRequestDto dto = new ItemRequestDto(null, "dfgdfgfd", null);
+        ItemRequestDtoToCreate dto = new ItemRequestDtoToCreate(null, "dfgdfgfd", null);
         when(client.postRequest(1L, dto))
                 .thenReturn(ResponseEntity.badRequest().build());
         mvc.perform(post(API_PREFIX)

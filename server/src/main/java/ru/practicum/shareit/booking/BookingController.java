@@ -1,10 +1,9 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.contract.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.dto.StateDtoMaper;
 import ru.practicum.shareit.booking.exceptions.*;
@@ -30,7 +29,7 @@ public class BookingController {
     public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") long useId,
                                     @RequestBody BookItemRequestDto bookItemRequestDto)
             throws ModelNotExitsException, TimeIntersectionException, ItemNotAvalibleExxeption {
-        return dtoMaper.toDtoCreated(bookingServise.createBooking(bookItemRequestDto, useId));
+        return dtoMaper.toDto(bookingServise.createBooking(bookItemRequestDto, useId));
     }
 
     @SuppressWarnings("NonAsciiCharacters")

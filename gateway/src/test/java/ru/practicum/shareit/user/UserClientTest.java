@@ -15,9 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+import ru.practicum.contract.user.dto.UserDto;
 import ru.practicum.shareit.ShareItGateway;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserDtoToCreate;
+
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -40,7 +40,7 @@ class UserClientTest {
     @Test
     @DirtiesContext
     void test1_createUser_duplicate() {
-        UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
+        UserDto userDto = new UserDto(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(userDto, HttpStatus.CONFLICT);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
@@ -85,7 +85,7 @@ class UserClientTest {
     @Test
     @DirtiesContext
     void test4_delete_duplicate() {
-        UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
+        UserDto userDto = new UserDto(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
@@ -99,7 +99,7 @@ class UserClientTest {
     @Test
     @DirtiesContext
     void test5_getAll_duplicate() {
-        UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
+        UserDto userDto = new UserDto(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.OK);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
@@ -112,7 +112,7 @@ class UserClientTest {
     @Test
     @DirtiesContext
     void test6_creatAftePatch() {
-        UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
+        UserDto userDto = new UserDto(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(userDto, HttpStatus.CONFLICT);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
@@ -131,7 +131,7 @@ class UserClientTest {
     @Test
     @DirtiesContext
     void test6_1creatAftePatchName() {
-        UserDtoToCreate userDto = new UserDtoToCreate(null, "email@mail.com", "name");
+        UserDto userDto = new UserDto(null, "email@mail.com", "name");
         ResponseEntity<Object> response = new ResponseEntity<>(userDto, HttpStatus.CONFLICT);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))

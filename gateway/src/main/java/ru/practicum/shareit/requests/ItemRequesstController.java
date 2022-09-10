@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -22,10 +22,10 @@ public class ItemRequesstController {
     private final ItemRequestsClient requestsClient;
 
     @PostMapping
-    public ResponseEntity<Object> createRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
+    public ResponseEntity<Object> createRequest(@Valid @RequestBody ItemRequestDtoToCreate itemRequestDtoToCreate,
                                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("Create request {}, userId = {}", itemRequestDto, userId);
-        return requestsClient.postRequest(userId, itemRequestDto);
+        log.info("Create request {}, userId = {}", itemRequestDtoToCreate, userId);
+        return requestsClient.postRequest(userId, itemRequestDtoToCreate);
     }
 
     @GetMapping("/all")

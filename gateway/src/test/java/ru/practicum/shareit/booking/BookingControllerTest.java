@@ -11,8 +11,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.contract.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookingState;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.contract.item.dto.CommentDto;
 import ru.practicum.shareit.item.model.Comment;
 
 import java.time.LocalDateTime;

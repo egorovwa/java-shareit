@@ -16,7 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.shareit.ShareItGateway;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 
 import java.util.Map;
 
@@ -40,7 +40,7 @@ class ItemRequestsClientTest {
 
     @Test
     void test1_postRequest() {
-        ItemRequestDto dto = new ItemRequestDto(null, "ddddddd", null);
+        ItemRequestDtoToCreate dto = new ItemRequestDtoToCreate(null, "ddddddd", null);
         Mockito.when(restTemplate.exchange(Mockito.anyString(), any(HttpMethod.class), any(HttpEntity.class),
                         any(Class.class)))
                 .thenReturn(ResponseEntity.status(404).build());

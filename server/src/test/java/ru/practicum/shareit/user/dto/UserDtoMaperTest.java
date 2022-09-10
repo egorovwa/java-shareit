@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
 import org.junit.jupiter.api.Test;
+import ru.practicum.contract.user.dto.UserDto;
 import ru.practicum.shareit.user.User;
 
 import static org.hamcrest.CoreMatchers.is;

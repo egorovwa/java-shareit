@@ -2,14 +2,14 @@ package ru.practicum.shareit.requests;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
-import ru.practicum.shareit.requests.dto.ItemRequestDtoForRequestor;
+import ru.practicum.contract.request.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDtoForRequestor;
 import ru.practicum.shareit.requests.dto.ItemRequestDtoMaper;
 import ru.practicum.shareit.util.PageParam;
 
-import javax.validation.Valid;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -21,9 +21,9 @@ public class ItemRequesstController {
     private final ItemRequestDtoMaper maper;
 
     @PostMapping
-    public ItemRequestDto createRequest(@RequestBody ItemRequestDto itemRequestDto,
+    public ItemRequestDto createRequest(@RequestBody ItemRequestDtoToCreate itemRequestDtoToCreate,
                                         @RequestHeader("X-Sharer-User-Id") Long userId) throws ModelNotExitsException {
-        return maper.toCreatedDto(requestService.createRequest(userId, itemRequestDto));
+        return maper.toCreatedDto(requestService.createRequest(userId, itemRequestDtoToCreate));
     }
 
     @GetMapping("/all")

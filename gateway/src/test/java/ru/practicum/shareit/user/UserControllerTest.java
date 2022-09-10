@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserDtoToCreate;
+import ru.practicum.contract.user.dto.UserDto;
+
 
 import java.nio.charset.StandardCharsets;
 
@@ -37,7 +37,7 @@ class UserControllerTest {
 
     @Test
     void test1_1_addUser() throws Exception {
-        UserDtoToCreate userDto = new UserDtoToCreate(null, "Email@mail.com", "name");
+        UserDto userDto = new UserDto(null, "Email@mail.com", "name");
         mvc.perform(post("/users")
                 .content(objectMapper.writeValueAsString(userDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -47,7 +47,7 @@ class UserControllerTest {
 
     @Test
     void test1_2_addUser_badEmail() throws Exception {
-        UserDtoToCreate userDto = new UserDtoToCreate(null, "Emailmail.com", "name");
+        UserDto userDto = new UserDto(null, "Emailmail.com", "name");
         mvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(userDto))
                         .contentType(MediaType.APPLICATION_JSON)

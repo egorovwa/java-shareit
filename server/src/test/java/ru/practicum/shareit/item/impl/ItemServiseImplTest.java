@@ -6,19 +6,20 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import ru.practicum.contract.item.dto.ItemDto;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.CommentRepository;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.CommentDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDtoWithBoking;
+import ru.practicum.contract.item.dto.ItemDtoWithBoking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.RequestService;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.user.dto.UserDtoMaper;
 import ru.practicum.shareit.util.PageParam;
 
 import java.time.LocalDateTime;
@@ -41,7 +42,8 @@ class ItemServiseImplTest {
     final CommentRepository commentRepository = Mockito.mock(CommentRepository.class);
     final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
     final BookingDtoMaper bookingDtoMaper = new BookingDtoMaper();
-    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper);
+    final UserDtoMaper userDtoMaper = new UserDtoMaper();
+    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(bookingDtoMaper, userDtoMaper);
     final ItemServiseImpl itemServise = new ItemServiseImpl(userServise, itemRepository, bookingRepository,
             commentRepository, itemDtoMaper, commentDtoMaper, requestService);
 
@@ -151,7 +153,7 @@ class ItemServiseImplTest {
     void test3_2_findById_forOwner() throws ModelNotExitsException {
         Item item = testItemId1User1();
         ItemDtoWithBoking withBoking = new ItemDtoWithBoking(1L, item.getName(), item.getDescription(), true,
-                USER_ID1, bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
+                userDtoMaper.toDto(USER_ID1), bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
                 .toItemDto(Optional.of(BOOKING_NEXT)), List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
         Mockito
                 .when(itemRepository.findById(1L))
@@ -174,7 +176,7 @@ class ItemServiseImplTest {
     void test3_3_findById_forOther() throws ModelNotExitsException {
         Item item = testItemId1User1();
         ItemDtoWithBoking withBoking = new ItemDtoWithBoking(1L, item.getName(), item.getDescription(), true,
-                USER_ID1, null, null, List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
+                userDtoMaper.toDto(USER_ID1), null, null, List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
         Mockito
                 .when(itemRepository.findById(1L))
                 .thenReturn(Optional.of(item));
@@ -206,7 +208,7 @@ class ItemServiseImplTest {
     void test5_findAllByOwnerId() throws IncorrectPageValueException {
         Item item = testItemId1User1();
         ItemDtoWithBoking withBoking = new ItemDtoWithBoking(1L, item.getName(), item.getDescription(), true,
-                USER_ID1, bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
+                userDtoMaper.toDto(USER_ID1), bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
                 .toItemDto(Optional.of(BOOKING_NEXT)), List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
         Mockito
                 .when(itemRepository.findByOwnerIdOrderByIdAsc(Pageable.ofSize(5), 1L))
@@ -231,7 +233,7 @@ class ItemServiseImplTest {
     void test5_1findAllByOwnerId_withOutPage() {
         Item item = testItemId1User1();
         ItemDtoWithBoking withBoking = new ItemDtoWithBoking(1L, item.getName(), item.getDescription(), true,
-                USER_ID1, bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
+                userDtoMaper.toDto(USER_ID1), bookingDtoMaper.toItemDto(Optional.of(BOOKING_FIST)), bookingDtoMaper
                 .toItemDto(Optional.of(BOOKING_NEXT)), List.of(commentDtoMaper.toDto(COMMENTID1_USER2)));
         Mockito
                 .when(itemRepository.findByOwnerIdOrderByIdAsc(1L))

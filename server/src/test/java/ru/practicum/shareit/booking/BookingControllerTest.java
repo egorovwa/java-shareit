@@ -14,9 +14,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
-import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.contract.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
@@ -55,10 +56,9 @@ class BookingControllerTest {
     void setup(WebApplicationContext web) {
         mvc = MockMvcBuilders.webAppContextSetup(web).build();
         booking = BOOKING1_USER2_ITEM1_WAITING;
-        dtoToCreate = new BookItemRequestDto(
+        dtoToCreate = new BookItemRequestDto(1L,
                 LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
-                LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
-                1L);
+                LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC));
 
     }
 

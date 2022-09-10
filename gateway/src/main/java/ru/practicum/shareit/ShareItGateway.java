@@ -10,7 +10,6 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 
-import javax.validation.constraints.NotNull;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
@@ -23,9 +22,8 @@ public class ShareItGateway {
     @Bean("habrCacheManager")
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager() {
-            @NotNull
             @Override
-            protected Cache createConcurrentMapCache(@NotNull String name) {
+            protected Cache createConcurrentMapCache(String name) {
                 return new ConcurrentMapCache(
                         name,
                         CacheBuilder.newBuilder()

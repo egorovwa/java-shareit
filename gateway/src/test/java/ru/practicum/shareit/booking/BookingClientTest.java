@@ -13,9 +13,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+import ru.practicum.contract.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookingState;
 import ru.practicum.shareit.ShareItGateway;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingState;
 
 import java.util.Map;
 

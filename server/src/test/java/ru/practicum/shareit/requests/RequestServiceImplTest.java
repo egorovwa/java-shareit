@@ -7,11 +7,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 import ru.practicum.shareit.booking.exceptions.UserNotFoundExteption;
 import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.RequestNotExistException;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.impl.RequestServiceImpl;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
@@ -41,7 +42,7 @@ class RequestServiceImplTest {
 
     @Test
     void test1_createItemRequest() throws ModelNotExitsException {
-        ItemRequestDto itemRequestDto = new ItemRequestDto();
+        ItemRequestDtoToCreate itemRequestDto = new ItemRequestDtoToCreate();
         Long createTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
         itemRequestDto.setDescription("Request 1");
         Mockito

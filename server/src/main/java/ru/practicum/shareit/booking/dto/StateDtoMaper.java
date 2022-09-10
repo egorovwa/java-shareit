@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
+import ru.practicum.contract.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.UnknownStateException;
 
 public class StateDtoMaper {

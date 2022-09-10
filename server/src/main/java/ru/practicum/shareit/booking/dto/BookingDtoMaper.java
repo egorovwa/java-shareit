@@ -2,7 +2,11 @@ package ru.practicum.shareit.booking.dto;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.practicum.contract.booking.dto.BookingDto;
+import ru.practicum.contract.booking.dto.BookingDtoToItem;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.item.dto.ItemDtoMaper;
+import ru.practicum.shareit.user.dto.UserDtoMaper;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -11,18 +15,15 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class BookingDtoMaper {
-    public BookingDto toDtoCreated(Booking booking) {
-        return new BookingDto(booking.getId(),
-                LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
-                LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
-                booking.getItem(), booking.getBooker(), booking.getStatus());
-    }
+    private final UserDtoMaper userDtoMaper = new UserDtoMaper();
+    private final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(this, userDtoMaper);
 
     public BookingDto toDto(Booking booking) {
         return new BookingDto(booking.getId(),
                 LocalDateTime.ofEpochSecond(booking.getStart(), 0, ZoneOffset.UTC),
                 LocalDateTime.ofEpochSecond(booking.getEnd(), 0, ZoneOffset.UTC),
-                booking.getItem(), booking.getBooker(), booking.getStatus());
+                itemDtoMaper.toDto(booking.getItem()), userDtoMaper.toDto(booking.getBooker()),
+                booking.getStatus());
     }
 
     public BookingDtoToItem toItemDto(Optional<Booking> mayBebooking) {

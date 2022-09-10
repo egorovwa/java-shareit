@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.BookingServise;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.booking.exceptions.ItemNotAvalibleExxeption;
 import ru.practicum.shareit.booking.exceptions.TimeIntersectionException;
@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
+import ru.practicum.shareit.user.dto.UserDtoMaper;
 import ru.practicum.shareit.util.PageParam;
 
 import java.time.Duration;
@@ -29,7 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemServiseIntegrationTest {
-    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper());
+    final UserDtoMaper userDtoMaper = new UserDtoMaper();
+    final ItemDtoMaper itemDtoMaper = new ItemDtoMaper(new BookingDtoMaper(), userDtoMaper);
     private final ItemServise itemServise;
     private final UserServise userServise;
     private final BookingServise bookingServise;
@@ -62,12 +64,12 @@ class ItemServiseIntegrationTest {
         List<Item> itemList = List.of(
                 new Item(null, "APPROVED", "APPROVED", true, null));
         List<BookItemRequestDto> bList = List.of(
-                new BookItemRequestDto((LocalDateTime.now().plus(Duration.ofSeconds(2))),
-                        LocalDateTime.now().plus(Duration.ofSeconds(3)), 1),
-                new BookItemRequestDto((LocalDateTime.now().plus(Duration.ofHours(1))),
-                        LocalDateTime.now().plus(Duration.ofHours(2)), 1),
-                new BookItemRequestDto((LocalDateTime.now().plus(Duration.ofHours(2))),
-                        LocalDateTime.now().plus(Duration.ofHours(3)), 1));
+                new BookItemRequestDto(1L,(LocalDateTime.now().plus(Duration.ofSeconds(2))),
+                        LocalDateTime.now().plus(Duration.ofSeconds(3))),
+                new BookItemRequestDto(1L,(LocalDateTime.now().plus(Duration.ofHours(1))),
+                        LocalDateTime.now().plus(Duration.ofHours(2))),
+                new BookItemRequestDto(1L,(LocalDateTime.now().plus(Duration.ofHours(2))),
+                        LocalDateTime.now().plus(Duration.ofHours(3))));
         userList.forEach(user -> {
             try {
                 userServise.addUser(user);

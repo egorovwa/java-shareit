@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
+import ru.practicum.contract.client.BaseClient;
 
 import java.util.Map;
 
@@ -26,8 +26,8 @@ public class ItemRequestsClient extends BaseClient {
     }
 
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")
-    public ResponseEntity<Object> postRequest(Long userId, ItemRequestDto itemRequestDto) {
-        return post("", userId, itemRequestDto);
+    public ResponseEntity<Object> postRequest(Long userId, ItemRequestDtoToCreate itemRequestDtoToCreate) {
+        return post("", userId, itemRequestDtoToCreate);
     }
 
     @Cacheable(cacheNames = "requests", unless = "#result.statusCodeValue == 200")

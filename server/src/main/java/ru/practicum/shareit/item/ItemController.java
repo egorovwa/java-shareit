@@ -2,12 +2,17 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.contract.item.dto.CommentDto;
+import ru.practicum.contract.item.dto.ItemDto;
+import ru.practicum.contract.item.dto.ItemDtoCreated;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
+import ru.practicum.shareit.item.dto.CommentDtoMaper;
+import ru.practicum.contract.item.dto.ItemDtoWithBoking;
 import ru.practicum.shareit.exceptions.*;
-import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.util.PageParam;
 
-import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -21,16 +26,16 @@ public class ItemController {
     private final CommentDtoMaper commentDtoMaper;
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto)
+    public ItemDtoCreated createItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto)
             throws IncorrectUserIdException {
-        return itemDtoMaper.toDto(itemServise.createItem(userId, itemDto));
+        return itemDtoMaper.toDtoCreated(itemServise.createItem(userId, itemDto));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto patchItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+    public ItemDtoCreated patchItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
                              @RequestBody ItemDto itemDto)
             throws ModelNotExitsException, IncorectUserOrItemIdException {
-        return itemDtoMaper.toDto(itemServise.patchItem(userId, itemId, itemDtoMaper.fromDto(itemDto)));
+        return itemDtoMaper.toDtoCreated(itemServise.patchItem(userId, itemId, itemDtoMaper.fromDto(itemDto)));
     }
 
     @GetMapping("/{itemId}")
@@ -47,10 +52,10 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> findByText(@RequestParam String text, @PathParam("from") Integer from,
+    public Collection<ItemDtoCreated> findByText(@RequestParam String text, @PathParam("from") Integer from,
                                           @PathParam("size") Integer size) throws IncorrectPageValueException {
         return itemServise.findByText(text, PageParam.createPageable(from, size)).stream()
-                .map(itemDtoMaper::toDto)
+                .map(itemDtoMaper::toDtoCreated)
                 .collect(Collectors.toList());
     }
 

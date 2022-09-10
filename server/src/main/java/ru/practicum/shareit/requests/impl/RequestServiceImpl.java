@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 import ru.practicum.shareit.booking.exceptions.UserNotFoundExteption;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.RequestNotExistException;
 import ru.practicum.shareit.requests.RequestRepository;
 import ru.practicum.shareit.requests.RequestService;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserServise;
@@ -24,11 +25,10 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
 
     @Override
-    public ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws ModelNotExitsException {
+    public ItemRequest createRequest(Long userId, ItemRequestDtoToCreate itemRequestDtoToCreate) throws ModelNotExitsException {
         User user = userServise.findById(userId);
-        ItemRequest itemRequest = new ItemRequest(itemRequestDto.getDescription(), user);
+        ItemRequest itemRequest = new ItemRequest(itemRequestDtoToCreate.getDescription(), user);
         log.info(" Ползователь Создал запрос  userid= {}", userId);
-
         return requestRepository.save(itemRequest);
     }
 

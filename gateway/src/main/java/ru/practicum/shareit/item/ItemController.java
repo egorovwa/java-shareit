@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.Marker;
+import ru.practicum.contract.ValidationMarker;
+import ru.practicum.contract.item.dto.CommentDto;
+import ru.practicum.contract.item.dto.ItemDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -24,7 +24,7 @@ public class ItemController {
     private final ItemClient itemClient;
 
     @PostMapping
-    @Validated({Marker.OnCreate.class})
+    @Validated({ValidationMarker.OnCreate.class})
     public ResponseEntity<Object> createItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                              @RequestBody @Valid ItemDto itemDto) {
         log.info("Creating item {} userId = {}", itemDto, userId);
@@ -32,7 +32,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    @Validated({Marker.OnPatch.class})
+    @Validated({ValidationMarker.OnPatch.class})
     public ResponseEntity<Object> patchItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
                                             @Valid @RequestBody ItemDto itemDto) {
         log.info("Patch itemid = {}, userId = {}, inData {}", itemId, userId, itemDto);

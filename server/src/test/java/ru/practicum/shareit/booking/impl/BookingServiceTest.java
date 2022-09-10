@@ -13,9 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.contract.booking.dto.BookingStatus;
+import ru.practicum.contract.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.*;
 import ru.practicum.shareit.exceptions.IncorrectPageValueException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
@@ -123,8 +123,8 @@ class BookingServiceTest {
     @Test
     void test1_7createBooking_TimeIntersection_startAfteEnd() throws ModelNotExitsException {
         User user = USER_ID2;
-        BookItemRequestDto toCreate = new BookItemRequestDto(LocalDateTime.now().plus(Duration.ofMinutes(5)),
-                LocalDateTime.now().plus(Duration.ofMinutes(1)), 1L);
+        BookItemRequestDto toCreate = new BookItemRequestDto(1L,LocalDateTime.now().plus(Duration.ofMinutes(5)),
+                LocalDateTime.now().plus(Duration.ofMinutes(1)));
         Mockito
                 .when(itemServise.findById(1L))
                 .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
@@ -139,8 +139,8 @@ class BookingServiceTest {
     void test1_6createBooking() throws ModelNotExitsException, ItemNotAvalibleExxeption, TimeIntersectionException {
         Item item = ITEM_ID1_OWNER1_AVALIBLE_TRUE;
         User user = USER_ID2;
-        BookItemRequestDto toCreate = new BookItemRequestDto(LocalDateTime.now().plus(Duration.ofMinutes(1)),
-                LocalDateTime.now().plus(Duration.ofHours(1)), 1L);
+        BookItemRequestDto toCreate = new BookItemRequestDto(1L,LocalDateTime.now().plus(Duration.ofMinutes(1)),
+                LocalDateTime.now().plus(Duration.ofHours(1)));
         Booking booking = new Booking();
         booking.setItem(item);
         booking.setStart(toCreate.getStart().toEpochSecond(ZoneOffset.UTC));

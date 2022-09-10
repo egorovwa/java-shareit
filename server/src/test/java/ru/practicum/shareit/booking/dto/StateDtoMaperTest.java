@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.dto;
 
 import org.junit.jupiter.api.Test;
+import ru.practicum.contract.booking.dto.BookingState;
 import ru.practicum.shareit.booking.exceptions.UnknownStateException;
 
 import static org.hamcrest.CoreMatchers.is;

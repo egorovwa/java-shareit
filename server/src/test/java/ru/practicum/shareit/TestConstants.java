@@ -1,8 +1,8 @@
 package ru.practicum.shareit;
 
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.contract.booking.dto.BookingStatus;
+import ru.practicum.contract.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.model.ItemRequest;
@@ -39,8 +39,8 @@ public class TestConstants {
     public static final Booking BOOKING1_USER2_ITEM1_REJECTED = new Booking(1L, LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
             LocalDateTime.now().plus(Duration.ofHours(1)).toEpochSecond(ZoneOffset.UTC), ITEM_ID1_OWNER1_AVALIBLE_TRUE,
             USER_ID2, BookingStatus.REJECTED);
-    public static final BookItemRequestDto BOOKING_DTO_TO_CREATE_ITEM1 = new BookItemRequestDto(TEST_TIME_DATE_TIME,
-            TEST_TIME_DATE_TIME.plus(Duration.ofHours(1)), 1L);
+    public static final BookItemRequestDto BOOKING_DTO_TO_CREATE_ITEM1 = new BookItemRequestDto(1L,TEST_TIME_DATE_TIME,
+            TEST_TIME_DATE_TIME.plus(Duration.ofHours(1)));
 
 
 }

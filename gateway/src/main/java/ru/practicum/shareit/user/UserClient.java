@@ -12,9 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserDtoToCreate;
+import ru.practicum.contract.user.dto.UserDto;
+import ru.practicum.contract.client.BaseClient;
 
 @Service
 @Slf4j
@@ -30,7 +29,7 @@ public class UserClient extends BaseClient {
     }
 
     @Cacheable(cacheNames = "userRequests", key = "#userDto.email", unless = "#result.statusCodeValue == 200")
-    public ResponseEntity<Object> postUser(UserDtoToCreate userDto) {
+    public ResponseEntity<Object> postUser(UserDto userDto) {
         log.debug("create user email = {}", userDto.getEmail());
         return post("", userDto);
     }

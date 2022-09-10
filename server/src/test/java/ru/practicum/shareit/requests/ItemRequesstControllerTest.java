@@ -17,11 +17,12 @@ import org.springframework.web.context.WebApplicationContext;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.item.dto.ItemDtoMaper;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
-import ru.practicum.shareit.requests.dto.ItemRequestDtoForRequestor;
+import ru.practicum.contract.request.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDtoForRequestor;
 import ru.practicum.shareit.requests.dto.ItemRequestDtoMaper;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.dto.UserDtoMaper;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -43,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.practicum.shareit.TestConstants.*;
 
 @WebMvcTest(controllers = ItemRequesstController.class)
-@Import({ItemRequestDtoMaper.class, ItemDtoMaper.class, BookingDtoMaper.class})
+@Import({ItemRequestDtoMaper.class, ItemDtoMaper.class, BookingDtoMaper.class, UserDtoMaper.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ItemRequesstControllerTest {
     public static final String USER_ID_HEADER_NAME = "X-Sharer-User-Id";
@@ -55,6 +56,7 @@ class ItemRequesstControllerTest {
     ObjectMapper mapper;
     @Autowired
     MockMvc mvc;
+    UserDtoMaper userDtoMaper = new UserDtoMaper();
     User user;
 
     @BeforeEach
@@ -129,7 +131,7 @@ class ItemRequesstControllerTest {
                 .thenReturn(new ItemRequest(1L, "aaaaaa",
                         USER_ID1, TEST_TIME_LONG, new ArrayList<>()));
         ItemRequestDtoForRequestor dto = new ItemRequestDtoForRequestor(1L, "aaaaaa",
-                USER_ID1, TEST_TIME_DATE_TIME, new ArrayList<>());
+                userDtoMaper.toDto(USER_ID1), TEST_TIME_DATE_TIME, new ArrayList<>());
         mvc.perform(get("/requests/{itemId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)

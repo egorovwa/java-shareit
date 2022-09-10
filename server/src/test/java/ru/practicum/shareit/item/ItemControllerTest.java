@@ -13,17 +13,18 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import ru.practicum.contract.item.dto.CommentDto;
+import ru.practicum.contract.item.dto.ItemDto;
 import ru.practicum.shareit.booking.dto.BookingDtoMaper;
 import ru.practicum.shareit.exceptions.IncorectUserOrItemIdException;
 import ru.practicum.shareit.exceptions.IncorrectUserIdException;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.NotUsedCommentException;
-import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentDtoMaper;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoMaper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.UserDtoMaper;
 import ru.practicum.shareit.util.PageParam;
 
 import java.nio.charset.StandardCharsets;
@@ -41,11 +42,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.practicum.shareit.TestConstants.*;
 
 @WebMvcTest(ItemController.class)
-@Import({ItemDtoMaper.class, CommentDtoMaper.class, BookingDtoMaper.class})
+@Import({ItemDtoMaper.class, CommentDtoMaper.class, BookingDtoMaper.class, UserDtoMaper.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ItemControllerTest {
 
-    final ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper());
+    final ItemDtoMaper dtoMaper = new ItemDtoMaper(new BookingDtoMaper(), new UserDtoMaper());
     final CommentDtoMaper commentDtoMaper = new CommentDtoMaper();
     final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     @MockBean
@@ -65,7 +66,7 @@ class ItemControllerTest {
     void test1_1createItem_incorrectUserId() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
                 ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
-                true, null, null);
+                true, null);
         when(itemServise.createItem(1, itemDto))
                 .thenThrow(new IncorrectUserIdException("message", "id"));
         mvc.perform(post("/items")
@@ -82,7 +83,7 @@ class ItemControllerTest {
     void test1_3createItem() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
                 ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
-                true, null, 1L);
+                true, 1L);
         when(itemServise.createItem(1, itemDto))
                 .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);
         mvc.perform(post("/items")
@@ -98,7 +99,7 @@ class ItemControllerTest {
     void test2_1_patchItem_ModelNotExitsException() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
                 ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
-                true, null, 1L);
+                true, 1L);
         Item inItem = dtoMaper.fromDto(itemDto);
         when(itemServise.patchItem(1, 1, inItem))
                 .thenThrow(new ModelNotExitsException("message", "param", "val"));
@@ -116,7 +117,7 @@ class ItemControllerTest {
     void test2_2_patchItem_IncorectUserOrItemIdException() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
                 ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
-                true, null, 1L);
+                true, 1L);
         Item inItem = dtoMaper.fromDto(itemDto);
         when(itemServise.patchItem(1, 1, inItem))
                 .thenThrow(new IncorectUserOrItemIdException("message", 1L, 1L));
@@ -134,7 +135,7 @@ class ItemControllerTest {
     void test2_3_patchItem() throws Exception {
         ItemDto itemDto = new ItemDto(null, ITEM_ID1_OWNER1_AVALIBLE_TRUE.getName(),
                 ITEM_ID1_OWNER1_AVALIBLE_TRUE.getDescription(),
-                true, null, 1L);
+                true, 1L);
         Item inItem = dtoMaper.fromDto(itemDto);
         when(itemServise.patchItem(1, 1, inItem))
                 .thenReturn(ITEM_ID1_OWNER1_AVALIBLE_TRUE);

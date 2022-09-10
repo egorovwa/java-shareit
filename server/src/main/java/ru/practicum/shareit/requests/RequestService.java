@@ -1,16 +1,17 @@
 package ru.practicum.shareit.requests;
 
 import org.springframework.data.domain.Pageable;
+import ru.practicum.contract.request.dto.ItemRequestDtoToCreate;
 import ru.practicum.shareit.exceptions.ModelNotExitsException;
 import ru.practicum.shareit.exceptions.RequestNotExistException;
-import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.contract.request.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 
 import java.util.Collection;
 
 
 public interface RequestService {
-    ItemRequest createRequest(Long userId, ItemRequestDto itemRequestDto) throws ModelNotExitsException;
+    ItemRequest createRequest(Long userId, ItemRequestDtoToCreate itemRequestDtoToCreate) throws ModelNotExitsException;
 
 
     Collection<ItemRequest> findAllWithPage(Pageable pageable, Long userId) throws ModelNotExitsException;
