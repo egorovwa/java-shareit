@@ -87,10 +87,6 @@ public class BaseClient {
         return delete(path, null);
     }
 
-    protected ResponseEntity<Object> delete(String path, long userId) {
-        return delete(path, userId);
-    }
-
     protected ResponseEntity<Object> delete(String path, Long userId) {
         return makeAndSendRequest(HttpMethod.DELETE, path, userId, null, null);
     }
