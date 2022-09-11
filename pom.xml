@@ -25,7 +25,7 @@
     <modules>
         <module>gateway</module>
         <module>server</module>
-        <module>server/contract</module>
+        <module>contract</module>
     </modules>
 
     <build>
